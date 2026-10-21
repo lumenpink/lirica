@@ -1,0 +1,2 @@
+[registries.lumen]
+index = "sparse+https://git.2lp.in/api/packages/lumen/cargo/"

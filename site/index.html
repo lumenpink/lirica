@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lírica — Laboratório Métrico Poético em WebAssembly</title>
+  <meta name="description" content="Laboratório métrico, escansão poética e análise rítmica em português executado deterministicamente no navegador via WebAssembly.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="logo-group">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <h1 class="app-title">Lírica</h1>
+      </div>
+      <p class="app-tagline">Laboratório Métrico & Escansão Poética em WebAssembly</p>
+    </div>
+
+    <div class="toolbar">
+      <div class="tool-group">
+        <label for="select-exemplo" class="tool-label">Exemplo Clássico:</label>
+        <select id="select-exemplo" class="select-input" aria-label="Selecione um exemplo clássico">
+          <option value="">Carregando exemplos...</option>
+        </select>
+      </div>
+
+      <div class="tool-group">
+        <label for="select-modo" class="tool-label">Formato de Saída:</label>
+        <select id="select-modo" class="select-input" aria-label="Formato de saída">
+          <option value="visual" selected>Painel Visual Interativo</option>
+          <option value="painel">Texto Estruturado (Dual Panel)</option>
+          <option value="typst">Typst Markup</option>
+          <option value="json">JSON (AST)</option>
+          <option value="texto">Texto Puro</option>
+        </select>
+      </div>
+
+      <div class="tool-options" role="group" aria-label="Opções de Escansão">
+        <label class="toggle-control" title="Trunca a contagem métrica na última sílaba tônica (tradição lusófona)">
+          <input type="checkbox" id="chk-castilho" checked>
+          <span>Regra de Castilho</span>
+        </label>
+        <label class="toggle-control" title="Pontuação forte impede a formação de sinalefa/elisão entre palavras">
+          <input type="checkbox" id="chk-pontuacao">
+          <span>Cesura na pontuação</span>
+        </label>
+        <label class="toggle-control" title="Trata ditongos crescentes como hiatos (diérese)">
+          <input type="checkbox" id="chk-dierese">
+          <span>Diérese crescente</span>
+        </label>
+        <label class="toggle-control" title="Identifica esquemas de rimas no poema">
+          <input type="checkbox" id="chk-rima" checked>
+          <span>Rimas</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace-grid">
+    <!-- Painel Esquerdo: Entrada Editável -->
+    <section class="pane pane-editor" aria-label="Editor de Versos">
+      <div class="pane-header">
+        <div class="pane-title">
+          <span class="pane-badge">Entrada</span>
+          <span>Poema & Diretrizes</span>
+        </div>
+        <div class="pane-meta">
+          <span id="counter-linhas">0 versos</span>
+          <button id="btn-limpar" class="btn-ghost" title="Limpar editor">Limpar</button>
+        </div>
+      </div>
+      <div class="editor-wrapper">
+        <textarea
+          id="input-poema"
+          class="poema-textarea"
+          spellcheck="false"
+          placeholder="Digite ou cole aqui os versos do poema...&#10;&#10;Diretrizes opcionais:&#10;%% titulo = &quot;Meu Poema&quot;&#10;%% metro = &quot;decassilabo&quot;&#10;&#10;Você também pode usar / para forçar hiato ou _ para forçar sinalefa."
+          aria-label="Área de edição de poema e diretrizes"
+        ></textarea>
+      </div>
+    </section>
+
+    <!-- Painel Direito: Saída Lírica -->
+    <section class="pane pane-output" aria-label="Saída Lírica">
+      <div class="pane-header">
+        <div class="pane-title">
+          <span class="pane-badge accent">Saída</span>
+          <span id="output-title">Análise Escansiva</span>
+        </div>
+        <div class="pane-meta">
+          <button id="btn-copiar" class="btn-ghost" title="Copiar saída para a área de transferência">Copiar</button>
+        </div>
+      </div>
+      <div id="output-container" class="output-wrapper" tabindex="0" aria-live="polite">
+        <div class="empty-state">
+          <span class="empty-icon">✍️</span>
+          <p>Digite versos à esquerda ou escolha um exemplo clássico acima para ver a escansão métrica em tempo real.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <strong>Lírica</strong> <span id="lbl-versao">v0.1.0</span> — Motor de Escansão e Fonotática Poética
+      </div>
+      <div class="footer-links">
+        <span>Alimentado por <code>joaju-lirica</code> via WASM</span>
+        <span class="sep">•</span>
+        <a href="https://git.2lp.in/lumen/lirica" target="_blank" rel="noopener noreferrer">Forgejo</a>
+        <span class="sep">•</span>
+        <a href="https://codeberg.org/lumenpink/lirica" target="_blank" rel="noopener noreferrer">Codeberg</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
