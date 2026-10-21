@@ -1,13 +1,12 @@
 //! # lirica
 //!
-//! WebAssembly interface for Portuguese poetic scansion, rhythm analysis, and rhyme schemes.
+//! WebAssembly presentation layer for the `joaju-lirica` poetic engine.
 
 use joaju_lirica::{
-    descobrir_tonica, escandir_verso_com_opcoes, parse_lirica_block, render_painel, render_typst,
-    separar_silabas_com_spans, Poema, PoemaConfig,
+    escandir_poema, icone_metro, parse_lirica_block, render_painel, render_typst, Poema,
+    PoemaConfig,
 };
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use wasm_bindgen::prelude::*;
 
 /// Pre-loaded classical poem example.
@@ -34,6 +33,8 @@ pub struct VersoFormatado {
     pub escansao: String,
     /// Rhythm classification (e.g. "Decassílabo Heroico").
     pub classificacao: String,
+    /// Distinctive Unicode icon representing the metric classification.
+    pub icone: String,
     /// Metric syllable count.
     pub total_metricas: usize,
     /// Phonetic syllable count.
@@ -61,6 +62,15 @@ pub struct SilabaDetalhe {
     pub elidida: bool,
 }
 
+/// Complete poem analysis output for the web interface.
+#[derive(Serialize, Deserialize)]
+pub struct AnaliseWeb {
+    /// Verses formatted with metric and rhyme data.
+    pub versos: Vec<VersoFormatado>,
+    /// Overall poem rhyme scheme (e.g. "ABBA", "ABCB").
+    pub esquema_rima: Option<String>,
+}
+
 /// Scans a text block of verses and returns the rendered result according to options.
 #[wasm_bindgen]
 pub fn escandir(
@@ -75,48 +85,35 @@ pub fn escandir(
         return String::new();
     }
 
-    // Try parsing directives first, or create custom config
-    let (mut config, poema) = match parse_lirica_block(texto) {
-        Ok((cfg, p)) => (cfg, p),
+    // Try parsing directives first, or use pure poem scanner from joaju-lirica
+    let (config, poema) = match parse_lirica_block(texto) {
+        Ok((mut cfg, p)) => {
+            cfg.elidir_pontuacao = elidir_pontuacao;
+            cfg.dierese_crescente = dierese_crescente;
+            cfg.contagem_castilho = contagem_castilho;
+            cfg.analisar_rima = analisar_rima;
+            (cfg, p)
+        }
         Err(_) => {
-            let cfg = PoemaConfig {
+            let p = escandir_poema(
+                texto,
                 elidir_pontuacao,
                 dierese_crescente,
                 contagem_castilho,
                 analisar_rima,
-                ..Default::default()
-            };
-
-            let mut versos = Vec::new();
-            let mut linhas = Vec::new();
-            for linha in texto.lines() {
-                let trimmed = linha.trim();
-                if !trimmed.is_empty() && !trimmed.starts_with("%%") {
-                    let esc = escandir_verso_com_opcoes(
-                        linha,
-                        elidir_pontuacao,
-                        dierese_crescente,
-                        contagem_castilho,
-                    );
-                    versos.push(esc);
-                    linhas.push(linha.to_string());
-                }
-            }
+            );
             (
-                cfg,
-                Poema {
-                    versos,
-                    linhas_originais: linhas,
+                PoemaConfig {
+                    elidir_pontuacao,
+                    dierese_crescente,
+                    contagem_castilho,
+                    analisar_rima,
+                    ..Default::default()
                 },
+                p,
             )
         }
     };
-
-    // Apply explicit argument overrides if specified
-    config.elidir_pontuacao = elidir_pontuacao;
-    config.dierese_crescente = dierese_crescente;
-    config.contagem_castilho = contagem_castilho;
-    config.analisar_rima = analisar_rima;
 
     match modo_saida.to_lowercase().as_str() {
         "typst" => render_typst(&config, &poema),
@@ -125,90 +122,15 @@ pub fn escandir(
             Err(e) => format!("{{\"error\": \"{}\"}}", e),
         },
         "texto" => poema.linhas_originais.join("\n"),
-        "visual" | "html" => render_visual_json(&poema, analisar_rima),
+        "visual" | "html" => render_visual_json(&poema),
         _ => render_painel(&poema),
     }
 }
 
-/// Extracts the phonetic rhyme suffix (from the final tonic vowel onward) for a verse.
-fn extrair_rima_verso(linha: &str) -> Option<String> {
-    let clean = linha
-        .trim()
-        .trim_end_matches(|c: char| !c.is_alphabetic() && c != '/');
-    let last_word = clean.split_whitespace().last()?;
-    let palavra_limpa: String = last_word.chars().filter(|&c| c.is_alphabetic()).collect();
-    if palavra_limpa.is_empty() {
-        return None;
-    }
-
-    let sils = separar_silabas_com_spans(&palavra_limpa, 0, false);
-    if sils.is_empty() {
-        return None;
-    }
-
-    let idx_tonica = descobrir_tonica(&sils, &palavra_limpa).unwrap_or(sils.len() - 1);
-
-    let mut term = String::new();
-    for (i, (s, _)) in sils.iter().enumerate().skip(idx_tonica) {
-        if i == idx_tonica {
-            let chars: Vec<char> = s.chars().collect();
-            let mut v_idx = 0;
-            for (ci, &c) in chars.iter().enumerate() {
-                if "aeiouáéíóúâêôãõàüAEIOUÁÉÍÓÚÂÊÔÃÕÀÜ".contains(c) {
-                    v_idx = ci;
-                    break;
-                }
-            }
-            term.push_str(&chars[v_idx..].iter().collect::<String>());
-        } else {
-            term.push_str(s);
-        }
-    }
-
-    let normalizada = term
-        .to_lowercase()
-        .replace(['á', 'â', 'à', 'ã'], "a")
-        .replace(['é', 'ê'], "e")
-        .replace('í', "i")
-        .replace(['ó', 'ô', 'õ'], "o")
-        .replace(['ú', 'ü'], "u");
-
-    Some(normalizada)
-}
-
-fn render_visual_json(poema: &Poema, analisar_rima: bool) -> String {
+fn render_visual_json(poema: &Poema) -> String {
     let mut resultado = Vec::new();
 
-    // Map rhymes across lines if requested
-    let mut mapa_rimas: HashMap<String, char> = HashMap::new();
-    let mut letra_atual = 'A';
-    let mut rimas_info = Vec::new();
-
-    for orig in &poema.linhas_originais {
-        if analisar_rima {
-            if let Some(term) = extrair_rima_verso(orig) {
-                let letra = *mapa_rimas.entry(term.clone()).or_insert_with(|| {
-                    let l = letra_atual;
-                    if letra_atual < 'Z' {
-                        letra_atual = (letra_atual as u8 + 1) as char;
-                    }
-                    l
-                });
-                rimas_info.push(Some((letra.to_string(), format!("-{}", term))));
-            } else {
-                rimas_info.push(None);
-            }
-        } else {
-            rimas_info.push(None);
-        }
-    }
-
-    for (i, (orig, esc)) in poema
-        .linhas_originais
-        .iter()
-        .zip(poema.versos.iter())
-        .enumerate()
-    {
+    for (orig, esc) in poema.linhas_originais.iter().zip(poema.versos.iter()) {
         let partes: Vec<String> = esc
             .silabas
             .iter()
@@ -237,28 +159,32 @@ fn render_visual_json(poema: &Poema, analisar_rima: bool) -> String {
             })
             .collect();
 
-        let (rima, rima_terminacao) = match rimas_info.get(i).and_then(|r| r.as_ref()) {
-            Some((l, t)) => (Some(l.clone()), Some(t.clone())),
-            None => (None, None),
-        };
+        let class_name = esc
+            .classificacao
+            .clone()
+            .unwrap_or_else(|| "Forma Livre".to_string());
+        let icone = icone_metro(&class_name).to_string();
 
         resultado.push(VersoFormatado {
             original: orig.clone(),
             escansao: partes.join(" - "),
-            classificacao: esc
-                .classificacao
-                .clone()
-                .unwrap_or_else(|| "Forma Livre".to_string()),
+            classificacao: class_name,
+            icone,
             total_metricas: esc.total_metricas,
             total_foneticas: esc.silabas.len(),
             tonicas: esc.esquema_tonico.clone(),
             silabas,
-            rima,
-            rima_terminacao,
+            rima: esc.rima.clone(),
+            rima_terminacao: esc.rima_terminacao.clone(),
         });
     }
 
-    serde_json::to_string(&resultado).unwrap_or_else(|_| "[]".to_string())
+    let web_out = AnaliseWeb {
+        versos: resultado,
+        esquema_rima: poema.esquema_rima.clone(),
+    };
+
+    serde_json::to_string(&web_out).unwrap_or_else(|_| "{}".to_string())
 }
 
 /// Returns a JSON list of pre-configured classical poetic examples without `%%` directives.

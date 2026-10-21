@@ -1,4 +1,4 @@
-use lirica::{carregar_exemplos, escandir, versao, ExemploPoema, VersoFormatado};
+use lirica::{carregar_exemplos, escandir, versao, AnaliseWeb, ExemploPoema};
 
 #[test]
 fn test_versao() {
@@ -33,11 +33,12 @@ fn test_carregar_exemplos() {
 fn test_camoes_quatro_versos_decassilabos_e_rimas() {
     let texto = "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.";
     let saida = escandir(texto, "visual", false, false, true, true);
-    let versos: Vec<VersoFormatado> =
-        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de VersoFormatado");
-    assert_eq!(versos.len(), 4);
+    let web: AnaliseWeb =
+        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de AnaliseWeb");
+    assert_eq!(web.versos.len(), 4);
+    assert_eq!(web.esquema_rima.as_deref(), Some("ABBA"));
 
-    for (i, v) in versos.iter().enumerate() {
+    for (i, v) in web.versos.iter().enumerate() {
         assert_eq!(
             v.total_metricas,
             10,
@@ -51,13 +52,14 @@ fn test_camoes_quatro_versos_decassilabos_e_rimas() {
             "Verso {} deve ser Decassílabo",
             i + 1
         );
+        assert_eq!(v.icone, "⚔️");
     }
 
     // Verify ABBA rhyme scheme
-    assert_eq!(versos[0].rima.as_deref(), Some("A"));
-    assert_eq!(versos[1].rima.as_deref(), Some("B"));
-    assert_eq!(versos[2].rima.as_deref(), Some("B"));
-    assert_eq!(versos[3].rima.as_deref(), Some("A"));
+    assert_eq!(web.versos[0].rima.as_deref(), Some("A"));
+    assert_eq!(web.versos[1].rima.as_deref(), Some("B"));
+    assert_eq!(web.versos[2].rima.as_deref(), Some("B"));
+    assert_eq!(web.versos[3].rima.as_deref(), Some("A"));
 }
 
 #[test]
@@ -70,7 +72,7 @@ fn test_escandir_painel() {
 
 #[test]
 fn test_escandir_typst() {
-    let texto = "%% metro = \"decassilabo\"\nAmor é fogo que arde sem se ver";
+    let texto = "Amor é fogo que arde sem se ver";
     let saida = escandir(texto, "typst", false, false, true, true);
     assert!(saida.contains("#grid") || saida.contains("#block"));
 }
@@ -79,14 +81,28 @@ fn test_escandir_typst() {
 fn test_escandir_visual() {
     let texto = "Minha terra tem palmeiras";
     let saida = escandir(texto, "visual", false, false, true, true);
-    let versos: Vec<VersoFormatado> =
-        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de VersoFormatado");
-    assert_eq!(versos.len(), 1);
-    assert_eq!(versos[0].total_metricas, 7);
+    let web: AnaliseWeb =
+        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de AnaliseWeb");
+    assert_eq!(web.versos.len(), 1);
+    assert_eq!(web.versos[0].total_metricas, 7);
+    assert_eq!(web.versos[0].icone, "🌿");
     assert!(
-        versos[0].classificacao.contains("Heptassílabo")
-            || versos[0].classificacao.contains("Redondilha")
+        web.versos[0].classificacao.contains("Heptassílabo")
+            || web.versos[0].classificacao.contains("Redondilha")
     );
+}
+
+#[test]
+fn test_forcar_hiato_na_interface() {
+    // Normal: elide
+    let saida1 = escandir("que arde", "visual", false, false, true, true);
+    let web1: AnaliseWeb = serde_json::from_str(&saida1).unwrap();
+    assert_eq!(web1.versos[0].total_metricas, 1);
+
+    // Com barra: não elide
+    let saida2 = escandir("que / arde", "visual", false, false, true, true);
+    let web2: AnaliseWeb = serde_json::from_str(&saida2).unwrap();
+    assert_eq!(web2.versos[0].total_metricas, 2);
 }
 
 #[test]

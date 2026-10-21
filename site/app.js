@@ -130,18 +130,25 @@ function getFullText() {
   return verses.filter(v => v.trim().length > 0).join('\n');
 }
 
-function updateStats(parsedVersos) {
+function updateStats(parsedVersos, esquemaRima) {
   const count = verses.length;
   counterVersos.textContent = `${count} ${count === 1 ? 'verso' : 'versos'}`;
 
-  if (chkRima.checked && parsedVersos && parsedVersos.length > 0) {
-    const scheme = parsedVersos
-      .map(v => v.rima || '-')
-      .filter(r => r !== '-')
-      .join('');
-    if (scheme) {
-      schemeBadge.textContent = `Rima: ${scheme}`;
+  if (chkRima.checked) {
+    if (esquemaRima) {
+      schemeBadge.textContent = `Rima: ${esquemaRima}`;
       schemeBadge.style.display = 'inline-block';
+    } else if (parsedVersos && parsedVersos.length > 0) {
+      const scheme = parsedVersos
+        .map(v => v.rima || '-')
+        .filter(r => r !== '-')
+        .join('');
+      if (scheme) {
+        schemeBadge.textContent = `Rima: ${scheme}`;
+        schemeBadge.style.display = 'inline-block';
+      } else {
+        schemeBadge.style.display = 'none';
+      }
     } else {
       schemeBadge.style.display = 'none';
     }
@@ -174,16 +181,23 @@ function renderWorkspace() {
 
 function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
   let parsed = [];
+  let esquemaRima = null;
   if (fullText.trim().length > 0) {
     try {
       const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
-      parsed = JSON.parse(jsonStr);
+      const data = JSON.parse(jsonStr);
+      if (data && Array.isArray(data.versos)) {
+        parsed = data.versos;
+        esquemaRima = data.esquema_rima;
+      } else if (Array.isArray(data)) {
+        parsed = data;
+      }
     } catch (e) {
       console.error('Falha de escansão:', e);
     }
   }
 
-  updateStats(parsed);
+  updateStats(parsed, esquemaRima);
 
   versesContainer.innerHTML = '';
 
@@ -252,21 +266,21 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
     const vData = isNonEmpty ? parsed[parsedIdx++] : null;
 
     if (vData) {
-      // Rhyme badge
+      // Compact Rhyme badge
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
-        rhymeBadge.className = 'badge-rima';
+        rhymeBadge.className = 'badge-rima-compact';
         rhymeBadge.textContent = vData.rima;
-        if (vData.rima_terminacao) {
-          rhymeBadge.title = `Terminação fonética: ${vData.rima_terminacao}`;
-        }
+        const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
+        rhymeBadge.title = `Rima: ${vData.rima}${term}`;
         colRight.appendChild(rhymeBadge);
       }
 
-      // Meter badge
+      // Compact Meter badge: count + icon with tooltip
       const meterBadge = document.createElement('span');
-      meterBadge.className = 'badge-metro';
-      meterBadge.textContent = `${vData.total_metricas} ${vData.classificacao}`;
+      meterBadge.className = 'badge-metro-compact';
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas)`;
+      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
       colRight.appendChild(meterBadge);
 
       // Syllables strip
@@ -317,16 +331,23 @@ function updateSingleRowLive() {
   const rima = chkRima.checked;
 
   let parsed = [];
+  let esquemaRima = null;
   if (fullText.trim().length > 0) {
     try {
       const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
-      parsed = JSON.parse(jsonStr);
+      const data = JSON.parse(jsonStr);
+      if (data && Array.isArray(data.versos)) {
+        parsed = data.versos;
+        esquemaRima = data.esquema_rima;
+      } else if (Array.isArray(data)) {
+        parsed = data;
+      }
     } catch (e) {
       console.error(e);
     }
   }
 
-  updateStats(parsed);
+  updateStats(parsed, esquemaRima);
 
   const rows = versesContainer.querySelectorAll('.verse-row');
   let parsedIdx = 0;
@@ -343,19 +364,21 @@ function updateSingleRowLive() {
     const vData = isNonEmpty ? parsed[parsedIdx++] : null;
 
     if (vData) {
+      // Compact Rhyme badge
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
-        rhymeBadge.className = 'badge-rima';
+        rhymeBadge.className = 'badge-rima-compact';
         rhymeBadge.textContent = vData.rima;
-        if (vData.rima_terminacao) {
-          rhymeBadge.title = `Terminação fonética: ${vData.rima_terminacao}`;
-        }
+        const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
+        rhymeBadge.title = `Rima: ${vData.rima}${term}`;
         colRight.appendChild(rhymeBadge);
       }
 
+      // Compact Meter badge: count + icon with tooltip
       const meterBadge = document.createElement('span');
-      meterBadge.className = 'badge-metro';
-      meterBadge.textContent = `${vData.total_metricas} ${vData.classificacao}`;
+      meterBadge.className = 'badge-metro-compact';
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas)`;
+      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
       colRight.appendChild(meterBadge);
 
       const strip = document.createElement('div');

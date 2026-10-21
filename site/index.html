@@ -98,37 +98,51 @@
       <pre id="code-output" class="code-output"><code id="code-content"></code></pre>
     </div>
 
-    <!-- Guia de Notação e Sinais Poéticos -->
-    <section class="notation-guide" aria-label="Guia de Notação Métrico-Poética">
+    <!-- Guia de Notação, Sinais e Ícones Métricos -->
+    <section class="notation-guide" aria-label="Guia de Notação e Ícones Métricos">
       <div class="guide-title">
         <span class="guide-icon">📖</span>
-        <strong>Guia de Notação & Sinais de Escansão:</strong>
+        <strong>Símbolos, Operadores & Ícones Métricos:</strong>
       </div>
+      
+      <!-- Linha 1: Operadores de controle -->
       <div class="guide-grid">
         <div class="guide-item">
           <code>/</code>
-          <span><strong>Forçar Hiato</strong>: impede a elisão entre palavras ou separa ditongo (ex.: <code>sa/úva</code>, <code>de / amor</code>).</span>
+          <span><strong>Forçar Hiato</strong>: impede sinalefa entre palavras ou divide ditongo (ex.: <code>que / arde</code>, <code>sa/úva</code>).</span>
         </div>
         <div class="guide-item">
           <code>_</code>
-          <span><strong>Forçar Sinalefa</strong>: obriga a fusão de vogais contíguas entre palavras (ex.: <code>alma_minha</code>).</span>
+          <span><strong>Forçar Sinalefa</strong>: obriga fusão métrica de vogais contíguas (ex.: <code>alma_minha</code>).</span>
         </div>
         <div class="guide-item">
-          <span class="legend-chip tonica">1:[tônica]</span>
-          <span><strong>Sílaba Tônica</strong>: acento de intensidade natural ou gráfico. Oxítonas/tônicas finais não elidem.</span>
+          <code>'</code>
+          <span><strong>Mudar Tônica</strong>: apóstrofo marca a tônica manual cancelando a regra padrão (ex.: <code>que'</code>, <code>fogo'</code>).</span>
+        </div>
+        <div class="guide-item">
+          <span class="legend-chip tonica">[tônica]</span>
+          <span><strong>Tônica</strong>: vogal de maior intensidade. Tônicas finais (oxítonas) não elidem naturalmente.</span>
         </div>
         <div class="guide-item">
           <span class="legend-chip elidida">que‿ar</span>
-          <span><strong>Sinalefa (‿)</strong>: fusão métrica de duas vogais em uma única sílaba poética.</span>
+          <span><strong>Sinalefa (‿)</strong>: fusão métrica de duas vogais em uma sílaba só.</span>
         </div>
         <div class="guide-item">
           <span class="legend-chip extrametrica">·te</span>
-          <span><strong>Extramétrica (·)</strong>: sílaba pós-tônica truncada pela <em>Regra de Castilho</em>.</span>
+          <span><strong>Extramétrica (·)</strong>: sílaba pós-tônica descartada pela <em>Regra de Castilho</em>.</span>
         </div>
-        <div class="guide-item">
-          <span class="legend-chip rima">A</span>
-          <span><strong>Marcação de Rima</strong>: calculada a partir da vogal tônica final de cada verso (ex.: ABBA, ABCB).</span>
-        </div>
+      </div>
+
+      <!-- Linha 2: Legenda de Ícones de Ritmo -->
+      <div class="guide-icons-row" aria-label="Legenda de Ícones de Metrificação">
+        <span class="guide-icons-title">Ícones de Ritmo:</span>
+        <span class="icon-tag" title="Decassílabo Heroico (acento na 6ª e 10ª sílabas)">⚔️ Heroico (6, 10)</span>
+        <span class="icon-tag" title="Decassílabo Sáfico (acento na 4ª, 8ª e 10ª sílabas)">🏛️ Sáfico (4, 8, 10)</span>
+        <span class="icon-tag" title="Decassílabo Martelo (acento na 3ª, 6ª e 10ª sílabas)">🔨 Martelo (3, 6, 10)</span>
+        <span class="icon-tag" title="Redondilha Maior / Heptassílabo (7 sílabas)">🌿 Redondilha Maior (7s)</span>
+        <span class="icon-tag" title="Redondilha Menor / Pentassílabo (5 sílabas)">🍃 Redondilha Menor (5s)</span>
+        <span class="icon-tag" title="Alexandrino Clássico (12 sílabas com cesura na 6ª)">👑 Alexandrino (12s)</span>
+        <span class="icon-tag" title="Forma Livre ou Verso Bárbaro">🪶 Forma Livre</span>
       </div>
     </section>
   </main>
