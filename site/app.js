@@ -1,20 +1,39 @@
 import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js';
 
 let exemplos = [];
+let verses = [
+  "Amor é fogo que arde sem se ver,",
+  "É ferida que dói e não se sente;",
+  "É um contentamento descontente,",
+  "É dor que desatina sem doer."
+];
 
-const editorEl = document.getElementById('input-poema');
-const outputContainer = document.getElementById('output-container');
-const outputTitle = document.getElementById('output-title');
+// Elements
 const selectExemplo = document.getElementById('select-exemplo');
 const selectModo = document.getElementById('select-modo');
 const chkCastilho = document.getElementById('chk-castilho');
 const chkPontuacao = document.getElementById('chk-pontuacao');
 const chkDierese = document.getElementById('chk-dierese');
 const chkRima = document.getElementById('chk-rima');
-const counterLinhas = document.getElementById('counter-linhas');
+
+const counterVersos = document.getElementById('counter-versos');
+const schemeBadge = document.getElementById('scheme-badge');
+
+const btnToggleRaw = document.getElementById('btn-toggle-raw');
+const btnAddVerso = document.getElementById('btn-add-verso');
 const btnLimpar = document.getElementById('btn-limpar');
 const btnCopiar = document.getElementById('btn-copiar');
 const lblVersao = document.getElementById('lbl-versao');
+
+const rawEditorBox = document.getElementById('raw-editor-box');
+const rawTextarea = document.getElementById('raw-textarea');
+const btnApplyRaw = document.getElementById('btn-apply-raw');
+
+const alignedWorkspace = document.getElementById('aligned-workspace');
+const versesContainer = document.getElementById('verses-container');
+
+const codeWorkspace = document.getElementById('code-workspace');
+const codeContent = document.getElementById('code-content');
 
 async function main() {
   await init();
@@ -24,13 +43,13 @@ async function main() {
     const v = versao();
     if (lblVersao) lblVersao.textContent = `v${v}`;
   } catch (e) {
-    console.error('Erro ao obter versão:', e);
+    console.error('Erro de versão:', e);
   }
 
   // Load Examples
   try {
     exemplos = JSON.parse(carregar_exemplos());
-    selectExemplo.innerHTML = '<option value="">— Selecione um exemplo clássico —</option>';
+    selectExemplo.innerHTML = '<option value="">— Escolha um exemplo clássico —</option>';
     exemplos.forEach(ex => {
       const opt = document.createElement('option');
       opt.value = ex.id;
@@ -38,236 +57,377 @@ async function main() {
       selectExemplo.appendChild(opt);
     });
 
-    // Default to Camões example
+    // Default Camões
     const defaultEx = exemplos.find(ex => ex.id === 'camoes');
     if (defaultEx) {
-      editorEl.value = defaultEx.texto;
       selectExemplo.value = defaultEx.id;
+      verses = defaultEx.texto.split('\n').filter(l => l.trim().length > 0 && !l.trim().startsWith('%%'));
     }
   } catch (e) {
     console.error('Erro ao carregar exemplos:', e);
   }
 
   // Event Listeners
-  editorEl.addEventListener('input', runScansion);
-  selectModo.addEventListener('change', () => {
-    updateTitle();
-    runScansion();
-  });
-  chkCastilho.addEventListener('change', runScansion);
-  chkPontuacao.addEventListener('change', runScansion);
-  chkDierese.addEventListener('change', runScansion);
-  chkRima.addEventListener('change', runScansion);
-
   selectExemplo.addEventListener('change', (e) => {
     const selected = exemplos.find(ex => ex.id === e.target.value);
     if (selected) {
-      editorEl.value = selected.texto;
-      runScansion();
+      verses = selected.texto.split('\n').filter(l => l.trim().length > 0 && !l.trim().startsWith('%%'));
+      renderWorkspace();
     }
+  });
+
+  selectModo.addEventListener('change', renderWorkspace);
+  chkCastilho.addEventListener('change', renderWorkspace);
+  chkPontuacao.addEventListener('change', renderWorkspace);
+  chkDierese.addEventListener('change', renderWorkspace);
+  chkRima.addEventListener('change', renderWorkspace);
+
+  btnAddVerso.addEventListener('click', () => {
+    verses.push('');
+    renderWorkspace();
+    focusVerse(verses.length - 1);
   });
 
   btnLimpar.addEventListener('click', () => {
-    editorEl.value = '';
+    verses = [''];
     selectExemplo.value = '';
-    runScansion();
-    editorEl.focus();
+    rawTextarea.value = '';
+    renderWorkspace();
+    focusVerse(0);
   });
 
-  btnCopiar.addEventListener('click', copiarSaida);
+  btnToggleRaw.addEventListener('click', toggleRawEditor);
 
-  runScansion();
+  btnApplyRaw.addEventListener('click', () => {
+    const lines = rawTextarea.value
+      .split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0 && !l.startsWith('%%'));
+    verses = lines.length > 0 ? lines : [''];
+    rawEditorBox.style.display = 'none';
+    btnToggleRaw.textContent = 'Modo Texto Livre';
+    renderWorkspace();
+  });
+
+  btnCopiar.addEventListener('click', copiarAnalise);
+
+  renderWorkspace();
 }
 
-function updateTitle() {
-  const modo = selectModo.value;
-  switch (modo) {
-    case 'visual':
-      outputTitle.textContent = 'Painel Visual Interativo';
-      break;
-    case 'typst':
-      outputTitle.textContent = 'Marcação Typst';
-      break;
-    case 'json':
-      outputTitle.textContent = 'AST JSON';
-      break;
-    case 'texto':
-      outputTitle.textContent = 'Texto Puro';
-      break;
-    case 'painel':
-      outputTitle.textContent = 'Texto Estruturado (Dual Panel)';
-      break;
+function toggleRawEditor() {
+  if (rawEditorBox.style.display === 'none') {
+    rawTextarea.value = verses.join('\n');
+    rawEditorBox.style.display = 'flex';
+    btnToggleRaw.textContent = 'Fechar Texto Livre';
+    rawTextarea.focus();
+  } else {
+    rawEditorBox.style.display = 'none';
+    btnToggleRaw.textContent = 'Modo Texto Livre';
   }
 }
 
-function updateLineCounter() {
-  const raw = editorEl.value;
-  const lines = raw.split('\n').filter(l => l.trim().length > 0 && !l.trim().startsWith('%%'));
-  const count = lines.length;
-  counterLinhas.textContent = `${count} ${count === 1 ? 'verso' : 'versos'}`;
+function getFullText() {
+  return verses.filter(v => v.trim().length > 0).join('\n');
 }
 
-function runScansion() {
-  updateLineCounter();
+function updateStats(parsedVersos) {
+  const count = verses.length;
+  counterVersos.textContent = `${count} ${count === 1 ? 'verso' : 'versos'}`;
 
-  const texto = editorEl.value;
-  if (!texto.trim()) {
-    outputContainer.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">✍️</span>
-        <p>Digite versos à esquerda ou escolha um exemplo clássico acima para ver a escansão métrica em tempo real.</p>
-      </div>
-    `;
-    return;
+  if (chkRima.checked && parsedVersos && parsedVersos.length > 0) {
+    const scheme = parsedVersos
+      .map(v => v.rima || '-')
+      .filter(r => r !== '-')
+      .join('');
+    if (scheme) {
+      schemeBadge.textContent = `Rima: ${scheme}`;
+      schemeBadge.style.display = 'inline-block';
+    } else {
+      schemeBadge.style.display = 'none';
+    }
+  } else {
+    schemeBadge.style.display = 'none';
   }
+}
 
+function renderWorkspace() {
   const modo = selectModo.value;
   const castilho = chkCastilho.checked;
   const pontuacao = chkPontuacao.checked;
   const dierese = chkDierese.checked;
   const rima = chkRima.checked;
 
-  try {
-    if (modo === 'visual') {
-      const jsonRes = escandir(texto, 'visual', pontuacao, dierese, castilho, rima);
-      renderVisual(JSON.parse(jsonRes));
-    } else {
-      const res = escandir(texto, modo, pontuacao, dierese, castilho, rima);
-      renderRaw(res);
-    }
-  } catch (err) {
-    outputContainer.innerHTML = `
-      <div class="code-output" style="color: #e06c75;">
-        Erro de análise escansiva: ${escapeHtml(String(err))}
-      </div>
-    `;
+  const fullText = getFullText();
+
+  if (modo === 'visual') {
+    alignedWorkspace.style.display = 'flex';
+    codeWorkspace.style.display = 'none';
+    renderAlignedRows(fullText, castilho, pontuacao, dierese, rima);
+  } else {
+    alignedWorkspace.style.display = 'none';
+    codeWorkspace.style.display = 'block';
+    const output = escandir(fullText, modo, pontuacao, dierese, castilho, rima);
+    codeContent.textContent = output || '// Nenhum texto para analisar.';
+    updateStats([]);
   }
 }
 
-function renderVisual(versos) {
-  if (!versos || versos.length === 0) {
-    outputContainer.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">🔍</span>
-        <p>Nenhum verso detectado no texto de entrada.</p>
-      </div>
-    `;
-    return;
+function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
+  let parsed = [];
+  if (fullText.trim().length > 0) {
+    try {
+      const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
+      parsed = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error('Falha de escansão:', e);
+    }
   }
 
-  const list = document.createElement('div');
-  list.className = 'verse-list';
+  updateStats(parsed);
 
-  versos.forEach((v, idx) => {
-    const card = document.createElement('div');
-    card.className = 'verse-card';
+  versesContainer.innerHTML = '';
 
-    // Header row
-    const metaRow = document.createElement('div');
-    metaRow.className = 'verse-meta-row';
+  let parsedIdx = 0;
+
+  verses.forEach((verseText, idx) => {
+    const row = document.createElement('div');
+    row.className = 'verse-row';
+
+    // Coluna Esquerda: Verso Editável
+    const colLeft = document.createElement('div');
+    colLeft.className = 'verse-col-left';
 
     const numSpan = document.createElement('span');
-    numSpan.className = 'verse-num';
-    numSpan.textContent = `v.${idx + 1}`;
+    numSpan.className = 'line-num';
+    numSpan.textContent = `${idx + 1}`;
 
-    const classSpan = document.createElement('span');
-    classSpan.className = 'verse-classification';
-    classSpan.textContent = v.classificacao;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'verse-input';
+    input.value = verseText;
+    input.placeholder = `Verso ${idx + 1}...`;
+    input.dataset.index = idx;
 
-    const statsSpan = document.createElement('span');
-    statsSpan.className = 'verse-stats';
-    statsSpan.textContent = `${v.total_metricas} métricas / ${v.total_foneticas} fonéticas`;
-
-    metaRow.appendChild(numSpan);
-    metaRow.appendChild(classSpan);
-    metaRow.appendChild(statsSpan);
-
-    // Original verse
-    const origP = document.createElement('div');
-    origP.className = 'verse-original';
-    origP.textContent = v.original;
-
-    // Syllables row
-    const sylRow = document.createElement('div');
-    sylRow.className = 'verse-syllables';
-
-    v.silabas.forEach((s) => {
-      const chip = document.createElement('div');
-      chip.className = 'syllable-chip';
-      if (s.tonica) chip.classList.add('tonica');
-      if (s.elidida) chip.classList.add('elidida');
-      if (s.numero_metrico === null) chip.classList.add('extrametrica');
-
-      const idxSpan = document.createElement('span');
-      idxSpan.className = 'syl-index';
-      idxSpan.textContent = s.numero_metrico !== null ? s.numero_metrico : '·';
-
-      const txtSpan = document.createElement('span');
-      txtSpan.className = 'syl-text';
-      txtSpan.textContent = s.texto;
-
-      chip.appendChild(idxSpan);
-      chip.appendChild(txtSpan);
-      sylRow.appendChild(chip);
+    input.addEventListener('input', (e) => {
+      verses[idx] = e.target.value;
+      updateSingleRowLive();
     });
 
-    card.appendChild(metaRow);
-    card.appendChild(origP);
-    card.appendChild(sylRow);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        verses.splice(idx + 1, 0, '');
+        renderWorkspace();
+        focusVerse(idx + 1);
+      } else if (e.key === 'Backspace' && e.target.value === '' && verses.length > 1) {
+        e.preventDefault();
+        verses.splice(idx, 1);
+        renderWorkspace();
+        focusVerse(Math.max(0, idx - 1));
+      }
+    });
 
-    list.appendChild(card);
+    const btnDel = document.createElement('button');
+    btnDel.className = 'btn-del-verse';
+    btnDel.title = 'Remover verso';
+    btnDel.innerHTML = '&times;';
+    btnDel.addEventListener('click', () => {
+      if (verses.length > 1) {
+        verses.splice(idx, 1);
+      } else {
+        verses = [''];
+      }
+      renderWorkspace();
+    });
+
+    colLeft.appendChild(numSpan);
+    colLeft.appendChild(input);
+    colLeft.appendChild(btnDel);
+
+    // Coluna Direita: Escansão Irmã
+    const colRight = document.createElement('div');
+    colRight.className = 'verse-col-right';
+
+    const isNonEmpty = verseText.trim().length > 0;
+    const vData = isNonEmpty ? parsed[parsedIdx++] : null;
+
+    if (vData) {
+      // Rhyme badge
+      if (vData.rima) {
+        const rhymeBadge = document.createElement('span');
+        rhymeBadge.className = 'badge-rima';
+        rhymeBadge.textContent = vData.rima;
+        if (vData.rima_terminacao) {
+          rhymeBadge.title = `Terminação fonética: ${vData.rima_terminacao}`;
+        }
+        colRight.appendChild(rhymeBadge);
+      }
+
+      // Meter badge
+      const meterBadge = document.createElement('span');
+      meterBadge.className = 'badge-metro';
+      meterBadge.textContent = `${vData.total_metricas} ${vData.classificacao}`;
+      colRight.appendChild(meterBadge);
+
+      // Syllables strip
+      const strip = document.createElement('div');
+      strip.className = 'syllables-strip';
+
+      vData.silabas.forEach(s => {
+        const syl = document.createElement('span');
+        syl.className = 'syl-pill';
+        if (s.tonica) syl.classList.add('tonica');
+        if (s.elidida) syl.classList.add('elidida');
+        if (s.numero_metrico === null) syl.classList.add('extrametrica');
+
+        const idxSpan = document.createElement('span');
+        idxSpan.className = 'idx';
+        idxSpan.textContent = s.numero_metrico !== null ? s.numero_metrico : '·';
+
+        const txtSpan = document.createElement('span');
+        txtSpan.className = 'txt';
+        txtSpan.textContent = s.texto;
+
+        syl.appendChild(idxSpan);
+        syl.appendChild(txtSpan);
+        strip.appendChild(syl);
+      });
+
+      colRight.appendChild(strip);
+    } else {
+      const emptySpan = document.createElement('span');
+      emptySpan.style.color = 'var(--text-muted)';
+      emptySpan.style.fontSize = '0.75rem';
+      emptySpan.style.fontStyle = 'italic';
+      emptySpan.textContent = 'Verso vazio';
+      colRight.appendChild(emptySpan);
+    }
+
+    row.appendChild(colLeft);
+    row.appendChild(colRight);
+    versesContainer.appendChild(row);
   });
-
-  outputContainer.innerHTML = '';
-  outputContainer.appendChild(list);
 }
 
-function renderRaw(text) {
-  const pre = document.createElement('pre');
-  pre.className = 'code-output';
-  const code = document.createElement('code');
-  code.textContent = text;
-  pre.appendChild(code);
-  outputContainer.innerHTML = '';
-  outputContainer.appendChild(pre);
-}
-
-async function copiarSaida() {
-  const modo = selectModo.value;
-  const texto = editorEl.value;
-  if (!texto.trim()) return;
-
+function updateSingleRowLive() {
+  const fullText = getFullText();
   const castilho = chkCastilho.checked;
   const pontuacao = chkPontuacao.checked;
   const dierese = chkDierese.checked;
   const rima = chkRima.checked;
 
-  const content = escandir(texto, modo === 'visual' ? 'painel' : modo, pontuacao, dierese, castilho, rima);
+  let parsed = [];
+  if (fullText.trim().length > 0) {
+    try {
+      const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
+      parsed = JSON.parse(jsonStr);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  updateStats(parsed);
+
+  const rows = versesContainer.querySelectorAll('.verse-row');
+  let parsedIdx = 0;
+
+  verses.forEach((verseText, idx) => {
+    const row = rows[idx];
+    if (!row) return;
+
+    const colRight = row.querySelector('.verse-col-right');
+    if (!colRight) return;
+
+    colRight.innerHTML = '';
+    const isNonEmpty = verseText.trim().length > 0;
+    const vData = isNonEmpty ? parsed[parsedIdx++] : null;
+
+    if (vData) {
+      if (vData.rima) {
+        const rhymeBadge = document.createElement('span');
+        rhymeBadge.className = 'badge-rima';
+        rhymeBadge.textContent = vData.rima;
+        if (vData.rima_terminacao) {
+          rhymeBadge.title = `Terminação fonética: ${vData.rima_terminacao}`;
+        }
+        colRight.appendChild(rhymeBadge);
+      }
+
+      const meterBadge = document.createElement('span');
+      meterBadge.className = 'badge-metro';
+      meterBadge.textContent = `${vData.total_metricas} ${vData.classificacao}`;
+      colRight.appendChild(meterBadge);
+
+      const strip = document.createElement('div');
+      strip.className = 'syllables-strip';
+
+      vData.silabas.forEach(s => {
+        const syl = document.createElement('span');
+        syl.className = 'syl-pill';
+        if (s.tonica) syl.classList.add('tonica');
+        if (s.elidida) syl.classList.add('elidida');
+        if (s.numero_metrico === null) syl.classList.add('extrametrica');
+
+        const idxSpan = document.createElement('span');
+        idxSpan.className = 'idx';
+        idxSpan.textContent = s.numero_metrico !== null ? s.numero_metrico : '·';
+
+        const txtSpan = document.createElement('span');
+        txtSpan.className = 'txt';
+        txtSpan.textContent = s.texto;
+
+        syl.appendChild(idxSpan);
+        syl.appendChild(txtSpan);
+        strip.appendChild(syl);
+      });
+
+      colRight.appendChild(strip);
+    } else {
+      const emptySpan = document.createElement('span');
+      emptySpan.style.color = 'var(--text-muted)';
+      emptySpan.style.fontSize = '0.75rem';
+      emptySpan.style.fontStyle = 'italic';
+      emptySpan.textContent = 'Verso vazio';
+      colRight.appendChild(emptySpan);
+    }
+  });
+}
+
+function focusVerse(index) {
+  setTimeout(() => {
+    const input = versesContainer.querySelector(`input[data-index="${index}"]`);
+    if (input) {
+      input.focus();
+    }
+  }, 30);
+}
+
+async function copiarAnalise() {
+  const fullText = getFullText();
+  if (!fullText.trim()) return;
+
+  const modo = selectModo.value;
+  const castilho = chkCastilho.checked;
+  const pontuacao = chkPontuacao.checked;
+  const dierese = chkDierese.checked;
+  const rima = chkRima.checked;
+
+  const content = escandir(fullText, modo === 'visual' ? 'painel' : modo, pontuacao, dierese, castilho, rima);
 
   try {
     await navigator.clipboard.writeText(content);
-    const origText = btnCopiar.textContent;
+    const orig = btnCopiar.textContent;
     btnCopiar.textContent = 'Copiado! ✓';
     btnCopiar.style.borderColor = 'var(--accent-green)';
     btnCopiar.style.color = 'var(--accent-green)';
     setTimeout(() => {
-      btnCopiar.textContent = origText;
+      btnCopiar.textContent = orig;
       btnCopiar.style.borderColor = '';
       btnCopiar.style.color = '';
     }, 1800);
   } catch (err) {
     console.error('Falha ao copiar:', err);
   }
-}
-
-function escapeHtml(str) {
-  return str.replace(/[&<>'"]/g, tag => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    "'": '&#39;',
-    '"': '&quot;'
-  }[tag] || tag));
 }
 
 main();

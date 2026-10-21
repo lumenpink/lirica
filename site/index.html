@@ -27,9 +27,9 @@
       </div>
 
       <div class="tool-group">
-        <label for="select-modo" class="tool-label">Formato de Saída:</label>
-        <select id="select-modo" class="select-input" aria-label="Formato de saída">
-          <option value="visual" selected>Painel Visual Interativo</option>
+        <label for="select-modo" class="tool-label">Visualização:</label>
+        <select id="select-modo" class="select-input" aria-label="Modo de visualização">
+          <option value="visual" selected>Alinhamento Verso a Verso</option>
           <option value="painel">Texto Estruturado (Dual Panel)</option>
           <option value="typst">Typst Markup</option>
           <option value="json">JSON (AST)</option>
@@ -38,11 +38,11 @@
       </div>
 
       <div class="tool-options" role="group" aria-label="Opções de Escansão">
-        <label class="toggle-control" title="Trunca a contagem métrica na última sílaba tônica (tradição lusófona)">
+        <label class="toggle-control" title="Trunca a contagem métrica na última sílaba tônica (tradição poética lusófona)">
           <input type="checkbox" id="chk-castilho" checked>
           <span>Regra de Castilho</span>
         </label>
-        <label class="toggle-control" title="Pontuação forte impede a formação de sinalefa/elisão entre palavras">
+        <label class="toggle-control" title="Pontuação forte (vírgula, dois-pontos, etc.) cria cesura e bloqueia sinalefa">
           <input type="checkbox" id="chk-pontuacao">
           <span>Cesura na pontuação</span>
         </label>
@@ -50,53 +50,84 @@
           <input type="checkbox" id="chk-dierese">
           <span>Diérese crescente</span>
         </label>
-        <label class="toggle-control" title="Identifica esquemas de rimas no poema">
+        <label class="toggle-control" title="Identifica esquemas de rimas e terminações fonéticas">
           <input type="checkbox" id="chk-rima" checked>
-          <span>Rimas</span>
+          <span>Analisar rimas</span>
         </label>
       </div>
     </div>
   </header>
 
-  <main class="workspace-grid">
-    <!-- Painel Esquerdo: Entrada Editável -->
-    <section class="pane pane-editor" aria-label="Editor de Versos">
-      <div class="pane-header">
-        <div class="pane-title">
-          <span class="pane-badge">Entrada</span>
-          <span>Poema & Diretrizes</span>
-        </div>
-        <div class="pane-meta">
-          <span id="counter-linhas">0 versos</span>
-          <button id="btn-limpar" class="btn-ghost" title="Limpar editor">Limpar</button>
-        </div>
+  <main class="app-main">
+    <!-- Barra de Ações Rápidas -->
+    <div class="actions-bar">
+      <div class="actions-left">
+        <span id="counter-versos" class="status-badge">4 versos</span>
+        <span id="scheme-badge" class="status-badge scheme" title="Esquema rímico detectado">Rima: ABBA</span>
       </div>
-      <div class="editor-wrapper">
-        <textarea
-          id="input-poema"
-          class="poema-textarea"
-          spellcheck="false"
-          placeholder="Digite ou cole aqui os versos do poema...&#10;&#10;Diretrizes opcionais:&#10;%% titulo = &quot;Meu Poema&quot;&#10;%% metro = &quot;decassilabo&quot;&#10;&#10;Você também pode usar / para forçar hiato ou _ para forçar sinalefa."
-          aria-label="Área de edição de poema e diretrizes"
-        ></textarea>
+      <div class="actions-right">
+        <button id="btn-toggle-raw" class="btn-ghost" title="Alternar entre editor verso a verso e bloco de texto livre">Modo Texto Livre</button>
+        <button id="btn-add-verso" class="btn-ghost" title="Adicionar novo verso">+ Adicionar Verso</button>
+        <button id="btn-limpar" class="btn-ghost" title="Limpar editor">Limpar</button>
+        <button id="btn-copiar" class="btn-ghost" title="Copiar análise escansiva">Copiar</button>
       </div>
-    </section>
+    </div>
 
-    <!-- Painel Direito: Saída Lírica -->
-    <section class="pane pane-output" aria-label="Saída Lírica">
-      <div class="pane-header">
-        <div class="pane-title">
-          <span class="pane-badge accent">Saída</span>
-          <span id="output-title">Análise Escansiva</span>
-        </div>
-        <div class="pane-meta">
-          <button id="btn-copiar" class="btn-ghost" title="Copiar saída para a área de transferência">Copiar</button>
-        </div>
+    <!-- Área de Edição em Bloco Ocultável -->
+    <div id="raw-editor-box" class="raw-editor-container" style="display: none;">
+      <div class="raw-editor-header">
+        <span>Digite ou cole o poema completo abaixo:</span>
+        <button id="btn-apply-raw" class="btn-primary-sm">Aplicar aos Versos</button>
       </div>
-      <div id="output-container" class="output-wrapper" tabindex="0" aria-live="polite">
-        <div class="empty-state">
-          <span class="empty-icon">✍️</span>
-          <p>Digite versos à esquerda ou escolha um exemplo clássico acima para ver a escansão métrica em tempo real.</p>
+      <textarea id="raw-textarea" class="raw-textarea" spellcheck="false" placeholder="Cole aqui seu poema..."></textarea>
+    </div>
+
+    <!-- Grade Alinhada Verso a Verso (Irmã Esquerda ao Lado da Irmã Direita) -->
+    <div id="aligned-workspace" class="aligned-workspace">
+      <div class="workspace-headings">
+        <div class="heading-left">Verso Poético (Editável)</div>
+        <div class="heading-right">Escansão Métrica, Ritmo & Sílabas</div>
+      </div>
+      <div id="verses-container" class="verses-container" role="feed" aria-label="Lista de versos alinhados">
+        <!-- Linhas injetadas dinamicamente via JS -->
+      </div>
+    </div>
+
+    <!-- Área de Saída de Código (para modos Typst, JSON, Painel) -->
+    <div id="code-workspace" class="code-workspace" style="display: none;">
+      <pre id="code-output" class="code-output"><code id="code-content"></code></pre>
+    </div>
+
+    <!-- Guia de Notação e Sinais Poéticos -->
+    <section class="notation-guide" aria-label="Guia de Notação Métrico-Poética">
+      <div class="guide-title">
+        <span class="guide-icon">📖</span>
+        <strong>Guia de Notação & Sinais de Escansão:</strong>
+      </div>
+      <div class="guide-grid">
+        <div class="guide-item">
+          <code>/</code>
+          <span><strong>Forçar Hiato</strong>: impede a elisão entre palavras ou separa ditongo (ex.: <code>sa/úva</code>, <code>de / amor</code>).</span>
+        </div>
+        <div class="guide-item">
+          <code>_</code>
+          <span><strong>Forçar Sinalefa</strong>: obriga a fusão de vogais contíguas entre palavras (ex.: <code>alma_minha</code>).</span>
+        </div>
+        <div class="guide-item">
+          <span class="legend-chip tonica">1:[tônica]</span>
+          <span><strong>Sílaba Tônica</strong>: acento de intensidade natural ou gráfico. Oxítonas/tônicas finais não elidem.</span>
+        </div>
+        <div class="guide-item">
+          <span class="legend-chip elidida">que‿ar</span>
+          <span><strong>Sinalefa (‿)</strong>: fusão métrica de duas vogais em uma única sílaba poética.</span>
+        </div>
+        <div class="guide-item">
+          <span class="legend-chip extrametrica">·te</span>
+          <span><strong>Extramétrica (·)</strong>: sílaba pós-tônica truncada pela <em>Regra de Castilho</em>.</span>
+        </div>
+        <div class="guide-item">
+          <span class="legend-chip rima">A</span>
+          <span><strong>Marcação de Rima</strong>: calculada a partir da vogal tônica final de cada verso (ex.: ABBA, ABCB).</span>
         </div>
       </div>
     </section>
@@ -105,12 +136,14 @@
   <footer class="app-footer">
     <div class="footer-inner">
       <div class="footer-brand">
-        <strong>Lírica</strong> <span id="lbl-versao">v0.1.0</span> — Motor de Escansão e Fonotática Poética
+        <strong>Lírica</strong> <span id="lbl-versao">v0.1.0</span> — Motor Determinístico de Fonotática & Escansão Poética
       </div>
       <div class="footer-links">
         <span>Alimentado por <code>joaju-lirica</code> via WASM</span>
         <span class="sep">•</span>
         <a href="https://git.2lp.in/lumen/lirica" target="_blank" rel="noopener noreferrer">Forgejo</a>
+        <span class="sep">•</span>
+        <a href="https://codeberg.org/lumenpink/lirica" target="_blank" rel="noopener noreferrer">Codeberg</a>
         <span class="sep">•</span>
         <a href="https://github.com/lumenpink/lirica" target="_blank" rel="noopener noreferrer">GitHub</a>
       </div>

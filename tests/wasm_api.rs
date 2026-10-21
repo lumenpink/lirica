@@ -18,6 +18,46 @@ fn test_carregar_exemplos() {
     assert_eq!(exemplos[2].id, "cruz_e_sousa");
     assert_eq!(exemplos[3].id, "pessoa");
     assert_eq!(exemplos[4].id, "bilac");
+
+    // Ensure none of the examples contain %% directives
+    for ex in &exemplos {
+        assert!(
+            !ex.texto.contains("%%"),
+            "Exemplo '{}' não deve conter diretivas %%, mas continha",
+            ex.id
+        );
+    }
+}
+
+#[test]
+fn test_camoes_quatro_versos_decassilabos_e_rimas() {
+    let texto = "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.";
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let versos: Vec<VersoFormatado> =
+        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de VersoFormatado");
+    assert_eq!(versos.len(), 4);
+
+    for (i, v) in versos.iter().enumerate() {
+        assert_eq!(
+            v.total_metricas,
+            10,
+            "Verso {} ('{}') deve ter 10 sílabas métricas, teve {}",
+            i + 1,
+            v.original,
+            v.total_metricas
+        );
+        assert!(
+            v.classificacao.contains("Decassílabo"),
+            "Verso {} deve ser Decassílabo",
+            i + 1
+        );
+    }
+
+    // Verify ABBA rhyme scheme
+    assert_eq!(versos[0].rima.as_deref(), Some("A"));
+    assert_eq!(versos[1].rima.as_deref(), Some("B"));
+    assert_eq!(versos[2].rima.as_deref(), Some("B"));
+    assert_eq!(versos[3].rima.as_deref(), Some("A"));
 }
 
 #[test]

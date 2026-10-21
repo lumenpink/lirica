@@ -7,16 +7,17 @@
 
 ## Sobre
 
-O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://git.2lp.in/lumen/joaju-suite) através do registro soberano `lumen` e compila para WebAssembly de alto desempenho. Espelho no GitHub em [lumenpink/lirica](https://github.com/lumenpink/lirica).
+O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://git.2lp.in/lumen/joaju-lirica) através do registro soberano `lumen` e compila para WebAssembly de alto desempenho. Espelhos públicos sincronizados no [Codeberg](https://codeberg.org/lumenpink/lirica) e no [GitHub](https://github.com/lumenpink/lirica).
 
 ## Funcionalidades
 
-- **Métrica Instantânea (WASM)**: Execução local, determinística e com latência nula.
-- **Divisão em Painéis**: Entrada editável à esquerda e saída poética detalhada à direita.
-- **Identificação de Tônicas e Sinalefas**: Marcação visual exata das sílabas tônicas e elisões poéticas.
+- **Alinhamento Verso a Verso**: Cada verso editável fica exatamente alinhado ao lado da sua análise métrica e fonotática irmã.
+- **Análise Automática de Rimas**: Identificação instantânea do esquema rímico (ABBA, ABCB, AABB) e das terminações fonéticas.
+- **Métrica Determinística (WASM)**: Execução client-side via WebAssembly com latência nula.
+- **Identificação de Tônicas e Sinalefas**: Destaque visual das sílabas tônicas, elisões poéticas (`‿`) e sílabas extramétricas (`·`).
 - **Classificação de Ritmo**: Reconhecimento automático de decassílabos (heroicos, sáficos), redondilhas (maior, menor), alexandrinos e formas livres.
-- **Formatos Múltiplos**: Visualização em painel, código Typst pronto para diagramação acadêmica, JSON e texto puro.
-- **Controles Poéticos**: Ajustes finos de cesura na pontuação, regra de Castilho e diérese crescente.
+- **Notação Poética e Sinais**: Suporte a `/` (forçar hiato), `_` (forçar sinalefa), cesura de pontuação e regra de Castilho.
+- **Formatos Múltiplos**: Visão alinhada, painel estruturado, Typst markup, JSON (AST) e texto puro.
 
 ## Compilação Local
 
