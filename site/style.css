@@ -55,8 +55,41 @@ body {
 .header-brand {
   display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.header-brand-left {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-help-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  background-color: var(--accent-gold-soft);
+  border: 1px solid rgba(229, 192, 123, 0.3);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.nav-help-link:hover {
+  background-color: rgba(229, 192, 123, 0.25);
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.nav-icon {
+  font-size: 0.95rem;
 }
 
 .logo-group {
@@ -158,6 +191,201 @@ body {
   max-width: 1700px;
   width: 100%;
   margin: 0 auto;
+}
+
+/* Poetic Analysis Dashboard */
+.poetic-analysis-dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.analysis-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.15s ease;
+}
+
+.analysis-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.card-form {
+  border-left: 3px solid var(--accent-gold);
+}
+
+.card-rhyme {
+  border-left: 3px solid var(--accent-purple);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.card-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.card-kicker {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.card-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.card-title {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.score-badge {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background-color: var(--accent-gold-soft);
+  color: var(--accent-gold);
+  border: 1px solid rgba(229, 192, 123, 0.4);
+  white-space: nowrap;
+}
+
+.score-badge.high {
+  background-color: rgba(152, 195, 121, 0.15);
+  color: var(--accent-green);
+  border-color: rgba(152, 195, 121, 0.4);
+}
+
+.score-badge.medium {
+  background-color: var(--accent-gold-soft);
+  color: var(--accent-gold);
+  border-color: rgba(229, 192, 123, 0.4);
+}
+
+.score-badge.low {
+  background-color: rgba(224, 108, 117, 0.15);
+  color: var(--accent);
+  border-color: rgba(224, 108, 117, 0.4);
+}
+
+.rhyme-purity-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background-color: var(--accent-purple-soft);
+  color: var(--accent-purple);
+  border: 1px solid rgba(198, 120, 221, 0.4);
+  white-space: nowrap;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-desc, .rhyme-desc {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.form-meta, .rhyme-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.meta-tag {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.form-alerts {
+  background-color: rgba(224, 108, 117, 0.08);
+  border: 1px solid rgba(224, 108, 117, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Stanza Separator in Editor */
+.stanza-divider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.35rem 0.85rem;
+  background-color: var(--bg-tertiary);
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  margin: 0.25rem 0;
+}
+
+.stanza-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-del-stanza {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.95rem;
+  opacity: 0.5;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  line-height: 1;
+}
+
+.btn-del-stanza:hover {
+  opacity: 1;
+  color: var(--accent);
 }
 
 .actions-bar {

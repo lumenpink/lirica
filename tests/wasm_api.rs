@@ -12,12 +12,13 @@ fn test_carregar_exemplos() {
     let json_str = carregar_exemplos();
     let exemplos: Vec<ExemploPoema> =
         serde_json::from_str(&json_str).expect("Exemplos devem ser JSON válido");
-    assert_eq!(exemplos.len(), 5);
+    assert_eq!(exemplos.len(), 6);
     assert_eq!(exemplos[0].id, "camoes");
-    assert_eq!(exemplos[1].id, "goncalves_dias");
-    assert_eq!(exemplos[2].id, "cruz_e_sousa");
-    assert_eq!(exemplos[3].id, "pessoa");
-    assert_eq!(exemplos[4].id, "bilac");
+    assert_eq!(exemplos[1].id, "espinela");
+    assert_eq!(exemplos[2].id, "goncalves_dias");
+    assert_eq!(exemplos[3].id, "cruz_e_sousa");
+    assert_eq!(exemplos[4].id, "pessoa");
+    assert_eq!(exemplos[5].id, "bilac");
 
     // Ensure none of the examples contain %% directives
     for ex in &exemplos {
@@ -103,6 +104,41 @@ fn test_forcar_hiato_na_interface() {
     let saida2 = escandir("que / arde", "visual", false, false, true, true);
     let web2: AnaliseWeb = serde_json::from_str(&saida2).unwrap();
     assert_eq!(web2.versos[0].total_metricas, 2);
+}
+
+#[test]
+fn test_forma_poetica_e_estrofes_no_wasm() {
+    let exemplos_json = carregar_exemplos();
+    let exemplos: Vec<ExemploPoema> = serde_json::from_str(&exemplos_json).unwrap();
+    let camoes = &exemplos[0];
+
+    let saida = escandir(&camoes.texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
+    assert_eq!(web.versos.len(), 14);
+    assert_eq!(web.estrofes.len(), 4);
+
+    let forma = web.forma_poetica.expect("Deve detectar forma poética");
+    assert_eq!(forma.nome, "Soneto Italiano (Petrarquiano)");
+    assert!(forma.confianca_percentual >= 90);
+
+    let rima = web.avaliacao_rima.expect("Deve avaliar rima");
+    assert_eq!(rima.pureza_acustica, "Consoante (Perfeita)");
+    assert_eq!(rima.percentual_rimado, 100);
+}
+
+#[test]
+fn test_decima_espinela_no_wasm() {
+    let exemplos_json = carregar_exemplos();
+    let exemplos: Vec<ExemploPoema> = serde_json::from_str(&exemplos_json).unwrap();
+    let espinela = &exemplos[1];
+
+    let saida = escandir(&espinela.texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
+    assert_eq!(web.versos.len(), 10);
+
+    let forma = web.forma_poetica.expect("Deve detectar Décima Espinela");
+    assert_eq!(forma.nome, "Décima Espinela");
+    assert!(forma.confianca_percentual >= 90);
 }
 
 #[test]

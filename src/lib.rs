@@ -3,7 +3,8 @@
 //! WebAssembly presentation layer for the `joaju-lirica` poetic engine.
 
 use joaju_lirica::{
-    escandir_poema, icone_metro, parse_lirica_block, render_painel, render_typst, Poema,
+    avaliar_forma_poetica, avaliar_qualidade_rimas, escandir_poema, icone_metro,
+    parse_lirica_block, render_painel, render_typst, DiagnosticoForma, InfoAvaliacaoRima, Poema,
     PoemaConfig,
 };
 use serde::{Deserialize, Serialize};
@@ -62,13 +63,30 @@ pub struct SilabaDetalhe {
     pub elidida: bool,
 }
 
+/// Layout information for a stanza.
+#[derive(Serialize, Deserialize)]
+pub struct EstrofeWeb {
+    /// Zero-based index of the stanza.
+    pub indice: usize,
+    /// Verse indices in the `versos` array that belong to this stanza.
+    pub versos_indices: Vec<usize>,
+    /// Number of verses in this stanza.
+    pub total_versos: usize,
+}
+
 /// Complete poem analysis output for the web interface.
 #[derive(Serialize, Deserialize)]
 pub struct AnaliseWeb {
     /// Verses formatted with metric and rhyme data.
     pub versos: Vec<VersoFormatado>,
+    /// Stanzas layout.
+    pub estrofes: Vec<EstrofeWeb>,
     /// Overall poem rhyme scheme (e.g. "ABBA", "ABCB").
     pub esquema_rima: Option<String>,
+    /// Detected poetic form and fuzzy adherence score (e.g. Décima Espinela, Soneto).
+    pub forma_poetica: Option<DiagnosticoForma>,
+    /// Qualitative and acoustic evaluation of rhymes.
+    pub avaliacao_rima: Option<InfoAvaliacaoRima>,
 }
 
 /// Scans a text block of verses and returns the rendered result according to options.
@@ -179,9 +197,32 @@ fn render_visual_json(poema: &Poema) -> String {
         });
     }
 
+    let forma_poetica = avaliar_forma_poetica(poema);
+    let avaliacao_rima = if poema.esquema_rima.is_some() {
+        Some(avaliar_qualidade_rimas(poema))
+    } else {
+        None
+    };
+
+    let mut estrofes = Vec::new();
+    let mut v_idx = 0;
+    for (i, e) in poema.estrofes.iter().enumerate() {
+        let count = e.versos.len();
+        let indices = (v_idx..v_idx + count).collect();
+        v_idx += count;
+        estrofes.push(EstrofeWeb {
+            indice: i,
+            versos_indices: indices,
+            total_versos: count,
+        });
+    }
+
     let web_out = AnaliseWeb {
         versos: resultado,
+        estrofes,
         esquema_rima: poema.esquema_rima.clone(),
+        forma_poetica,
+        avaliacao_rima,
     };
 
     serde_json::to_string(&web_out).unwrap_or_else(|_| "{}".to_string())
@@ -193,10 +234,17 @@ pub fn carregar_exemplos() -> String {
     let exemplos = vec![
         ExemploPoema {
             id: "camoes".to_string(),
-            titulo: "Amor é fogo que arde sem se ver".to_string(),
+            titulo: "Amor é fogo que arde sem se ver (Soneto Italiano)".to_string(),
             autor: "Luís de Camões".to_string(),
-            descricao: "Decassílabo Heroico (10 sílabas métricas, rimas ABBA)".to_string(),
-            texto: "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.".to_string(),
+            descricao: "Soneto Petrarquiano (14 versos decassílabos em 4+4+3+3, rimas ABBA ABBA CDC DCD)".to_string(),
+            texto: "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.\n\nÉ um não querer mais que bem querer;\nÉ um andar solitário entre a gente;\nÉ nunca contentar-se de contente;\nÉ um cuidar que ganha em se perder.\n\nÉ querer estar preso por vontade;\nÉ servir a quem vence, o vencedor;\nÉ ter com quem nos mata, lealdade.\n\nMas como causar pode seu favor\nNos corações humanos amizade,\nSe tão contrário a si é o mesmo Amor?".to_string(),
+        },
+        ExemploPoema {
+            id: "espinela".to_string(),
+            titulo: "Ninguém viva descurado (Décima Espinela)".to_string(),
+            autor: "Vicente Espinel / Tradição Clássica".to_string(),
+            descricao: "Décima Espinela (10 versos em Redondilha Maior com rimas estritas ABBAACCDDC)".to_string(),
+            texto: "Ninguém viva descurado,\nQue a fortuna é mui mudável;\nNão há glória tão louvável\nQue não pare em triste estado.\nO bem é pouco durado,\nO mal dura e cresce tanto,\nQue torna o prazer em pranto;\nE quem vive mais contente\nAcha no fim mui patente\nCausa de perpétuo espanto.".to_string(),
         },
         ExemploPoema {
             id: "goncalves_dias".to_string(),

@@ -18,6 +18,12 @@
       <p class="app-tagline">Laboratório Métrico & Escansão Poética em WebAssembly</p>
     </div>
 
+    <div class="header-nav">
+      <a href="ajuda.html" class="nav-help-link" title="Guia completo de metrificação e glossário poético de A a Z">
+        <span class="nav-icon">📖</span> Guia & Glossário
+      </a>
+    </div>
+
     <div class="toolbar">
       <div class="tool-group">
         <label for="select-exemplo" class="tool-label">Exemplo Clássico:</label>
@@ -59,14 +65,65 @@
   </header>
 
   <main class="app-main">
+    <!-- Painel de Diagnóstico Poético Superior (Peça Poética & Rimas) -->
+    <section class="poetic-analysis-dashboard" aria-label="Painel de Diagnóstico Poético">
+      <!-- Card 1: Forma Poética & Aderência -->
+      <div class="analysis-card card-form" id="card-forma-poetica">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-kicker">Peça / Forma Poética</span>
+            <div class="card-title-row">
+              <span class="card-icon" id="form-icon">🏆</span>
+              <h2 class="card-title" id="form-name">Analisando peça...</h2>
+            </div>
+          </div>
+          <div class="card-badge-group">
+            <span class="score-badge" id="form-score-badge" title="Grau percentual de conformidade estrutural e métrica">--%</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="form-desc" id="form-desc">Carregando diagnóstico da forma...</p>
+          <div class="form-meta">
+            <span class="meta-tag" id="form-structure-tag">Estrutura: --</span>
+            <span class="meta-tag" id="form-pattern-tag">Padrão: --</span>
+          </div>
+          <div class="form-alerts" id="form-alerts" style="display: none;"></div>
+        </div>
+      </div>
+
+      <!-- Card 2: Análise e Disposição das Rimas -->
+      <div class="analysis-card card-rhyme" id="card-analise-rima">
+        <div class="card-header">
+          <div class="card-title-group">
+            <span class="card-kicker">Avaliação de Rimas</span>
+            <div class="card-title-row">
+              <span class="card-icon">🎯</span>
+              <h2 class="card-title" id="rhyme-scheme-title">Rima: --</h2>
+            </div>
+          </div>
+          <div class="card-badge-group">
+            <span class="rhyme-purity-badge" id="rhyme-purity-badge">--</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="rhyme-desc" id="rhyme-disposition-desc">Nenhum esquema rímico avaliado ainda.</p>
+          <div class="rhyme-meta">
+            <span class="meta-tag" id="rhyme-percent-tag">0% Versos Rimados</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Barra de Ações Rápidas -->
     <div class="actions-bar">
       <div class="actions-left">
         <span id="counter-versos" class="status-badge">4 versos</span>
+        <span id="counter-estrofes" class="status-badge" style="display: none;">1 estrofe</span>
         <span id="scheme-badge" class="status-badge scheme" title="Esquema rímico detectado">Rima: ABBA</span>
       </div>
       <div class="actions-right">
         <button id="btn-toggle-raw" class="btn-ghost" title="Alternar entre editor verso a verso e bloco de texto livre">Modo Texto Livre</button>
+        <button id="btn-add-estrofe" class="btn-ghost" title="Inserir quebra de estrofe (+ linha em branco)">+ Nova Estrofe</button>
         <button id="btn-add-verso" class="btn-ghost" title="Adicionar novo verso">+ Adicionar Verso</button>
         <button id="btn-limpar" class="btn-ghost" title="Limpar editor">Limpar</button>
         <button id="btn-copiar" class="btn-ghost" title="Copiar análise escansiva">Copiar</button>

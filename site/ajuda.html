@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guia & Glossário Poético — Lírica</title>
+  <meta name="description" content="Guia completo de metrificação lusófona, escansão poética, fenômenos prosódicos, catálogo de formas clássicas e glossário de A a Z.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .help-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .help-header {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-primary);
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+
+    .btn-back:hover {
+      background-color: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .help-section {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .prose {
+      font-size: 0.9375rem;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .prose p {
+      margin-bottom: 0.875rem;
+    }
+
+    .prose strong {
+      color: var(--accent-gold);
+    }
+
+    .example-box {
+      background-color: var(--bg-tertiary);
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      margin: 0.75rem 0;
+    }
+
+    .example-verse {
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    .example-scansion {
+      color: var(--accent-cyan);
+      margin-top: 0.25rem;
+      font-size: 0.8125rem;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.875rem;
+    }
+
+    .comparison-table th, .comparison-table td {
+      border: 1px solid var(--border-color);
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      background-color: var(--bg-tertiary);
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+
+    .comparison-table tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.015);
+    }
+
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .glossary-card {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 0.875rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .glossary-term {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .glossary-def {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .glossary-ex {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent-cyan);
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="help-header">
+    <div class="logo-group">
+      <span class="logo-glyph" aria-hidden="true">❦</span>
+      <h1 class="app-title">Lírica</h1>
+      <span class="app-tagline">— Guia & Glossário Poético</span>
+    </div>
+    <a href="index.html" class="btn-back">← Voltar ao Laboratório</a>
+  </header>
+
+  <main class="help-container">
+    <!-- Seção 1: Fundamentos da Métrica Lusófona -->
+    <section class="help-section">
+      <h2 class="section-title"><span>📜</span> 1. Fundamentos da Escansão Lusófona</h2>
+      <div class="prose">
+        <p>
+          A metrificação em língua portuguesa não se baseia na contagem gráfica das sílabas gramaticais do dicionário, mas na <strong>contagem auditiva (fonotática)</strong>, ou seja, na sucessão real de impulsos de voz que um ouvinte atento percebe quando o verso é recitado com arte e naturalidade.
+        </p>
+        <p>
+          <strong>A Regra de Castilho:</strong> Na tradição poética lusófona (ao contrário da tradição francesa ou espanhola estrita), a contagem das sílabas métricas <em>encerra-se sempre na última sílaba tônica</em> do verso. Todas as sílabas fracas (átonas pós-tônicas) que se seguem são chamadas de <em>extramétricas</em> e não contam para a medida do verso.
+        </p>
+        <div class="example-box">
+          <div class="example-verse">"Amor é fogo que arde sem se ver" (Camões)</div>
+          <div class="example-scansion">1:A - 2:mor - 3:é - 4:fo - 5:go‿que - 6:ar - 7:de - 8:sem - 9:se - 10:[ver] $\rightarrow$ 10 sílabas (verso oxítono / agudo)</div>
+        </div>
+        <div class="example-box">
+          <div class="example-verse">"É ferida que dói e não se sente" (Camões)</div>
+          <div class="example-scansion">1:É - 2:fe - 3:ri - 4:da - 5:que - 6:[dói] - 7:e - 8:não - 9:se - 10:[sen] ·te $\rightarrow$ 10 sílabas (a sílaba final ·te é extramétrica!)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 2: Operadores de Controle -->
+    <section class="help-section">
+      <h2 class="section-title"><span>⚙️</span> 2. Símbolos & Operadores de Controle no Lírica</h2>
+      <div class="prose">
+        <p>
+          O motor determinístico do Lírica analisa a prosódia padrão automaticamente, mas permite que o poeta ou analista assuma controle absoluto através de operadores simples:
+        </p>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Operador</th>
+              <th>Finalidade</th>
+              <th>Exemplo de Uso</th>
+              <th>Efeito no Motor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>/</code></td>
+              <td><strong>Forçar Hiato</strong></td>
+              <td><code>que / arde</code> ou <code>cru/el</code></td>
+              <td>Impede a sinalefa entre palavras vizinhas ou divide ditongo interno em duas sílabas métricas.</td>
+            </tr>
+            <tr>
+              <td><code>_</code></td>
+              <td><strong>Forçar Sinalefa</strong></td>
+              <td><code>minha_alma</code> ou <code>tinham_asas</code></td>
+              <td>Obriga a fusão fonética de duas palavras contíguas em uma única emissão de voz.</td>
+            </tr>
+            <tr>
+              <td><code>'</code></td>
+              <td><strong>Override de Tônica</strong></td>
+              <td><code>que'</code> ou <code>fogo'</code></td>
+              <td>Desativa a regra gramatical padrão para aquela palavra, define a sílaba como tônica e recalcula todo o verso e suas cesuras.</td>
+            </tr>
+            <tr>
+              <td><em>Linha em Branco</em></td>
+              <td><strong>Quebra de Estrofe</strong></td>
+              <td>Pressione <code>Shift+Enter</code> ou adicione <code>\n\n</code></td>
+              <td>Define as fronteiras entre estrofes para o cálculo de formas fixas (ex.: quartetos e tercetos de sonetos).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Seção 3: Fenômenos Prosódicos -->
+    <section class="help-section">
+      <h2 class="section-title"><span>🌊</span> 3. Fenômenos Prosódicos, Dicção & Padrões</h2>
+      <div class="prose">
+        <p>
+          Ao recitar um poema, os encontros vocálicos sofrem acomodações acústicas ricas. Compreender esses fenômenos é essencial para escandir com rigor:
+        </p>
+
+        <h3>A. Sinalefa (Fusão Vocálica Intervocabular)</h3>
+        <p>
+          Ocorre quando uma palavra termina por vogal átona e a palavra imediata seguinte começa por vogal (átona ou aberta). Em vez de pronunciar as duas sílabas separadamente com uma parada de glote, o falante funde ambas num só golpe métrico.
+        </p>
+        <div class="example-box">
+          <div class="example-verse">"Minha alma gentil que te partiste" $\rightarrow$ <code>mi-nha‿al-ma</code> (o <em>-a</em> de minha e o <em>a-</em> de alma tornam-se uma única sílaba métrica).</div>
+          <div class="example-scansion">Padrão no Lírica: <strong>Ativo por padrão</strong>. Bloqueia-se automaticamente se a primeira vogal for tônica final (oxítona).</div>
+        </div>
+
+        <h3>B. Elisão</h3>
+        <p>
+          Forma radical de fusão onde a vogal átona anterior é totalmente suprimida na pronúncia (muito comum em preposições e artigos: <em>"de amor" $\rightarrow$ "d'amor"</em>). No Lírica, é representada com a ligadura <code>‿</code>.
+        </p>
+
+        <h3>C. Ectlipse (Atenuação da Nasal Átona)</h3>
+        <p>
+          Ocorre quando uma terminação nasal branda em <em>-m</em> (como na terminação verbal <em>tinham</em> ou na preposição <em>num</em>) se dissolve diante da vogal inicial da palavra seguinte.
+        </p>
+        <div class="example-box">
+          <div class="example-verse">"As aves que aqui gorjeiam" $\rightarrow$ recitado como <code>gor-jei-a‿a-qui</code>. No Lírica, pode ser forçado com <code>_</code> (ex.: <code>tinham_asas</code>).</div>
+        </div>
+
+        <h3>D. Sinérese vs. Diérese</h3>
+        <p>
+          <strong>Sinérese:</strong> Transformação de um hiato gramatical interno em ditongo métrico. Exemplo: <em>"piedade"</em> (gramaticalmente <em>pi-e-da-de</em> = 4s) pronunciado em 3 sílabas líricas (<code>pie-da-de</code>). É o padrão espontâneo na poesia moderna e no Lírica.
+        </p>
+        <p>
+          <strong>Diérese:</strong> Separação de um ditongo em duas sílabas métricas distintas com ganho de medida (muitas vezes grafado no passado com trema: <em>sa-ú-va</em>, <em>cru-el</em> = 2s). No Lírica, controlada pelo checkbox de <em>Diérese crescente</em> ou pelo operador <code>cru/el</code>.
+        </p>
+
+        <h3>E. Cesura e Hemistíquio</h3>
+        <p>
+          Pausa rítmica e de fôlego que divide um verso longo em metades chamadas <em>hemistíquios</em>. É obrigatória no meio do Alexandrino (6 + 6) e fundamental após o 4º verso da Décima Espinela. No Lírica, a opção <em>Cesura na pontuação</em> impede fusões métricas através de pontuação forte.
+        </p>
+
+        <h3>F. Comparativo de Padrões Prosódicos</h3>
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Critério</th>
+              <th>Métrica Clássica (XVI–XIX)</th>
+              <th>Poesia Moderna (XX–XXI)</th>
+              <th>Comportamento no Lírica</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Sinalefa</strong></td>
+              <td>Rígida, canônica e obrigatória entre átonas.</td>
+              <td>Fluida, segue o ritmo coloquial da fala viva.</td>
+              <td><strong>Ativa por padrão</strong> (bloqueada por oxítonas ou pontuação).</td>
+            </tr>
+            <tr>
+              <td><strong>Castilho</strong></td>
+              <td>Incontornável: encerra na última tônica.</td>
+              <td>Mantida em formas métricas; livre no verso branco.</td>
+              <td><strong>Ativa por padrão</strong> (alternável para contagem absoluta).</td>
+            </tr>
+            <tr>
+              <td><strong>Ditongos</strong></td>
+              <td>Sinérese e diérese regidas por licença poética.</td>
+              <td>Prevalência natural de sinérese (ditongos fluidos).</td>
+              <td>Sinérese suave como padrão; diérese via opção ou <code>/</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Seção 4: Catálogo de Formas Poéticas Clássicas -->
+    <section class="help-section">
+      <h2 class="section-title"><span>👑</span> 4. Catálogo de Formas Poéticas Clássicas</h2>
+      <div class="prose">
+        <p>
+          O Lírica realiza diagnóstico estrutural contínuo do seu texto, identificando formas fixas e calculando um <strong>grau percentual de conformidade</strong> com base em estrofes, métrica e rimas:
+        </p>
+
+        <h3>1. Décima Espinela (Espinela)</h3>
+        <p>
+          Criada em 1591 pelo poeta e músico espanhol Vicente Espinel e acolhida com entusiasmo na tradição luso-brasileira.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> Estrofe única de 10 versos em <strong>Redondilha Maior (7 sílabas métricas)</strong> ou decassílabos.</li>
+          <li><strong>Fórmula Rímica:</strong> <code>ABBAACCDDC</code> estrita.</li>
+          <li><strong>Regra Áurea:</strong> Pausa sintática/semântica obrigatória após o 4º verso, servindo os versos 5 e 6 como ponte lírica.</li>
+        </ul>
+
+        <h3>2. Soneto Italiano (Petrarquiano)</h3>
+        <p>
+          A mais célebre forma do Renascimento, aperfeiçoada por Petrarca e Camões.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> 14 versos em <strong>Decassílabo</strong> (Heroico ou Sáfico) ou Alexandrino, distribuídos em quatro estrofes: <strong>dois quartetos e dois tercetos (4 + 4 + 3 + 3)</strong>.</li>
+          <li><strong>Rimas:</strong> Quadras em <code>ABBA ABBA</code> (ou <code>ABAB ABAB</code>) e tercetos encadeados (<code>CDC DCD</code>, <code>CDE CDE</code> ou <code>CDE DCE</code>).</li>
+        </ul>
+
+        <h3>3. Soneto Inglês (Shakespeariano)</h3>
+        <p>
+          Consagrado por William Shakespeare no teatro e na lírica elisabetana.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> 14 versos decassílabos distribuídos em <strong>três quartetos e um dístico final (4 + 4 + 4 + 2)</strong>.</li>
+          <li><strong>Rimas:</strong> Alternadas em cada quarteto e parelhas no fecho: <code>ABAB CDCD EFEF GG</code>.</li>
+        </ul>
+
+        <h3>4. Martelo Agalopado</h3>
+        <p>
+          Modalidade virtuosa e veloz do repente nordestino e do cordel.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> 10 versos decassílabos com acentuação rigorosa na <strong>3ª, 6ª e 10ª sílabas métricas</strong> (ritmo martelo).</li>
+          <li><strong>Rimas:</strong> <code>AABBAABBCC</code> ou fórmula espineliana <code>ABBAACCDDC</code>.</li>
+        </ul>
+
+        <h3>5. Oitava Camoniana (Rima Real)</h3>
+        <p>
+          A estrofe solene dos grandes poemas épicos, como <em>Os Lusíadas</em>.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> 8 versos decassílabos heroicos com seis versos alternados e um dístico de ouro final: <code>ABABABCC</code>.</li>
+        </ul>
+
+        <h3>6. Sextilha de Cordel</h3>
+        <p>
+          A forma primordial da literatura de cordel e dos cantadores de improviso do Brasil.
+        </p>
+        <ul>
+          <li><strong>Estrutura:</strong> 6 versos em Redondilha Maior (7 sílabas métricas).</li>
+          <li><strong>Rimas:</strong> Obrigatórias nos versos pares (2, 4 e 6) no padrão <code>XAXAXA</code> ou <code>ABCBDB</code>.</li>
+        </ul>
+
+        <h3>7. Haicai</h3>
+        <p>
+          Pequena forma contemplativa japonesa de 17 sílabas métricas adaptada ao português: exatamente 3 versos com métrica <strong>5, 7 e 5 sílabas</strong>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Seção 5: Glossário Poético de A a Z -->
+    <section class="help-section">
+      <h2 class="section-title"><span>📖</span> 5. Glossário Poético Ilustrado de A a Z</h2>
+      <div class="glossary-grid">
+        <div class="glossary-card">
+          <div class="glossary-term">Alexandrino (12s)</div>
+          <div class="glossary-def">Verso de doze sílabas métricas, tradicionalmente dividido ao meio por uma cesura no sexto verso (6 + 6).</div>
+          <div class="glossary-ex">"Batendo a asa enorme / e olhando a terra fria"</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Castilho (Regra de)</div>
+          <div class="glossary-def">Norma da métrica lusófona fixada por António Feliciano de Castilho que determina encerrar a contagem do verso na última sílaba tônica.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Cesura</div>
+          <div class="glossary-def">Pausa ou corte rítmico no interior de um verso longo que organiza a respiração e a cadência melódica.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Decassílabo Heroico (10s)</div>
+          <div class="glossary-def">Verso de 10 sílabas com ênfase obrigatória na 6ª e na 10ª sílabas. O ritmo solene por excelência da epopeia camoniana.</div>
+          <div class="glossary-ex">"Amor é fogo que arde sem se ver"</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Decassílabo Sáfico (10s)</div>
+          <div class="glossary-def">Verso de 10 sílabas com acentuações rítmicas na 4ª, 8ª e 10ª sílabas métricas. Cria uma cadência lírica suave.</div>
+          <div class="glossary-ex">"Pálida sombra de formosa amante"</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Decassílabo Martelo (10s)</div>
+          <div class="glossary-def">Verso de 10 sílabas acentuado na 3ª, 6ª e 10ª sílabas. É o metro pulsante dos repentistas e martelos agalopados.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Diérese</div>
+          <div class="glossary-def">Divisão de um ditongo gramatical em duas emissões de voz separadas (hiato métrico) para ganhar uma sílaba.</div>
+          <div class="glossary-ex">cru-el (2 sílabas)</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Dístico (Parelha)</div>
+          <div class="glossary-def">Estrofe de apenas dois versos, frequentemente rimando entre si (AA), como no fecho do soneto inglês.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Ectlipse</div>
+          <div class="glossary-def">Atenuação ou supressão poética de terminação nasal átona (-m) diante da vogal inicial da palavra seguinte.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Elisão</div>
+          <div class="glossary-def">Supressão total de uma vogal átona no encontro com a vogal seguinte.</div>
+          <div class="glossary-ex">d'esperança (de esperança)</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Extramétrica</div>
+          <div class="glossary-def">Sílaba átona final que sucede a última tônica do verso e não entra na contagem pela Regra de Castilho.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Hemistíquio</div>
+          <div class="glossary-def">Cada uma das duas metades em que a cesura divide um verso longo (ex.: cada metade de 6 sílabas do alexandrino).</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Heptassílabo (Redondilha Maior)</div>
+          <div class="glossary-def">Verso clássico português de 7 sílabas métricas. Metro predileto das cantigas medievais, trovas e cordéis.</div>
+          <div class="glossary-ex">"Minha terra tem palmeiras"</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Pentassílabo (Redondilha Menor)</div>
+          <div class="glossary-def">Verso ágil de 5 sílabas métricas, muito usado na poesia lírica ligeira e nos refrãos populares.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Rima Consoante (Perfeita)</div>
+          <div class="glossary-def">Identidade sonora absoluta de todas as vogais e consoantes a partir da vogal tônica até o fim da palavra.</div>
+          <div class="glossary-ex">ard-e / sent-e</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Rima Toante (Assonante)</div>
+          <div class="glossary-def">Identidade sonora apenas das vogais a partir da tônica, enquanto as consoantes são diferentes.</div>
+          <div class="glossary-ex">ter-ra / ve-la</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Rima Interpolada (Abraçada)</div>
+          <div class="glossary-def">Disposição rímica no padrão ABBA, onde os versos externos abraçam os internos.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Rima Alternada (Cruzada)</div>
+          <div class="glossary-def">Disposição rímica no padrão ABAB, onde versos ímpares rimam entre si e versos pares entre si.</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Sinalefa</div>
+          <div class="glossary-def">Fusão na pronúncia de duas vogais átonas de palavras vizinhas numa única sílaba métrica contínua.</div>
+          <div class="glossary-ex">mi-nha‿al-ma</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Sinérese</div>
+          <div class="glossary-def">Fusão de duas vogais contíguas dentro da mesma palavra num só ditongo métrico.</div>
+          <div class="glossary-ex">pie-da-de (3 sílabas)</div>
+        </div>
+
+        <div class="glossary-card">
+          <div class="glossary-term">Trova</div>
+          <div class="glossary-def">Composição poética breve de quatro versos em redondilha maior (7 sílabas) que encerra um pensamento completo.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <strong>Lírica</strong> — Laboratório Fonotático & Poético em WebAssembly
+      </div>
+      <div class="footer-links">
+        <a href="index.html">← Retornar ao Editor</a>
+        <span class="sep">•</span>
+        <a href="https://git.2lp.in/lumen/lirica" target="_blank" rel="noopener noreferrer">Forgejo</a>
+        <span class="sep">•</span>
+        <a href="https://github.com/lumenpink/lirica" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
