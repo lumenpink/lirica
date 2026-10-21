@@ -12,13 +12,14 @@ fn test_carregar_exemplos() {
     let json_str = carregar_exemplos();
     let exemplos: Vec<ExemploPoema> =
         serde_json::from_str(&json_str).expect("Exemplos devem ser JSON válido");
-    assert_eq!(exemplos.len(), 6);
+    assert_eq!(exemplos.len(), 7);
     assert_eq!(exemplos[0].id, "camoes");
-    assert_eq!(exemplos[1].id, "espinela");
-    assert_eq!(exemplos[2].id, "goncalves_dias");
-    assert_eq!(exemplos[3].id, "cruz_e_sousa");
-    assert_eq!(exemplos[4].id, "pessoa");
-    assert_eq!(exemplos[5].id, "bilac");
+    assert_eq!(exemplos[1].id, "vinicius");
+    assert_eq!(exemplos[2].id, "espinela");
+    assert_eq!(exemplos[3].id, "goncalves_dias");
+    assert_eq!(exemplos[4].id, "cruz_e_sousa");
+    assert_eq!(exemplos[5].id, "pessoa");
+    assert_eq!(exemplos[6].id, "bilac");
 
     // Ensure none of the examples contain %% directives
     for ex in &exemplos {
@@ -130,7 +131,10 @@ fn test_forma_poetica_e_estrofes_no_wasm() {
 fn test_decima_espinela_no_wasm() {
     let exemplos_json = carregar_exemplos();
     let exemplos: Vec<ExemploPoema> = serde_json::from_str(&exemplos_json).unwrap();
-    let espinela = &exemplos[1];
+    let espinela = exemplos
+        .iter()
+        .find(|e| e.id == "espinela")
+        .expect("Deve encontrar espinela");
 
     let saida = escandir(&espinela.texto, "visual", false, false, true, true);
     let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
@@ -145,4 +149,49 @@ fn test_decima_espinela_no_wasm() {
 fn test_escandir_vazio() {
     let saida = escandir("", "painel", false, false, true, true);
     assert!(saida.is_empty());
+}
+
+#[test]
+fn test_soneto_de_fidelidade_nos_exemplos() {
+    let exemplos_json = carregar_exemplos();
+    let exemplos: Vec<ExemploPoema> = serde_json::from_str(&exemplos_json).unwrap();
+    let vinicius = exemplos
+        .iter()
+        .find(|e| e.id == "vinicius" || e.titulo.contains("Fidelidade"))
+        .expect("Deve conter o Soneto de Fidelidade nos exemplos");
+
+    assert_eq!(vinicius.autor, "Vinícius de Moraes");
+    let saida = escandir(&vinicius.texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
+    assert_eq!(web.versos.len(), 14);
+    assert_eq!(web.estrofes.len(), 4);
+
+    let forma = web.forma_poetica.expect("Deve detectar Soneto");
+    assert!(forma.nome.contains("Soneto"));
+    assert!(forma.confianca_percentual >= 80);
+
+    let rima = web
+        .avaliacao_rima
+        .expect("Deve avaliar rima do Soneto de Fidelidade");
+    assert!(rima.percentual_rimado >= 85);
+}
+
+#[test]
+fn test_escansao_sem_diretivas_respeita_flag_rima() {
+    let texto = "Minha terra tem palmeiras,\nOnde canta o Sabiá;\nAs aves que aqui gorjeiam,\nNão gorjeiam como lá.";
+    // Flag de rima = true
+    let saida_com_rima = escandir(texto, "visual", false, false, true, true);
+    let web_com: AnaliseWeb = serde_json::from_str(&saida_com_rima).unwrap();
+    assert!(
+        web_com.esquema_rima.is_some(),
+        "Deve gerar esquema de rimas quando flag é true"
+    );
+
+    // Flag de rima = false
+    let saida_sem_rima = escandir(texto, "visual", false, false, true, false);
+    let web_sem: AnaliseWeb = serde_json::from_str(&saida_sem_rima).unwrap();
+    assert!(
+        web_sem.esquema_rima.is_none(),
+        "Não deve gerar esquema de rimas quando flag é false"
+    );
 }

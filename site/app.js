@@ -1,4 +1,4 @@
-import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js';
+import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.4';
 
 let exemplos = [];
 let verses = [
@@ -65,7 +65,7 @@ const codeWorkspace = document.getElementById('code-workspace');
 const codeContent = document.getElementById('code-content');
 
 async function main() {
-  await init();
+  await init('./pkg/lirica_bg.wasm?v=0.1.4');
 
   // Version
   try {
