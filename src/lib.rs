@@ -259,7 +259,7 @@ pub fn carregar_exemplos() -> String {
             titulo: "Soneto de Fidelidade".to_string(),
             autor: "Vinícius de Moraes".to_string(),
             descricao: "Soneto Decassílabo Lírico (14 versos em 4+4+3+3, rimas ABBA ABBA CDE CDE)".to_string(),
-            texto: "De tudo, ao meu amor serei atento\nAntes, e com tal zelo, e sempre, e tanto\nQue mesmo em face do maior encanto\nDele se encante mais meu pensamento.\n\nQuero vivê-lo em cada vão momento\nE em seu louvor hei de espalhar meu canto\nE rir meu riso e derramar meu pranto\nAo seu pesar ou seu contentamento.\n\nE assim, quando mais tarde me procure\nQuem sabe a morte, angústia de quem vive\nQuem sabe a solidão, fim de quem ama\n\nEu possa me dizer do amor (que tive):\nQue não seja imortal, posto que é chama\nMas que seja infinito enquanto dure.".to_string(),
+            texto: "De tudo, ao meu amor serei atento\nAntes, e com tal zelo, e sempre tanto\nQue mesmo em face do maior encanto\nDele se encante mais meu pensamento.\n\nQuero vivê-lo em cada vão momento\nE em seu louvor hei de espalhar meu canto\nE rir meu riso e derramar meu pranto\nAo seu pesar ou seu contentamento.\n\nE assim, quando mais tarde me procure\nQuem sabe a morte, angústia de quem vive\nQuem sabe a solidão, fim de quem ama\n\nEu possa me dizer do amor (que tive):\nQue não seja imortal, posto que é chama\nMas que seja infinito enquanto dure.".to_string(),
         },
         ExemploPoema {
             id: "espinela".to_string(),

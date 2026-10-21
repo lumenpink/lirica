@@ -174,10 +174,26 @@ fn test_soneto_de_fidelidade_nos_exemplos() {
         .expect("Deve conter o Soneto de Fidelidade nos exemplos");
 
     assert_eq!(vinicius.autor, "Vinícius de Moraes");
-    let saida = escandir(&vinicius.texto, "visual", false, false, true, true);
+    let saida = escandir(&vinicius.texto, "visual", true, false, true, true);
     let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
     assert_eq!(web.versos.len(), 14);
     assert_eq!(web.estrofes.len(), 4);
+
+    for (i, v) in web.versos.iter().enumerate() {
+        assert_eq!(
+            v.total_metricas,
+            10,
+            "Verso {} de Vinícius ('{}') deve ter 10 sílabas, teve {}",
+            i + 1,
+            v.original,
+            v.total_metricas
+        );
+        assert!(
+            v.classificacao.contains("Decassílabo"),
+            "Verso {} de Vinícius deve ser Decassílabo",
+            i + 1
+        );
+    }
 
     let forma = web.forma_poetica.expect("Deve detectar Soneto");
     assert!(forma.nome.contains("Soneto"));
