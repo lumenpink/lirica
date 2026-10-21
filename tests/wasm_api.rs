@@ -113,14 +113,27 @@ fn test_forma_poetica_e_estrofes_no_wasm() {
     let exemplos: Vec<ExemploPoema> = serde_json::from_str(&exemplos_json).unwrap();
     let camoes = &exemplos[0];
 
-    let saida = escandir(&camoes.texto, "visual", false, false, true, true);
+    // Com elidir_pontuacao = true (padrão clássico contínuo)
+    let saida = escandir(&camoes.texto, "visual", true, false, true, true);
     let web: AnaliseWeb = serde_json::from_str(&saida).expect("Deve desserializar AnaliseWeb");
     assert_eq!(web.versos.len(), 14);
     assert_eq!(web.estrofes.len(), 4);
 
+    // Todos os 14 versos de Camões devem ser decassílabos perfeitos
+    for (i, v) in web.versos.iter().enumerate() {
+        assert_eq!(
+            v.total_metricas,
+            10,
+            "Verso {} de Camões ('{}') deve ter exatamente 10 sílabas, teve {}",
+            i + 1,
+            v.original,
+            v.total_metricas
+        );
+    }
+
     let forma = web.forma_poetica.expect("Deve detectar forma poética");
     assert_eq!(forma.nome, "Soneto Italiano (Petrarquiano)");
-    assert!(forma.confianca_percentual >= 90);
+    assert_eq!(forma.confianca_percentual, 100);
 
     let rima = web.avaliacao_rima.expect("Deve avaliar rima");
     assert_eq!(rima.pureza_acustica, "Consoante (Perfeita)");

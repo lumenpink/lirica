@@ -130,9 +130,9 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "joaju-lirica"
-version = "0.2.0"
+version = "0.3.0"
 source = "sparse+https://git.2lp.in/api/packages/lumen/cargo/"
-checksum = "261fc9f98c3278762453670d75a68b141d7584f038dd64719d97ccf579158849"
+checksum = "119f6ac839d9222681d0481088ec0415c8f880973cf0355fb21cfa91d227a316"
 dependencies = [
  "clap",
  "serde",
