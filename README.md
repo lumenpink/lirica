@@ -7,7 +7,7 @@
 
 ## Sobre
 
-O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://codeberg.org/lumenpink/joaju-lirica) através do registro soberano `lumen` e compila para WebAssembly de alto desempenho.
+O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://git.2lp.in/lumen/joaju-suite) através do registro soberano `lumen` e compila para WebAssembly de alto desempenho. Espelho no GitHub em [lumenpink/lirica](https://github.com/lumenpink/lirica).
 
 ## Funcionalidades
 

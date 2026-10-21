@@ -4,7 +4,7 @@ version = "0.1.0-dev.1"
 edition = "2021"
 description = "Laboratório métrico e escansão poética em WebAssembly"
 license = "Apache-2.0"
-repository = "https://codeberg.org/lumenpink/lirica"
+repository = "https://github.com/lumenpink/lirica"
 homepage = "https://lirica.2lp.in"
 authors = ["Lumen Pink <hi@lumen.pink>"]
 
