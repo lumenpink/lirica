@@ -4,7 +4,7 @@ use lirica::{carregar_exemplos, escandir, versao, AnaliseWeb, ExemploPoema};
 fn test_versao() {
     let v = versao();
     assert!(!v.is_empty());
-    assert_eq!(v, "0.1.0-dev.1");
+    assert!(v.starts_with("0.1.0"));
 }
 
 #[test]

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formas Poéticas Clássicas — Lírica // Documentação</title>
+  <meta name="description" content="Catálogo e regras estruturais das formas poéticas canônicas reconhecidas pelo Lírica: sonetos, oitavas, décimas espinelas, martelos, haicais e redondilhas.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .docs-nav-bar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .doc-tab { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.15s ease; }
+    .doc-tab:hover, .doc-tab.active { color: var(--accent-gold); background-color: var(--accent-gold-soft); border-color: var(--accent-gold); }
+    .doc-body { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+    .doc-section { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+    .doc-section h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent-gold); }
+    .doc-section h3 { font-family: var(--font-sans); font-size: 1.15rem; color: var(--accent-cyan); margin-top: 0.5rem; }
+    .form-badge-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .badge { font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: var(--radius-sm); }
+    .badge-metro { background-color: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+    .badge-estrofe { background-color: var(--accent-gold-soft); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+    .badge-rima { background-color: var(--accent-purple-soft); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    code { font-family: var(--font-mono); background-color: var(--bg-elevated); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-brand-left">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <div>
+          <h1 class="app-title">Lírica // Documentação</h1>
+          <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
+        </div>
+      </div>
+      <div class="docs-nav-bar">
+        <a href="regras.html" class="doc-tab">⚙️ Motor & Regras</a>
+        <a href="formas.html" class="doc-tab active">🏛️ Formas Poéticas</a>
+        <a href="versos.html" class="doc-tab">📏 Tipos de Versos</a>
+        <a href="gabarito.html" class="doc-tab">🏆 Gabarito Canônico</a>
+        <a href="licencas.html" class="doc-tab">⚖️ Licenças & Corpus</a>
+        <a href="../index.html" class="doc-tab" style="border-color: var(--accent); color: var(--accent);">← Laboratório</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-body">
+    <section class="doc-section">
+      <h2>1. Soneto Italiano (Petrarquiano)</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">14 Versos (4 + 4 + 3 + 3)</span>
+        <span class="badge badge-metro">Decassílabo (10 sílabas)</span>
+        <span class="badge badge-rima">ABBA ABBA CDE CDE ou CDC DCD</span>
+      </div>
+      <p>
+        A forma reina absoluta na lírica lírica lusófona desde a introdução por Sá de Miranda em 1527 e a consagração imortal por Luís de Camões. É composto por dois quartetos e dois tercetos, desenvolvendo uma proposição, contraposição e remate conclusivo (chave de ouro).
+      </p>
+      <p><strong>Exemplos canônicos no Lírica:</strong> <em>Amor é fogo que arde sem se ver</em> (Camões), <em>Soneto de Fidelidade</em> e <em>Soneto de Separação</em> (Vinícius de Moraes), <em>Ouvir Estrelas</em> (Olavo Bilac).</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>2. Soneto Inglês (Shakespeariano)</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">14 Versos (4 + 4 + 4 + 2)</span>
+        <span class="badge badge-metro">Decassílabo (10 sílabas)</span>
+        <span class="badge badge-rima">ABAB CDCD EFEF GG</span>
+      </div>
+      <p>
+        Popularizado por William Shakespeare e adotado por diversos poetas de língua portuguesa, organiza-se em três quartetos de rimas alternadas e fecha-se dramaticamente em um dístico (par de versos emparelhados).
+      </p>
+    </section>
+
+    <section class="doc-section">
+      <h2>3. Oitava Camoniana (Ottava Rima)</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">8 Versos por Estrofe</span>
+        <span class="badge badge-metro">Decassílabo Heróico (10 sílabas)</span>
+        <span class="badge badge-rima">ABABABCC</span>
+      </div>
+      <p>
+        A estrofe nobre da grande epopeia renascentista e barroca. Consiste em seis versos em rima cruzada alternada (ABABAB) seguidos de um dístico em rima emparelhada (CC). Empregada na totalidade dos 8.816 versos de <em>Os Lusíadas</em> (Camões) e na <em>Prosopopeia</em> (Bento Teixeira).
+      </p>
+    </section>
+
+    <section class="doc-section">
+      <h2>4. Décima Espinela</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">10 Versos em Estrofe Única</span>
+        <span class="badge badge-metro">Redondilha Maior / Heptassílabo (7 sílabas)</span>
+        <span class="badge badge-rima">ABBAACCDDC</span>
+      </div>
+      <p>
+        Criada pelo poeta espanhol Vicente Espinel e tornada patrimônio inestimável da poesia peninsular e da cantoria/repente nordestino brasileiro. Possui uma pausa sintática e lógica obrigatória após o 4º verso e não admite rimas soltas.
+      </p>
+      <p><strong>Exemplo no Lírica:</strong> <em>Ninguém viva descurado</em> (Vicente Espinel).</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>5. Martelo Agalopado</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">10 Versos por Estrofe</span>
+        <span class="badge badge-metro">Decassílabo Martelo (3ª, 6ª e 10ª tônicas)</span>
+        <span class="badge badge-rima">ABBAACCDDC ou variantes de Cordel</span>
+      </div>
+      <p>
+        Gênero virtuoso do repente e cordel brasileiro inspirado na poesia italiana do século XVI. O verso exige acentuação estrita e marcial nas posições 3, 6 e 10, produzindo uma cadência rápida e percussiva característica do galope sertanejo.
+      </p>
+      <p><strong>Exemplo no Lírica:</strong> <em>Martelo Agalopado do Sertão</em> (Tradição / Zé Limeira).</p>
+    </section>
+
+    <section class="doc-section">
+      <h2>6. Haicai (Haiku Clássico)</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">3 Versos em Estrofe Única</span>
+        <span class="badge badge-metro">Pentassílabo (5) — Heptassílabo (7) — Pentassílabo (5)</span>
+        <span class="badge badge-rima">Sem rima obrigatória</span>
+      </div>
+      <p>
+        Forma de origem japonesa adaptada magistralmente ao português por Guilherme de Almeida, Afrânio Peixoto, Paulo Leminski e Alice Ruiz. Exige estritamente a sequência de 5 sílabas (redondilha menor), 7 sílabas (redondilha maior) e 5 sílabas.
+      </p>
+    </section>
+
+    <section class="doc-section">
+      <h2>7. Redondilha Maior (Quadra / Trova)</h2>
+      <div class="form-badge-bar">
+        <span class="badge badge-estrofe">4 Versos (Quadra)</span>
+        <span class="badge badge-metro">Heptassílabo (7 sílabas métricas)</span>
+        <span class="badge badge-rima">ABCB ou ABAB</span>
+      </div>
+      <p>
+        A medida velha nacional, presente desde as cantigas medievais até a poesia romântica e a música popular brasileira.
+      </p>
+      <p><strong>Exemplo no Lírica:</strong> <em>Canção do Exílio</em> (Gonçalves Dias), <em>Autopsicografia</em> (Fernando Pessoa).</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica <span id="lbl-versao">v0.1.0-dev.17+20261022.6eac5e6</span> • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

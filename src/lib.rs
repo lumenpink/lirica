@@ -304,5 +304,5 @@ pub fn carregar_exemplos() -> String {
 /// Returns the engine version.
 #[wasm_bindgen]
 pub fn versao() -> String {
-    env!("CARGO_PKG_VERSION").to_string()
+    include_str!("../VERSION").trim().to_string()
 }

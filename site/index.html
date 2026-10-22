@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lírica — Laboratório Métrico Poético em WebAssembly</title>
+  <title>Lírica — Laboratório Métrico e Escansão Poética</title>
   <meta name="description" content="Laboratório métrico, escansão poética e análise rítmica em português executado deterministicamente no navegador via WebAssembly.">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
@@ -11,27 +11,31 @@
 <body>
   <header class="app-header">
     <div class="header-brand">
-      <div class="logo-group">
-        <span class="logo-glyph" aria-hidden="true">❦</span>
-        <h1 class="app-title">Lírica</h1>
+      <div class="header-brand-left">
+        <div class="logo-group">
+          <span class="logo-glyph" aria-hidden="true">❦</span>
+          <h1 class="app-title">Lírica</h1>
+        </div>
+        <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
       </div>
-      <p class="app-tagline">Laboratório Métrico & Escansão Poética em WebAssembly</p>
-    </div>
 
-    <div class="header-nav">
-      <a href="ajuda.html" class="nav-help-link" title="Guia completo de metrificação e glossário poético de A a Z">
-        <span class="nav-icon">📖</span> Guia & Glossário
-      </a>
+      <div class="header-actions">
+        <button id="btn-abrir-exemplos" class="header-btn" title="Escolher um exemplo clássico da literatura lusófona">
+          <span aria-hidden="true">📚</span> Exemplos
+        </button>
+        <button id="btn-header-limpar" class="header-btn header-btn-clear" title="Limpar todo o texto e recomeçar">
+          <span aria-hidden="true">🧹</span> Limpar
+        </button>
+        <a href="docs/index.html" class="header-btn header-btn-docs" title="Documentação completa do motor, regras, formas e gabarito">
+          <span aria-hidden="true">📖</span> Documentação
+        </a>
+        <a href="ajuda.html" class="header-btn" title="Guia métrico e glossário poético de A a Z">
+          <span aria-hidden="true">❓</span> Ajuda
+        </a>
+      </div>
     </div>
 
     <div class="toolbar">
-      <div class="tool-group">
-        <label for="select-exemplo" class="tool-label">Exemplo Clássico:</label>
-        <select id="select-exemplo" class="select-input" aria-label="Selecione um exemplo clássico">
-          <option value="">Carregando exemplos...</option>
-        </select>
-      </div>
-
       <div class="tool-group">
         <label for="select-modo" class="tool-label">Visualização:</label>
         <select id="select-modo" class="select-input" aria-label="Modo de visualização">
@@ -204,23 +208,42 @@
     </section>
   </main>
 
+  <!-- Modal Dialog de Seleção de Exemplos -->
+  <div id="modal-exemplos" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-exemplos-titulo">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-header-text">
+          <h2 id="modal-exemplos-titulo" class="modal-title">📚 Galeria de Exemplos Clássicos</h2>
+          <p class="modal-subtitle">Selecione uma peça poética da literatura lusófona para carregar e analisar no laboratório:</p>
+        </div>
+        <button id="btn-fechar-modal" class="modal-close-btn" aria-label="Fechar janela de exemplos">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-filter-bar">
+          <input type="search" id="input-busca-exemplos" class="modal-search-input" placeholder="Buscar por título, autor ou gênero (ex.: soneto, camões, bilac, rondel)..." aria-label="Filtrar exemplos">
+        </div>
+        <div id="grid-exemplos" class="exemplos-grid">
+          <!-- Cards de exemplos injetados dinamicamente via JS -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="modal-footer-hint">Dica: você também pode explorar todos os 51 poemas no <a href="docs/gabarito.html">Gabarito Canônico</a>.</span>
+        <button id="btn-fechar-modal-bottom" class="btn-ghost">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="app-footer">
     <div class="footer-inner">
-      <div class="footer-brand">
-        <strong>Lírica</strong> <span id="lbl-versao">v0.1.0</span> — Motor Determinístico de Fonotática & Escansão Poética
-      </div>
-      <div class="footer-links">
-        <span>Alimentado por <code>joaju-lirica</code> via WASM</span>
-        <span class="sep">•</span>
-        <a href="https://git.2lp.in/lumen/lirica" target="_blank" rel="noopener noreferrer">Forgejo</a>
-        <span class="sep">•</span>
-        <a href="https://codeberg.org/lumenpink/lirica" target="_blank" rel="noopener noreferrer">Codeberg</a>
-        <span class="sep">•</span>
-        <a href="https://github.com/lumenpink/lirica" target="_blank" rel="noopener noreferrer">GitHub</a>
-      </div>
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica <span id="lbl-versao">v0.1.0-dev.17+20261022.6eac5e6</span> • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
     </div>
   </footer>
 
-  <script type="module" src="app.js?v=0.1.7"></script>
+  <script type="module" src="app.js?v=0.1.8"></script>
 </body>
 </html>

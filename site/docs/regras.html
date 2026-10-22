@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regras do Motor & Fonotática — Lírica // Documentação</title>
+  <meta name="description" content="Especificação completa das regras do motor de escansão determinística do Lírica: partição silábica, acentuação, sinalefa e sintaxe de overrides.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .docs-nav-bar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .doc-tab { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.15s ease; }
+    .doc-tab:hover, .doc-tab.active { color: var(--accent-gold); background-color: var(--accent-gold-soft); border-color: var(--accent-gold); }
+    .doc-body { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+    .doc-section { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+    .doc-section h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent-gold); }
+    .doc-section h3 { font-family: var(--font-sans); font-size: 1.15rem; color: var(--accent-cyan); margin-top: 0.5rem; }
+    .rule-card { background-color: var(--bg-tertiary); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    code { font-family: var(--font-mono); background-color: var(--bg-elevated); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.85em; }
+    pre { background-color: var(--bg-primary); border: 1px solid var(--border-color); padding: 1rem; border-radius: var(--radius-md); overflow-x: auto; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.5; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    th, td { border: 1px solid var(--border-color); padding: 0.65rem 0.85rem; text-align: left; font-size: 0.875rem; }
+    th { background-color: var(--bg-tertiary); color: var(--accent-gold); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-brand-left">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <div>
+          <h1 class="app-title">Lírica // Documentação</h1>
+          <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
+        </div>
+      </div>
+      <div class="docs-nav-bar">
+        <a href="regras.html" class="doc-tab active">⚙️ Motor & Regras</a>
+        <a href="formas.html" class="doc-tab">🏛️ Formas Poéticas</a>
+        <a href="versos.html" class="doc-tab">📏 Tipos de Versos</a>
+        <a href="gabarito.html" class="doc-tab">🏆 Gabarito Canônico</a>
+        <a href="licencas.html" class="doc-tab">⚖️ Licenças & Corpus</a>
+        <a href="../index.html" class="doc-tab" style="border-color: var(--accent); color: var(--accent);">← Laboratório</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-body">
+    <section class="doc-section">
+      <h2>1. Princípios do Motor Determinístico (`joaju-lirica`)</h2>
+      <p>
+        Diferente de sistemas que recorrem a dicionários heurísticos ou modelos estatísticos probabilísticos de linguagem, o <code>joaju-lirica</code> opera exclusivamente por <strong>fonotática algorítmica rigorosa</strong> da língua portuguesa. Cada verso é transformado em uma representação sintática e medido de acordo com as leis clássicas da prosódia poética lusófona.
+      </p>
+
+      <div class="rule-card">
+        <strong>A Métrica Lusófona é uma Álgebra:</strong>
+        <p>Um verso clássico possui contagem exata e finita de tempos prosódicos. Não há tolerância estatística aceitável em um soneto camoniano ou parnasiano: ele possui exatamente 10 sílabas métricas ou comete falha métrica.</p>
+      </div>
+    </section>
+
+    <section class="doc-section">
+      <h2>2. Divisão Silábica Gramatical (Fonotática)</h2>
+      <p>A partição inicial decompõe palavras em suas sílabas ortoépicas brutas preservando intervalos exatos de bytes (<em>spans</em> UTF-8) no texto original:</p>
+      
+      <h3>A. Ataque e Coda Consonantal</h3>
+      <ul>
+        <li><strong>Ataques Inseparáveis:</strong> Encontros consonantais com líquida (<code>bl, br, cl, cr, dl, dr, fl, fr, gl, gr, pl, pr, tl, tr, vl, vr</code>) e dígrafos inseparáveis (<code>ch, lh, nh</code>) nunca são particionados, iniciando sempre a sílaba seguinte (ex.: <em>li-vro</em>, <em>fi-lho</em>).</li>
+        <li><strong>Separação Interconsonantal:</strong> Consoantes contíguas não-inseparáveis são cindidas (ex.: <em>rit-mo</em>, <em>sub-li-me</em>, <em>es-pan-to</em>).</li>
+      </ul>
+
+      <h3>B. Encontros Vocálicos na Palavra</h3>
+      <ul>
+        <li><strong>Ditongos Decrescentes:</strong> Vogal + semivogal unidas inseparavelmente (<code>ai, au, ei, eu, oi, ou, ui, iu</code> e nasais <code>ão, õe, ãe</code>).</li>
+        <li><strong>Ditongos Átonos e Contrações Especiais:</strong> A contração <code>ao</code> e <code>aos</code> é formalmente um ditongo oral decrescente átono <code>[aw]</code>/<code>[aws]</code> indivisível, jamais se quebrando em hiato acidental.</li>
+        <li><strong>Sinérese Pós-Tônica:</strong> Encontros vocálicos átonos no final de palavras proparoxítonas aparentes (como <code>-eo</code> em <em>e-té-reo</em>, <code>-oa</code> em <em>má-goa</em>, <code>-ia</code> em <em>gló-ria</em>, <code>-io</code> em <em>ní-veo</em>) são tratados deterministicamente como ditongos crescentes por padrão métrico.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section">
+      <h2>3. Acentuação Tônica & Regra de Castilho</h2>
+      <p>
+        A <strong>Regra de Castilho</strong> (canônica na métrica em língua portuguesa) determina que a contagem das sílabas métricas encerra-se formalmente na <strong>última sílaba tônica</strong> do verso. As sílabas átonas pós-tônicas que se seguem são descartadas na soma métrica.
+      </p>
+
+      <h3>Regras de Tonicidade Automática:</h3>
+      <table>
+        <thead>
+          <tr><th>Terminação</th><th>Classificação</th><th>Exemplos</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Acento gráfico (´, ^)</td><td>Determinado pelo acento</td><td><em>sa-í-da</em>, <em>ár-vo-re</em>, <em>ca-fé</em></td></tr>
+          <tr><td>Til (~)</td><td>Sílaba do til</td><td><em>can-ção</em>, <em>põe</em></td></tr>
+          <tr><td>Terminações em <code>-a(s), -e(s), -o(s), -em, -ens, -am</code></td><td><strong>Paroxítona</strong> (penúltima)</td><td><em>gor-<strong>jei</strong>-am</em>, <em>e-di-fi-<strong>ca</strong>-ram</em>, <em>vi-ve</em></td></tr>
+          <tr><td>Demais consoantes (<code>-r, -l, -z, -s</code> não precedido de vogal átona)</td><td><strong>Oxítona</strong> (última)</td><td><em>a-mor</em>, <em>can-tar</em>, <em>fe-liz</em></td></tr>
+          <tr><td>Monossílabos Clíticos (<code>ao, aos, de, em, o, a, os, as, se, me, te, e, ou, que</code>)</td><td><strong>Átonos</strong> (sem acento métrico)</td><td>Não recebem peso tônico</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="doc-section">
+      <h2>4. Sinalefa Poética (Elisão & Crase)</h2>
+      <p>A sinalefa é a fusão rítmica de uma sílaba terminada em som vocálico com a sílaba inicial da palavra seguinte quando esta se inicia por vogal:</p>
+
+      <ul>
+        <li><strong>Barreira de Ditongos Decrescentes:</strong> Palavras terminadas em ditongos orais decrescentes com glide em coda (ex.: <em>meu</em>, <em>teu</em>, <em>seu</em>, <em>pai</em>, <em>céu</em>, <em>não</em>) <strong>não fazem sinalefa</strong> com a palavra seguinte (ex.: <em>meu amor</em> $\to$ <code>meu</code> | <code>a-mor</code>).</li>
+        <li><strong>Cadeia Contígua de Clíticos Átonos:</strong> Sequências de múltiplos monossílabos átonos coalescem em sinalefa tríplice (ex.: <em>Transforma-se o amador</em> $\to$ <code>Trans-for-ma-se_o_a-ma-dor</code>).</li>
+        <li><strong>Proteção de Sílaba Tônica:</strong> A sinalefa terciária nunca absorve uma vogal tônica (ex.: <em>E a ela</em> $\to$ <code>E_a</code> funde, mas o <code>e</code> tônico de <em>ela</em> permanece isolado: <code>E_a</code> | <code>e-la</code>).</li>
+        <li><strong>Elidir Pontuação:</strong> Quando ativada (padrão clássico), pontuações gráficas como vírgulas e pontos não bloqueiam a elisão oral contínua do verso.</li>
+      </ul>
+    </section>
+
+    <section class="doc-section">
+      <h2>5. Sintaxe de Overrides Manuais</h2>
+      <p>Para casos de licença poética rara, arcaísmos intencionais ou diéreses expressivas, o autor pode intervir diretamente no texto:</p>
+
+      <table>
+        <thead>
+          <tr><th>Operador</th><th>Nome</th><th>Função</th><th>Exemplo</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/</code></td>
+            <td>Diérese / Hiato Manual</td>
+            <td>Força a separação de sílabas ou palavras que se fundiriam</td>
+            <td><code>ru/a</code> (2 sílabas) ou <code>fogo / arde</code> (impede sinalefa)</td>
+          </tr>
+          <tr>
+            <td><code>_</code></td>
+            <td>Sinérese / Sinalefa Forçada</td>
+            <td>Força a fusão de vogais mesmo através de pausa ou barreira</td>
+            <td><code>que_arde</code>, <code>sol_brilha</code></td>
+          </tr>
+          <tr>
+            <td><code>'</code></td>
+            <td>Acento Tônico Manual</td>
+            <td>Força a sílaba anterior ao apóstrofo como a tônica do vocábulo</td>
+            <td><code>gorjei'am</code>, <code>fogo'</code> (torna oxítona)</td>
+          </tr>
+          <tr>
+            <td><code>~</code></td>
+            <td>Prefixador Átono</td>
+            <td>Força um vocábulo a ser tratado integralmente como átono</td>
+            <td><code>~fogo</code> (anula acento tônico da palavra)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica <span id="lbl-versao">v0.1.0-dev.17+20261022.6eac5e6</span> • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

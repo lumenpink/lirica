@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentação — Lírica // Laboratório Métrico e Escansão Poética</title>
+  <meta name="description" content="Central de documentação oficial do Lírica: motor fonotático determinístico, catálogo de formas clássicas, tipos de versos e gabarito canônico.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .docs-nav-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .doc-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .doc-tab:hover, .doc-tab.active {
+      color: var(--accent-gold);
+      background-color: var(--accent-gold-soft);
+      border-color: var(--accent-gold);
+    }
+    .docs-portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .portal-card {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    .portal-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .portal-icon {
+      font-size: 2rem;
+    }
+    .portal-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+    .portal-desc {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-brand-left">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <div>
+          <h1 class="app-title">Lírica // Documentação</h1>
+          <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
+        </div>
+      </div>
+      <div class="docs-nav-bar">
+        <a href="regras.html" class="doc-tab">⚙️ Motor & Regras</a>
+        <a href="formas.html" class="doc-tab">🏛️ Formas Poéticas</a>
+        <a href="versos.html" class="doc-tab">📏 Tipos de Versos</a>
+        <a href="gabarito.html" class="doc-tab">🏆 Gabarito Canônico</a>
+        <a href="licencas.html" class="doc-tab">⚖️ Licenças & Corpus</a>
+        <a href="../index.html" class="doc-tab" style="border-color: var(--accent); color: var(--accent);">← Laboratório</a>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; width: 100%;">
+    <section style="margin-bottom: 2rem;">
+      <h2 style="font-family: var(--font-serif); font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-gold);">Central de Documentação Lírica</h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.6;">
+        O <strong>Lírica</strong> é uma bancada interativa de fonotática, escansão e inferência estrófica construída sobre o motor <code>joaju-lirica</code> em Rust compilado para WebAssembly. Explore as seções abaixo para compreender os fundamentos matemáticos e filológicos do sistema:
+      </p>
+    </section>
+
+    <div class="docs-portal-grid">
+      <a href="regras.html" class="portal-card">
+        <span class="portal-icon">⚙️</span>
+        <h3 class="portal-title">Regras do Motor & Fonotática</h3>
+        <p class="portal-desc">
+          Entenda a mecânica exata da quebra silábica, acentuação tônica, sinalefas em cadeias de clíticos, barreira de ditongos decrescentes, regra de Castilho e sintaxe de overrides (<code>/</code>, <code>_</code>, <code>'</code>, <code>~</code>).
+        </p>
+      </a>
+
+      <a href="formas.html" class="portal-card">
+        <span class="portal-icon">🏛️</span>
+        <h3 class="portal-title">Catálogo de Formas Poéticas</h3>
+        <p class="portal-desc">
+          Estruturas estróficas canônicas: Sonetos Petrarquiano e Shakespeariano, Oitavas Camonianas, Décimas Espinelas, Martelos Agalopados, Haicais e Redondilhas populares.
+        </p>
+      </a>
+
+      <a href="versos.html" class="portal-card">
+        <span class="portal-icon">📏</span>
+        <h3 class="portal-title">Metros & Classificação de Versos</h3>
+        <p class="portal-desc">
+          Guia métrico completo do Monossílabo ao Dodecassílabo (Alexandrino). Variações rítmicas do Decassílabo (Heróico, Sáfico, Martelo) e Heptassílabos.
+        </p>
+      </a>
+
+      <a href="gabarito.html" class="portal-card">
+        <span class="portal-icon">🏆</span>
+        <h3 class="portal-title">Gabarito Canônico (Ground Truth)</h3>
+        <p class="portal-desc">
+          O benchmark de 51 poemas auditados do Trovadorismo ao Modernismo. Validação determinística estrita verso a verso, sem aproximações estatísticas.
+        </p>
+      </a>
+
+      <a href="licencas.html" class="portal-card">
+        <span class="portal-icon">⚖️</span>
+        <h3 class="portal-title">Licenças & Direitos Autorais</h3>
+        <p class="portal-desc">
+          Auditoria jurídica detalhada do corpus: obras em Domínio Público e obras modernistas sob o amparo do Art. 46 da Lei 9.610/1998 (fins didáticos e científicos).
+        </p>
+      </a>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica <span id="lbl-versao">v0.1.0-dev.17+20261022.6eac5e6</span> • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

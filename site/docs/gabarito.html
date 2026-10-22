@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gabarito Canônico (Ground Truth) — Lírica // Documentação</title>
+  <meta name="description" content="O benchmark e gabarito canônico de 51 poemas auditados do Trovadorismo ao Modernismo: validação matemática estrita verso a verso no Lírica.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .docs-nav-bar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .doc-tab { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.15s ease; }
+    .doc-tab:hover, .doc-tab.active { color: var(--accent-gold); background-color: var(--accent-gold-soft); border-color: var(--accent-gold); }
+    .doc-body { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 2rem; width: 100%; }
+    .doc-section { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+    .doc-section h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent-gold); }
+    .search-box { width: 100%; max-width: 450px; background-color: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem 0.85rem; border-radius: var(--radius-sm); font-size: 0.875rem; outline: none; }
+    .search-box:focus { border-color: var(--accent); }
+    .gabarito-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    .gabarito-table th, .gabarito-table td { border: 1px solid var(--border-color); padding: 0.65rem 0.85rem; text-align: left; font-size: 0.85rem; }
+    .gabarito-table th { background-color: var(--bg-tertiary); color: var(--accent-gold); }
+    .gabarito-table tr:hover { background-color: var(--bg-tertiary); }
+    .badge-status-100 { background-color: rgba(152, 195, 121, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); padding: 0.15rem 0.4rem; border-radius: 3px; font-weight: 600; font-size: 0.75rem; }
+    .badge-status-var { background-color: rgba(86, 182, 194, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 0.15rem 0.4rem; border-radius: 3px; font-weight: 600; font-size: 0.75rem; }
+    .btn-test-in-lab { background-color: var(--accent-gold-soft); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.15s ease; }
+    .btn-test-in-lab:hover { background-color: var(--accent-gold); color: var(--bg-primary); }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-brand-left">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <div>
+          <h1 class="app-title">Lírica // Documentação</h1>
+          <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
+        </div>
+      </div>
+      <div class="docs-nav-bar">
+        <a href="regras.html" class="doc-tab">⚙️ Motor & Regras</a>
+        <a href="formas.html" class="doc-tab">🏛️ Formas Poéticas</a>
+        <a href="versos.html" class="doc-tab">📏 Tipos de Versos</a>
+        <a href="gabarito.html" class="doc-tab active">🏆 Gabarito Canônico</a>
+        <a href="licencas.html" class="doc-tab">⚖️ Licenças & Corpus</a>
+        <a href="../index.html" class="doc-tab" style="border-color: var(--accent); color: var(--accent);">← Laboratório</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-body">
+    <section class="doc-section">
+      <h2>🏆 A Filosofia do Gabarito Canônico (Ground Truth)</h2>
+      <p>
+        Em processamento de linguagem natural e avaliação métrica computacional, muitos projetos adotam cortes frouxos de assertividade probabilística (como <em>"se 70% ou 80% dos versos estiverem certos, o teste passa"</em>).
+      </p>
+      <p>
+        O <strong>Lírica</strong> recusa esse paradigma. Em poesia de forma fixa clássica, <strong>um único verso errado invalida a arquitetura métrica da peça</strong>. Para combater falsos positivos silenciosos, todo o motor <code>joaju-lirica</code> é verificado por um <strong>Gabarito Canônico estrito</strong> (<code>tests/corpus/gabarito_canonico.json</code>) contendo 51 poemas históricos completos auditados verso a verso.
+      </p>
+
+      <div style="background-color: var(--bg-tertiary); padding: 1rem; border-left: 3px solid var(--accent-green); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
+        <strong>Conformidade Estrita nos Grandes Clássicos:</strong>
+        <p>Todos os sonetos de Luís de Camões, a estrofe 1 de <em>Os Lusíadas</em>, a <em>Canção do Exílio</em> de Gonçalves Dias e os sonetos de Vinícius de Moraes atingem <strong>100% de conformidade exata</strong> verso a verso no benchmark.</p>
+      </div>
+    </section>
+
+    <section class="doc-section">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <h2>Corpus Histórico Auditado (51 Poemas)</h2>
+        <input type="text" id="gabarito-search" class="search-box" placeholder="Buscar por título, autor ou época...">
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table class="gabarito-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Título</th>
+              <th>Autor</th>
+              <th>Época / Movimento</th>
+              <th>Metro Canônico</th>
+              <th>Forma Canônica</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="gabarito-tbody">
+            <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Carregando Gabarito Canônico...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica <span id="lbl-versao">v0.1.0-dev.17+20261022.6eac5e6</span> • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    let gabaritoData = [];
+    async function carregarGabarito() {
+      try {
+        const resp = await fetch('../gabarito.json');
+        gabaritoData = await resp.json();
+        renderizarTabela(gabaritoData);
+      } catch (e) {
+        console.error('Erro ao carregar gabarito.json:', e);
+      }
+    }
+
+    function renderizarTabela(lista) {
+      const tbody = document.getElementById('gabarito-tbody');
+      tbody.innerHTML = '';
+      if (lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Nenhum poema encontrado na busca.</td></tr>';
+        return;
+      }
+
+      lista.forEach(p => {
+        const tr = document.createElement('tr');
+        const metroStr = p.metro_esperado ? `${p.metro_esperado} sílabas` : '<span class="badge-status-var">Variável / Livre</span>';
+        const formaStr = p.forma_esperada || 'Livre / Estrofe Tradicional';
+        tr.innerHTML = `
+          <td><code>${p.id}</code></td>
+          <td><strong>${p.titulo}</strong></td>
+          <td>${p.autor}</td>
+          <td>${p.epoca}</td>
+          <td>${metroStr}</td>
+          <td>${formaStr}</td>
+          <td>
+            <button class="btn-test-in-lab" onclick="testarNoLab('${p.id}')">Testar no Lab</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function testarNoLab(id) {
+      const p = gabaritoData.find(item => item.id === id);
+      if (p) {
+        sessionStorage.setItem('lirica_custom_poem', p.texto);
+        window.location.href = '../index.html';
+      }
+    }
+
+    document.getElementById('gabarito-search').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtrado = gabaritoData.filter(p => 
+        p.titulo.toLowerCase().includes(term) ||
+        p.autor.toLowerCase().includes(term) ||
+        p.epoca.toLowerCase().includes(term) ||
+        p.id.toLowerCase().includes(term)
+      );
+      renderizarTabela(filtrado);
+    });
+
+    carregarGabarito();
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.7';
+import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.8';
 
 let exemplos = [];
 let verses = [
@@ -22,7 +22,14 @@ let verses = [
 ];
 
 // Elements
-const selectExemplo = document.getElementById('select-exemplo');
+const btnAbrirExemplos = document.getElementById('btn-abrir-exemplos');
+const btnHeaderLimpar = document.getElementById('btn-header-limpar');
+const modalExemplos = document.getElementById('modal-exemplos');
+const btnFecharModal = document.getElementById('btn-fechar-modal');
+const btnFecharModalBottom = document.getElementById('btn-fechar-modal-bottom');
+const inputBuscaExemplos = document.getElementById('input-busca-exemplos');
+const gridExemplos = document.getElementById('grid-exemplos');
+
 const selectModo = document.getElementById('select-modo');
 const chkCastilho = document.getElementById('chk-castilho');
 const chkPontuacao = document.getElementById('chk-pontuacao');
@@ -64,13 +71,105 @@ const versesContainer = document.getElementById('verses-container');
 const codeWorkspace = document.getElementById('code-workspace');
 const codeContent = document.getElementById('code-content');
 
-async function main() {
-  await init('./pkg/lirica_bg.wasm?v=0.1.7');
+// Modal de Exemplos
+function abrirModal() {
+  if (!modalExemplos) return;
+  modalExemplos.hidden = false;
+  if (inputBuscaExemplos) {
+    inputBuscaExemplos.value = '';
+    renderExemplosGrid('');
+    inputBuscaExemplos.focus();
+  }
+}
 
-  // Version
+function fecharModal() {
+  if (!modalExemplos) return;
+  modalExemplos.hidden = true;
+}
+
+function renderExemplosGrid(filtro = '') {
+  if (!gridExemplos) return;
+  gridExemplos.innerHTML = '';
+
+  const filtrados = exemplos.filter(ex => {
+    if (!filtro) return true;
+    return ex.titulo.toLowerCase().includes(filtro) ||
+           ex.autor.toLowerCase().includes(filtro) ||
+           (ex.genero && ex.genero.toLowerCase().includes(filtro)) ||
+           (ex.texto && ex.texto.toLowerCase().includes(filtro));
+  });
+
+  if (filtrados.length === 0) {
+    gridExemplos.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 2.5rem 1rem;">Nenhum exemplo poético encontrado para "<strong>${filtro}</strong>".</div>`;
+    return;
+  }
+
+  filtrados.forEach(ex => {
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'exemplo-card';
+    card.setAttribute('aria-label', `Carregar ${ex.titulo} de ${ex.autor}`);
+
+    const header = document.createElement('div');
+    header.className = 'exemplo-card-header';
+
+    const title = document.createElement('div');
+    title.className = 'exemplo-card-title';
+    title.textContent = ex.titulo;
+    header.appendChild(title);
+
+    if (ex.genero) {
+      const badge = document.createElement('span');
+      badge.className = 'exemplo-card-badge';
+      badge.textContent = ex.genero;
+      header.appendChild(badge);
+    }
+
+    const autor = document.createElement('div');
+    autor.className = 'exemplo-card-autor';
+    autor.textContent = ex.autor;
+
+    const preview = document.createElement('div');
+    preview.className = 'exemplo-card-preview';
+    const lines = ex.texto.split('\n').filter(l => l.trim().length > 0).slice(0, 3);
+    preview.textContent = lines.join('\n');
+
+    card.appendChild(header);
+    card.appendChild(autor);
+    card.appendChild(preview);
+
+    card.addEventListener('click', () => {
+      carregarPoema(ex.texto);
+      fecharModal();
+    });
+
+    gridExemplos.appendChild(card);
+  });
+}
+
+function carregarPoema(texto) {
+  verses = texto.split('\n');
+  if (rawTextarea) rawTextarea.value = texto;
+  renderWorkspace();
+  focusVerse(0);
+}
+
+function limparLaboratorio() {
+  verses = [''];
+  if (rawTextarea) rawTextarea.value = '';
+  renderWorkspace();
+  focusVerse(0);
+}
+
+async function main() {
+  await init('./pkg/lirica_bg.wasm?v=0.1.8');
+
+  // Version canônica
   try {
     const v = versao();
-    if (lblVersao) lblVersao.textContent = `v${v}`;
+    if (lblVersao) {
+      lblVersao.textContent = v.startsWith('v') ? v : `v${v}`;
+    }
   } catch (e) {
     console.error('Erro de versão:', e);
   }
@@ -78,32 +177,54 @@ async function main() {
   // Load Examples
   try {
     exemplos = JSON.parse(carregar_exemplos());
-    selectExemplo.innerHTML = '<option value="">— Escolha um exemplo clássico —</option>';
-    exemplos.forEach(ex => {
-      const opt = document.createElement('option');
-      opt.value = ex.id;
-      opt.textContent = `${ex.titulo} (${ex.autor})`;
-      selectExemplo.appendChild(opt);
-    });
+    renderExemplosGrid('');
 
-    // Default Camões
+    // Default Camões se nenhum poema for fornecido via sessionStorage
     const defaultEx = exemplos.find(ex => ex.id === 'camoes');
     if (defaultEx) {
-      selectExemplo.value = defaultEx.id;
       verses = defaultEx.texto.split('\n');
     }
   } catch (e) {
     console.error('Erro ao carregar exemplos:', e);
   }
 
-  // Event Listeners
-  selectExemplo.addEventListener('change', (e) => {
-    const selected = exemplos.find(ex => ex.id === e.target.value);
-    if (selected) {
-      verses = selected.texto.split('\n');
-      renderWorkspace();
+  // Verificar se há poema customizado via sessionStorage (ex.: vindo de docs/gabarito.html)
+  try {
+    const customPoemJson = sessionStorage.getItem('lirica_custom_poem');
+    if (customPoemJson) {
+      sessionStorage.removeItem('lirica_custom_poem');
+      const customPoem = JSON.parse(customPoemJson);
+      if (customPoem && customPoem.texto) {
+        verses = customPoem.texto.split('\n');
+      }
+    }
+  } catch (e) {
+    console.warn('Erro ao carregar poema de sessionStorage:', e);
+  }
+
+  // Event Listeners para Modal
+  if (btnAbrirExemplos) btnAbrirExemplos.addEventListener('click', abrirModal);
+  if (btnFecharModal) btnFecharModal.addEventListener('click', fecharModal);
+  if (btnFecharModalBottom) btnFecharModalBottom.addEventListener('click', fecharModal);
+  if (modalExemplos) {
+    modalExemplos.addEventListener('click', (e) => {
+      if (e.target === modalExemplos) fecharModal();
+    });
+  }
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalExemplos && !modalExemplos.hidden) {
+      fecharModal();
     }
   });
+  if (inputBuscaExemplos) {
+    inputBuscaExemplos.addEventListener('input', (e) => {
+      renderExemplosGrid(e.target.value.toLowerCase().trim());
+    });
+  }
+
+  // Botões de Limpeza
+  if (btnHeaderLimpar) btnHeaderLimpar.addEventListener('click', limparLaboratorio);
+  if (btnLimpar) btnLimpar.addEventListener('click', limparLaboratorio);
 
   selectModo.addEventListener('change', renderWorkspace);
   chkCastilho.addEventListener('change', renderWorkspace);
@@ -127,14 +248,6 @@ async function main() {
       focusVerse(verses.length - 1);
     });
   }
-
-  btnLimpar.addEventListener('click', () => {
-    verses = [''];
-    selectExemplo.value = '';
-    rawTextarea.value = '';
-    renderWorkspace();
-    focusVerse(0);
-  });
 
   btnToggleRaw.addEventListener('click', toggleRawEditor);
 
