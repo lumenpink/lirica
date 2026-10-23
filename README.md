@@ -22,8 +22,11 @@ O **Lírica** é um playground interativo client-side para análise rítmica, di
 ## Compilação Local
 
 ```bash
-# Compilar bundle WebAssembly
+# Compilar bundle WebAssembly otimizado
 wasm-pack build --target web --out-dir site/pkg --release
+
+# Compilação estática universal (static-pie) contra musl libc
+cargo build --release --target x86_64-unknown-linux-musl
 
 # Servir localmente
 cd site && python3 -m http.server 8080
