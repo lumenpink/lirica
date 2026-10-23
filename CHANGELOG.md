@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
+
 ### Added
 - Laboratório interativo de escansão poética e análise métrica em WebAssembly.
 - Interface visual dividida (split-screen) com atualização em tempo real.
