@@ -9,6 +9,8 @@ on:
 jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
+    container:
+      image: gambi.2lp.in/lumen/gost-ci-wasm:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
