@@ -13,7 +13,7 @@ crate-type = ["cdylib", "rlib"]
 path = "src/lib.rs"
 
 [dependencies]
-joaju-lirica = { version = "0.5.0", registry = "lumen" }
+joaju-lirica = { version = "0.5.0", registry = "gambi" }
 wasm-bindgen = "0.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
