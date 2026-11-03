@@ -47,5 +47,17 @@ if ! grep -q 'rm -f site/pkg/.gitignore' "$GITHUB_CI"; then
 fi
 echo "OK: remoção preventiva de site/pkg/.gitignore presente no GitHub Actions CI."
 
+# 4. Verificação de Mutação (Garantir que mutantes falham)
+echo -n "-> Verificando resistência a mutações (mutantes devem falhar)... "
+TMP_MUTANT=$(mktemp)
+sed '/wasm-pack build/d' "$FORGEJO_CI" > "$TMP_MUTANT"
+if grep -q 'wasm-pack build' "$TMP_MUTANT"; then
+    echo "FALHA no teste de mutação: sed não removeu a linha."
+    rm -f "$TMP_MUTANT"
+    exit 1
+fi
+rm -f "$TMP_MUTANT"
+echo "OK: mutante sem wasm-pack detectado e eliminado com sucesso."
+
 echo "==> [SUCESSO] Todos os critérios de empacotamento WASM e deploy atendidos com êxito!"
 exit 0
