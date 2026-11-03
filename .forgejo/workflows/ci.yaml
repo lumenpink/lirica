@@ -41,6 +41,11 @@ jobs:
           cargo fmt --check
           cargo clippy --all-targets -- -D warnings
 
+      - name: Build WebAssembly Bundle
+        run: |
+          wasm-pack build --target web --out-dir site/pkg --release
+          rm -f site/pkg/.gitignore
+
       - name: Deploy to Cloudflare Pages
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
