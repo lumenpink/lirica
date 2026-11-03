@@ -162,7 +162,16 @@ function limparLaboratorio() {
 }
 
 async function main() {
-  await init('./pkg/lirica_bg.wasm?v=0.1.8');
+  try {
+    await init('./pkg/lirica_bg.wasm?v=0.1.8');
+  } catch (err) {
+    console.error('Falha ao inicializar WebAssembly do Lírica:', err);
+    if (formDesc) {
+      formDesc.textContent = 'Erro ao carregar o motor WebAssembly. Verifique a conexão e recarregue a página.';
+      formDesc.style.color = 'var(--accent-red)';
+    }
+    return;
+  }
 
   // Version canônica
   try {
@@ -692,4 +701,6 @@ async function copiarAnalise() {
   }
 }
 
-main();
+main().catch(err => {
+  console.error('Falha crítica na inicialização do Lírica:', err);
+});
