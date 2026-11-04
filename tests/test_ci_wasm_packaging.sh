@@ -1,21 +1,23 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Test Suite: Compilação de Bundle WASM e Deploy no Pages (#14)
+# Test Suite: Compilação de Bundle WASM e Compatibilidade (#14, #15)
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SPEC_FILE="$REPO_ROOT/docs/specs/14_compilar_bundle_wasm_deploy_pages.md"
+SPEC_FILE_14="$REPO_ROOT/docs/specs/14_compilar_bundle_wasm_deploy_pages.md"
+SPEC_FILE_15="$REPO_ROOT/docs/specs/15_desativar_wasm_opt_bulk_memory.md"
 FORGEJO_CI="$REPO_ROOT/.forgejo/workflows/ci.yaml"
 GITHUB_CI="$REPO_ROOT/.github/workflows/ci.yaml"
+CARGO_TOML="$REPO_ROOT/Cargo.toml"
 
-echo "==> [TEST] Validando conformidade da compilação e empacotamento WASM para Pages (#14)..."
+echo "==> [TEST] Validando conformidade de compilação, bulk memory e empacotamento (#14, #15)..."
 
-# 1. Validação da Spec
-echo -n "-> Verificando especificação formal... "
-if [ ! -f "$SPEC_FILE" ]; then
-    echo "FALHA: Arquivo de especificação $SPEC_FILE não encontrado."
+# 1. Validação das Specs
+echo -n "-> Verificando especificações formais... "
+if [ ! -f "$SPEC_FILE_14" ] || [ ! -f "$SPEC_FILE_15" ]; then
+    echo "FALHA: Arquivos de especificação não encontrados."
     exit 1
 fi
-echo "OK: $SPEC_FILE presente."
+echo "OK: especificações presentes."
 
 # 2. Validação da esteira Forgejo CI
 echo -n "-> Verificando passo de compilação wasm-pack no Forgejo CI... "
