@@ -68,7 +68,16 @@ if grep -q 'wasm-pack build' "$TMP_MUTANT"; then
     exit 1
 fi
 rm -f "$TMP_MUTANT"
-echo "OK: mutante sem wasm-pack detectado e eliminado com sucesso."
+
+TMP_MUTANT_CARGO=$(mktemp)
+sed '/wasm-opt = false/d' "$CARGO_TOML" > "$TMP_MUTANT_CARGO"
+if grep -q 'wasm-opt = false' "$TMP_MUTANT_CARGO"; then
+    echo "FALHA no teste de mutação: sed não removeu wasm-opt."
+    rm -f "$TMP_MUTANT_CARGO"
+    exit 1
+fi
+rm -f "$TMP_MUTANT_CARGO"
+echo "OK: mutantes eliminados com sucesso."
 
 echo "==> [SUCESSO] Todos os critérios de empacotamento WASM e deploy atendidos com êxito!"
 exit 0
