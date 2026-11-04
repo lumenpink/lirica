@@ -1,6 +1,6 @@
 [package]
 name = "lirica"
-version = "0.1.0-dev.40+20261104.1eb6466"
+version = "0.1.0-dev.41+20261104.722639c"
 edition = "2021"
 description = "Laboratório métrico e escansão poética em WebAssembly"
 license = "Apache-2.0"
@@ -24,3 +24,6 @@ lto = "fat"
 codegen-units = 1
 panic = "abort"
 strip = true
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
