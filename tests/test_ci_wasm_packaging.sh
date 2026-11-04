@@ -47,7 +47,16 @@ if ! grep -q 'rm -f site/pkg/.gitignore' "$GITHUB_CI"; then
 fi
 echo "OK: remoção preventiva de site/pkg/.gitignore presente no GitHub Actions CI."
 
-# 4. Verificação de Mutação (Garantir que mutantes falham)
+# 4. Validação de compatibilidade wasm-opt = false no Cargo.toml (#15)
+CARGO_TOML="$REPO_ROOT/Cargo.toml"
+echo -n "-> Verificando wasm-opt = false em Cargo.toml... "
+if ! grep -q 'wasm-opt = false' "$CARGO_TOML"; then
+    echo "FALHA: wasm-opt = false ausente em $CARGO_TOML (necessário para compatibilidade bulk memory)."
+    exit 1
+fi
+echo "OK: wasm-opt desativado para compatibilidade com bulk memory."
+
+# 5. Verificação de Mutação (Garantir que mutantes falham)
 echo -n "-> Verificando resistência a mutações (mutantes devem falhar)... "
 TMP_MUTANT=$(mktemp)
 sed '/wasm-pack build/d' "$FORGEJO_CI" > "$TMP_MUTANT"
