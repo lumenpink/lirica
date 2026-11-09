@@ -581,4 +581,3 @@ fn test_analise_web_rimas_morfologicas_e_cliches() {
     assert!(p1.eh_cliche, "amor x dor deve ser marcado como clichê");
     assert!(p1.motivo_cliche.is_some());
 }
-
