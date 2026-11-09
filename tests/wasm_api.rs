@@ -347,3 +347,218 @@ E o verso é bem respeitado.";
     assert_eq!(forma.nome, "Septilha de Cordel");
     assert_eq!(forma.confianca_percentual, 100);
 }
+
+#[allow(dead_code)]
+#[derive(Debug, serde::Deserialize)]
+struct GabaritoPoema {
+    id: String,
+    autor: String,
+    titulo: String,
+    forma_esperada: Option<String>,
+    texto: String,
+    #[serde(default)]
+    mutacoes: Vec<GabaritoMutacao>,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, serde::Deserialize)]
+struct GabaritoMutacao {
+    id: String,
+    tipo: String,
+    descricao: String,
+    #[serde(default)]
+    operacoes: Vec<OperacaoLinha>,
+    #[serde(default)]
+    flags: FlagsMutacao,
+    expectativa: ExpectativaMutacao,
+}
+
+#[derive(Debug, serde::Deserialize, Clone)]
+struct OperacaoLinha {
+    op: String,
+    linha: Option<usize>,
+    texto: Option<String>,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, serde::Deserialize, Default, Clone)]
+struct FlagsMutacao {
+    contagem_castilho: Option<bool>,
+    elidir_pontuacao: Option<bool>,
+    forcar_rima_estrita: Option<bool>,
+}
+
+#[derive(Debug, serde::Deserialize)]
+struct ExpectativaMutacao {
+    forma_esperada: Option<String>,
+    nota_min: Option<u8>,
+    nota_max: Option<u8>,
+    observacoes_obrigatorias: Option<Vec<String>>,
+}
+
+fn aplicar_mutacoes_texto(texto_original: &str, operacoes: &[OperacaoLinha]) -> String {
+    let mut linhas: Vec<String> = texto_original.lines().map(|s| s.to_string()).collect();
+
+    for op in operacoes {
+        match op.op.as_str() {
+            "remover_espacos_estroficos" => {
+                linhas.retain(|l| !l.trim().is_empty());
+            }
+            "substituir" => {
+                if let Some(num_linha) = op.linha {
+                    let mut contador = 0;
+                    for l in linhas.iter_mut() {
+                        if !l.trim().is_empty() {
+                            contador += 1;
+                            if contador == num_linha {
+                                if let Some(novo_texto) = &op.texto {
+                                    *l = novo_texto.clone();
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            "remover" => {
+                if let Some(num_linha) = op.linha {
+                    let mut contador = 0;
+                    let mut indice_remover = None;
+                    for (idx, l) in linhas.iter().enumerate() {
+                        if !l.trim().is_empty() {
+                            contador += 1;
+                            if contador == num_linha {
+                                indice_remover = Some(idx);
+                                break;
+                            }
+                        }
+                    }
+                    if let Some(idx) = indice_remover {
+                        linhas.remove(idx);
+                    }
+                }
+            }
+            "inserir" => {
+                if let Some(num_linha) = op.linha {
+                    let mut contador = 0;
+                    let mut indice_inserir = linhas.len();
+                    for (idx, l) in linhas.iter().enumerate() {
+                        if !l.trim().is_empty() {
+                            contador += 1;
+                            if contador == num_linha {
+                                indice_inserir = idx;
+                                break;
+                            }
+                        }
+                    }
+                    if let Some(novo_texto) = &op.texto {
+                        linhas.insert(indice_inserir, novo_texto.clone());
+                    }
+                }
+            }
+            outro => panic!("Operação de mutação desconhecida: {}", outro),
+        }
+    }
+
+    linhas.join("\n")
+}
+
+#[test]
+fn test_site_gabarito_e_mutacoes_wasm() {
+    let raw = std::fs::read_to_string("site/gabarito.json")
+        .expect("site/gabarito.json deve existir no repositório");
+    let poemas: Vec<GabaritoPoema> =
+        serde_json::from_str(&raw).expect("site/gabarito.json deve ser JSON válido");
+
+    assert_eq!(
+        poemas.len(),
+        55,
+        "Gabarito canônico deve ter exatamente 55 poemas puros"
+    );
+
+    let total_mutacoes: usize = poemas.iter().map(|p| p.mutacoes.len()).sum();
+    assert_eq!(
+        total_mutacoes, 102,
+        "Total de mutações declaradas deve ser 102"
+    );
+
+    for poema in &poemas {
+        for mutacao in &poema.mutacoes {
+            let texto = aplicar_mutacoes_texto(&poema.texto, &mutacao.operacoes);
+            let castilho = mutacao.flags.contagem_castilho.unwrap_or(true);
+            let elidir_pont = mutacao.flags.elidir_pontuacao.unwrap_or(false);
+
+            let saida = escandir(&texto, "visual", false, elidir_pont, castilho, true);
+            let web: AnaliseWeb = serde_json::from_str(&saida).expect("JSON visual");
+
+            let res = &mutacao.expectativa;
+            if res.nota_max == Some(0) {
+                if let Some(ref f) = web.forma_poetica {
+                    assert_eq!(
+                        f.confianca_percentual, 0,
+                        "Mutação {} em {}: nota esperada 0%, obteve {}% para '{}'",
+                        mutacao.id, poema.id, f.confianca_percentual, f.nome
+                    );
+                }
+            } else {
+                let diag = web.forma_poetica.as_ref().unwrap_or_else(|| {
+                    panic!(
+                        "Mutação {} em {}: esperava diagnóstico de '{:?}', mas retornou None",
+                        mutacao.id, poema.id, res.forma_esperada
+                    )
+                });
+
+                if let Some(ref forma_esp) = res.forma_esperada {
+                    assert!(
+                        diag.nome.contains(forma_esp),
+                        "Mutação {} em {}: esperava '{}', detectou '{}'",
+                        mutacao.id,
+                        poema.id,
+                        forma_esp,
+                        diag.nome
+                    );
+                }
+
+                if let Some(nota_min) = res.nota_min {
+                    assert!(
+                        diag.confianca_percentual >= nota_min,
+                        "Mutação {} em {}: nota {}% abaixo da nota mínima esperada {}%",
+                        mutacao.id,
+                        poema.id,
+                        diag.confianca_percentual,
+                        nota_min
+                    );
+                }
+
+                if let Some(nota_max) = res.nota_max {
+                    assert!(
+                        diag.confianca_percentual <= nota_max,
+                        "Mutação {} em {}: nota {}% acima da nota máxima esperada {}%",
+                        mutacao.id,
+                        poema.id,
+                        diag.confianca_percentual,
+                        nota_max
+                    );
+                }
+
+                if let Some(ref observacoes) = res.observacoes_obrigatorias {
+                    for obs_esp in observacoes {
+                        let achou = diag
+                            .observacoes
+                            .iter()
+                            .any(|obs| obs.to_lowercase().contains(&obs_esp.to_lowercase()));
+                        assert!(
+                            achou,
+                            "Mutação {} em {}: observação obrigatória '{}' não encontrada em {:?}",
+                            mutacao.id,
+                            poema.id,
+                            obs_esp,
+                            diag.observacoes
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
