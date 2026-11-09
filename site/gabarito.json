@@ -1085,5 +1085,128 @@
       11
     ],
     "texto": "No meio do caminho tinha uma pedra\ntinha uma pedra no meio do caminho\ntinha uma pedra\nno meio do caminho tinha uma pedra.\n\nNunca me esquecerei desse acontecimento\nna vida de minhas retinas tão fatigadas.\nNunca me esquecerei que no meio do caminho\ntinha uma pedra\ntinha uma pedra no meio do caminho\nno meio do caminho tinha uma pedra."
+  },
+  {
+    "id": "profana_shakespeariano",
+    "titulo": "Profana",
+    "autor": "Lumen Pink",
+    "epoca": "Contemporânea",
+    "metro_esperado": 10,
+    "forma_esperada": "Soneto Inglês (Shakespeariano)",
+    "elidir_pontuacao": false,
+    "versos_esperados": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "texto": "Cobiça a carne, que depois recusa,\nExige o molde, pronta a condenar;\nDisfarça a culpa no pudor da musa\nEnquanto o vício prende o seu olhar.\n\nDespreza a mão que levantou seu muro,\nNo lindo linho limpa o nojo e ri;\nConsome o braço no trabalho duro,\nNegando a quem mantém seu trono ali.\n\nCondena o gozo na oração que tece,\nReduz a vida a tráfico venal;\nCompra o silêncio na vendida prece,\nE julga o mundo em cego tribunal.\n\nSe o teu altar é palco de pecado,\nSangue, suor ou sêmen é sagrado?"
+  },
+  {
+    "id": "spenseriano_nome_areia",
+    "titulo": "Soneto das Ondas e do Nome",
+    "autor": "Edmund Spenser (adapt. lusófona)",
+    "epoca": "Renascentista / Elisabetana",
+    "metro_esperado": 10,
+    "forma_esperada": "Soneto Inglês (Spenseriano)",
+    "elidir_pontuacao": false,
+    "versos_esperados": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "texto": "Um dia escrevi seu nome na areia,\nPorém a onda logo o arrebatou;\nMais uma vez a minha mão alteia,\nMas outra vaga o rastro devorou.\n\nMulher mortal em vão já pelejou,\nDisse ela então com seu tão triste olhar:\nPois o meu ser a cinza já levou,\nE o tempo o meu perfil há de apagar.\n\nNão há de ser, respondo ao teu cantar,\nPois na canção teu brilho viverá,\nE os céus verão a música ecoar,\nOnde minh'alma sempre brilhará.\n\nQuando este chão for puro e bem perfeito,\nNosso amor dormirá em santo leito."
+  },
+  {
+    "id": "sonetilha_lirica",
+    "titulo": "Sonetilha do Rio e da Tarde",
+    "autor": "Tradição Lírica",
+    "epoca": "Lírica Tradicional",
+    "metro_esperado": 7,
+    "forma_esperada": "Sonetilha (Sonetino)",
+    "elidir_pontuacao": false,
+    "versos_esperados": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "texto": "Na margem do rio manso,\nVejo a tarde desmaiar;\nEm vão busco o meu descanso,\nCansado de navegar.\n\nO vento frio me avisa\nQue a noite vem ao redor;\nNum leve sopro de brisa,\nCresce no peito esta dor.\n\nAs sombras cobrem a terra,\nO céu perde a claridade;\nA escuridão tudo encerra.\n\nFica no peito a saudade,\nToda a dor que a alma aferra,\nChora na calma cidade."
+  },
+  {
+    "id": "septilha_cordel_linhas",
+    "titulo": "O Verso de Sete Linhas (Septilha)",
+    "autor": "Tradição Popular Nordestina",
+    "epoca": "Literatura de Cordel",
+    "metro_esperado": 7,
+    "forma_esperada": "Septilha de Cordel",
+    "elidir_pontuacao": false,
+    "versos_esperados": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "texto": "O verso de sete linhas\nÉ bonito e compassado;\nQuem lê com muita atenção\nFica o leitor encantado;\nTem beleza e perfeição,\nTem nobreza no sertão,\nE o verso é bem respeitado."
+  },
+  {
+    "id": "profana_contraprova_distico",
+    "titulo": "Profana (Contra-prova: dístico quebrado)",
+    "autor": "Contra-prova de Auditoria",
+    "epoca": "Auditoria Métrica",
+    "metro_esperado": 10,
+    "forma_esperada": "Soneto Inglês (Shakespeariano)",
+    "elidir_pontuacao": false,
+    "versos_esperados": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "texto": "Cobiça a carne, que depois recusa,\nExige o molde, pronta a condenar;\nDisfarça a culpa no pudor da musa\nEnquanto o vício prende o seu olhar.\n\nDespreza a mão que levantou seu muro,\nNo lindo linho limpa o nojo e ri;\nConsome o braço no trabalho duro,\nNegando a quem mantém seu trono ali.\n\nCondena o gozo na oração que tece,\nReduz a vida a tráfico venal;\nCompra o silêncio na vendida prece,\nE julga o mundo em cego tribunal.\n\nSe o teu altar é palco de pecado,\nTodo este pranto agora é vão lamento."
   }
 ]
