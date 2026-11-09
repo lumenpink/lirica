@@ -326,11 +326,13 @@ function updateStats(webData) {
 
     if (forma.nome.includes('Soneto')) {
       formIcon.textContent = '👑';
+    } else if (forma.nome.includes('Sonetilha')) {
+      formIcon.textContent = '✨';
     } else if (forma.nome.includes('Espinela')) {
       formIcon.textContent = '📜';
     } else if (forma.nome.includes('Martelo')) {
       formIcon.textContent = '🔨';
-    } else if (forma.nome.includes('Cordel') || forma.nome.includes('Sextilha')) {
+    } else if (forma.nome.includes('Cordel') || forma.nome.includes('Sextilha') || forma.nome.includes('Septilha')) {
       formIcon.textContent = '🌿';
     } else if (forma.nome.includes('Haicai')) {
       formIcon.textContent = '🌸';
