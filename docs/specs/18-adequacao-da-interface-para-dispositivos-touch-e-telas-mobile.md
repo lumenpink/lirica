@@ -53,3 +53,15 @@ A interface do Lírica em telas móveis (smartphones com viewports de $360\text{
 3. Nenhum botão ou controle interativo possui alvo tátil inferior a $40\text{--}44\text{px}$ em viewport mobile.
 4. O editor verso a verso opera sem zoom invasivo em navegadores mobile.
 5. A suite de testes em `tests/` e a validação do CSS asseguram conformidade estrita com os critérios declarados.
+
+---
+
+## 4. Laudo de Fechamento (Fase 9: Close)
+
+- **Status:** Concluído e Aprovado
+- **Breakpoints Implementados:** `@media (max-width: 768px)` e `@media (max-width: 480px)`
+- **Alvos de Toque:** Mínimo de $44\times 44\text{px}$ para exclusão de versos e estrofes e $40\text{--}44\text{px}$ para botões e toggles
+- **Inputs Mobile:** Font-size padronizado em $1\text{rem}$ ($16\text{px}$) anulando auto-zoom no Safari iOS
+- **Dashboard e Editor:** Colapso responsivo para coluna única com esteira de sílabas rolável inercialmente
+- **Testes Automatizados:** 19/19 testes aprovados (incluindo `test_mobile_touch_css_spec`)
+
