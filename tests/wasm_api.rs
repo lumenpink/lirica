@@ -550,10 +550,7 @@ fn test_site_gabarito_e_mutacoes_wasm() {
                         assert!(
                             achou,
                             "Mutação {} em {}: observação obrigatória '{}' não encontrada em {:?}",
-                            mutacao.id,
-                            poema.id,
-                            obs_esp,
-                            diag.observacoes
+                            mutacao.id, poema.id, obs_esp, diag.observacoes
                         );
                     }
                 }
@@ -561,4 +558,3 @@ fn test_site_gabarito_e_mutacoes_wasm() {
         }
     }
 }
-
