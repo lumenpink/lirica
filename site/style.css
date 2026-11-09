@@ -420,6 +420,218 @@ body {
   gap: 0.35rem;
 }
 
+/* Stanza Header & Rhyme Strip (Touch-First) */
+.stanza-header-block {
+  display: flex;
+  flex-direction: column;
+  margin: 0.35rem 0 0.15rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-tertiary);
+}
+
+.stanza-header-block.first-stanza {
+  border-top: none;
+}
+
+.stanza-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.85rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stanza-header-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.stanza-rhyme-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Rhyme Pair Button / Badge (Touch-friendly, min-height 36px) */
+.rhyme-pair-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.55rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  min-height: 36px;
+  touch-action: manipulation;
+  transition: all 0.15s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rhyme-pair-badge:active {
+  transform: scale(0.98);
+}
+
+/* Quality Variants */
+.rhyme-pair-badge.quality-rica {
+  background-color: rgba(198, 120, 221, 0.12);
+  border-color: rgba(198, 120, 221, 0.4);
+  color: var(--accent-purple);
+}
+
+.rhyme-pair-badge.quality-pobre {
+  background-color: rgba(171, 178, 191, 0.08);
+  border-color: rgba(171, 178, 191, 0.3);
+  color: var(--text-secondary);
+}
+
+.rhyme-pair-badge.quality-preciosa {
+  background-color: rgba(86, 182, 194, 0.15);
+  border-color: rgba(86, 182, 194, 0.45);
+  color: var(--accent-cyan);
+}
+
+.rhyme-pair-badge.quality-rara {
+  background-color: rgba(152, 195, 121, 0.15);
+  border-color: rgba(152, 195, 121, 0.45);
+  color: var(--accent-green);
+}
+
+.rhyme-pair-badge.quality-provavel-pobre {
+  background-color: rgba(171, 178, 191, 0.05);
+  border: 1px dashed rgba(171, 178, 191, 0.45);
+  color: var(--text-secondary);
+}
+
+.rhyme-pair-badge.quality-provavel-rica {
+  background-color: rgba(198, 120, 221, 0.08);
+  border: 1px dashed rgba(198, 120, 221, 0.45);
+  color: var(--accent-purple);
+}
+
+.rhyme-pair-badge.quality-indeterminada {
+  background-color: rgba(229, 192, 123, 0.08);
+  border: 1px dashed rgba(229, 192, 123, 0.45);
+  color: var(--accent-gold);
+}
+
+.rhyme-pair-badge.is-selected {
+  outline: 2px solid var(--accent-purple);
+  box-shadow: 0 0 8px rgba(198, 120, 221, 0.35);
+  background-color: var(--bg-elevated);
+}
+
+/* Cliché Indicator Tag */
+.cliche-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  background-color: rgba(224, 108, 117, 0.2);
+  border: 1px solid rgba(224, 108, 117, 0.5);
+  color: var(--accent);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.3rem;
+  border-radius: var(--radius-sm);
+  margin-left: 0.25rem;
+}
+
+/* Stanza Audit Drawer / Micro-Card */
+.stanza-audit-drawer {
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8125rem;
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.audit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.audit-card-title {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-close-audit {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  line-height: 1;
+}
+
+.btn-close-audit:hover,
+.btn-close-audit:active {
+  color: var(--text-primary);
+}
+
+.audit-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.audit-card-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.audit-card-row strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.audit-cliche-alert {
+  background-color: rgba(224, 108, 117, 0.12);
+  border-left: 3px solid var(--accent);
+  padding: 0.35rem 0.5rem;
+  border-radius: 2px;
+  color: var(--text-primary);
+  margin-top: 0.25rem;
+}
+
+/* Verse Highlight for Active Rhyme Pair */
+.verse-row.verse-highlight-rhyme {
+  background-color: rgba(198, 120, 221, 0.09) !important;
+  border-left: 3px solid var(--accent-purple);
+}
+
+.badge-rima-compact.is-cliche {
+  border-color: rgba(224, 108, 117, 0.7);
+  color: var(--accent);
+  background-color: rgba(224, 108, 117, 0.15);
+}
+
 .btn-del-stanza {
   background: transparent;
   border: none;

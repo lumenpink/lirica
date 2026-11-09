@@ -2,6 +2,7 @@
 //!
 //! WebAssembly presentation layer for the `joaju-lirica` poetic engine.
 
+use joaju_lirica::morphology::{classificar_rimas_poema, QualidadeRima};
 use joaju_lirica::{
     avaliar_forma_poetica, avaliar_qualidade_rimas, escandir_poema, icone_metro,
     parse_lirica_block, render_painel, render_typst, DiagnosticoForma, InfoAvaliacaoRima, Poema,
@@ -63,6 +64,34 @@ pub struct SilabaDetalhe {
     pub elidida: bool,
 }
 
+/// Evaluated rhyme pair details for web presentation.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ParRimaWeb {
+    /// 1-based verse indices of the pair (e.g. 1 and 4 for ABBA).
+    pub versos: (usize, usize),
+    /// Rhyming terminal tokens (e.g. ("amor", "dor")).
+    pub tokens: (String, String),
+    /// Qualitative classification tag ("Rica", "Pobre", "Preciosa", "Rara", "ProvavelPobre", "ProvavelRica", "Indeterminada").
+    pub qualidade: String,
+    /// Detailed rationale or hypothesis explanation.
+    pub detalhe: Option<String>,
+    /// Audit note.
+    pub auditoria: String,
+    /// Whether the pair constitutes an archaic/hyper-saturated literary cliché.
+    pub eh_cliche: bool,
+    /// Pedagogical explanation of the cliché if applicable.
+    pub motivo_cliche: Option<String>,
+}
+
+/// Rhyme diagnostics grouped per stanza.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EstrofeRimasWeb {
+    /// Zero-based index of the stanza.
+    pub estrofe_indice: usize,
+    /// Evaluated rhyme pairs in this stanza.
+    pub pares: Vec<ParRimaWeb>,
+}
+
 /// Layout information for a stanza.
 #[derive(Serialize, Deserialize)]
 pub struct EstrofeWeb {
@@ -87,6 +116,8 @@ pub struct AnaliseWeb {
     pub forma_poetica: Option<DiagnosticoForma>,
     /// Qualitative and acoustic evaluation of rhymes.
     pub avaliacao_rima: Option<InfoAvaliacaoRima>,
+    /// Morphological rhyme quality and cliché diagnostics grouped by stanza.
+    pub rimas_morfologicas: Option<Vec<EstrofeRimasWeb>>,
 }
 
 /// Scans a text block of verses and returns the rendered result according to options.
@@ -155,12 +186,12 @@ pub fn escandir(
             Err(e) => format!("{{\"error\": \"{}\"}}", e),
         },
         "texto" => poema.linhas_originais.join("\n"),
-        "visual" | "html" => render_visual_json(&poema),
+        "visual" | "html" => render_visual_json(&poema, texto),
         _ => render_painel(&poema),
     }
 }
 
-fn render_visual_json(poema: &Poema) -> String {
+fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
     let mut resultado = Vec::new();
 
     for (orig, esc) in poema.linhas_originais.iter().zip(poema.versos.iter()) {
@@ -232,12 +263,63 @@ fn render_visual_json(poema: &Poema) -> String {
         });
     }
 
+    let rimas_morfologicas = if poema.esquema_rima.is_some() {
+        let texto_limpo: String = raw_text
+            .lines()
+            .filter(|l| !l.trim().starts_with("%%"))
+            .collect::<Vec<_>>()
+            .join("\n");
+        let rel = classificar_rimas_poema(&texto_limpo);
+        let estrofes_web = rel
+            .estrofes
+            .into_iter()
+            .enumerate()
+            .map(|(i, est)| EstrofeRimasWeb {
+                estrofe_indice: i,
+                pares: est
+                    .pares_avaliados
+                    .into_iter()
+                    .map(|p| {
+                        let (qualidade, detalhe) = match p.classificacao {
+                            QualidadeRima::Pobre => ("Pobre".to_string(), None),
+                            QualidadeRima::Rica => ("Rica".to_string(), None),
+                            QualidadeRima::Preciosa => ("Preciosa".to_string(), None),
+                            QualidadeRima::Rara => ("Rara".to_string(), None),
+                            QualidadeRima::ProvavelPobre { justificativa } => {
+                                ("ProvavelPobre".to_string(), Some(justificativa))
+                            }
+                            QualidadeRima::ProvavelRica { justificativa } => {
+                                ("ProvavelRica".to_string(), Some(justificativa))
+                            }
+                            QualidadeRima::Indeterminada { motivo } => {
+                                ("Indeterminada".to_string(), Some(format!("{:?}", motivo)))
+                            }
+                        };
+                        ParRimaWeb {
+                            versos: p.versos,
+                            tokens: p.tokens,
+                            qualidade,
+                            detalhe,
+                            auditoria: format!("{:?}", p.auditoria),
+                            eh_cliche: p.eh_cliche,
+                            motivo_cliche: p.motivo_cliche,
+                        }
+                    })
+                    .collect(),
+            })
+            .collect();
+        Some(estrofes_web)
+    } else {
+        None
+    };
+
     let web_out = AnaliseWeb {
         versos: resultado,
         estrofes,
         esquema_rima: poema.esquema_rima.clone(),
         forma_poetica,
         avaliacao_rima,
+        rimas_morfologicas,
     };
 
     serde_json::to_string(&web_out).unwrap_or_else(|_| "{}".to_string())

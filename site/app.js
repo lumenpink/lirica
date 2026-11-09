@@ -362,7 +362,31 @@ function updateStats(webData) {
     const ar = webData.avaliacao_rima;
     rhymeSchemeTitle.textContent = ar.esquema ? `Rima: ${ar.esquema}` : 'Sem Rimas';
     rhymePurityBadge.textContent = ar.pureza_acustica;
-    rhymeDispositionDesc.textContent = ar.tipo_disposicao;
+
+    let morfResumo = '';
+    if (webData.rimas_morfologicas && webData.rimas_morfologicas.length > 0) {
+      let ricas = 0, pobres = 0, cliches = 0, provaveis = 0;
+      webData.rimas_morfologicas.forEach(est => {
+        if (Array.isArray(est.pares)) {
+          est.pares.forEach(p => {
+            if (p.qualidade === 'Rica') ricas++;
+            else if (p.qualidade === 'Pobre') pobres++;
+            else if (p.qualidade && p.qualidade.startsWith('Provavel')) provaveis++;
+            if (p.eh_cliche) cliches++;
+          });
+        }
+      });
+      const parts = [];
+      if (ricas > 0) parts.push(`${ricas} Rica${ricas > 1 ? 's' : ''}`);
+      if (pobres > 0) parts.push(`${pobres} Pobre${pobres > 1 ? 's' : ''}`);
+      if (provaveis > 0) parts.push(`${provaveis} Provável`);
+      if (cliches > 0) parts.push(`${cliches} Clichê${cliches > 1 ? 's' : ''}`);
+      if (parts.length > 0) {
+        morfResumo = ` • ${parts.join(', ')}`;
+      }
+    }
+
+    rhymeDispositionDesc.textContent = `${ar.tipo_disposicao}${morfResumo}`;
     rhymePercentTag.textContent = `${ar.percentual_rimado}% Versos Rimados`;
   } else {
     rhymeSchemeTitle.textContent = 'Rima: --';
@@ -370,6 +394,170 @@ function updateStats(webData) {
     rhymeDispositionDesc.textContent = 'Análise de rimas desativada ou sem versos.';
     rhymePercentTag.textContent = '0% Versos Rimados';
   }
+}
+
+let activeRhymePair = null;
+
+function highlightActiveRhymeVerses() {
+  const rows = versesContainer.querySelectorAll('.verse-row');
+  rows.forEach(r => {
+    const lineNum = parseInt(r.dataset.lineNumber, 10);
+    if (activeRhymePair && (lineNum === activeRhymePair.versos[0] || lineNum === activeRhymePair.versos[1])) {
+      r.classList.add('verse-highlight-rhyme');
+    } else {
+      r.classList.remove('verse-highlight-rhyme');
+    }
+  });
+}
+
+function createStanzaHeaderBlock(stanzaIdx, webData, canDelete, onDelete) {
+  const block = document.createElement('div');
+  block.className = 'stanza-header-block';
+  if (stanzaIdx === 0) {
+    block.classList.add('first-stanza');
+  }
+
+  const row = document.createElement('div');
+  row.className = 'stanza-header-row';
+
+  const left = document.createElement('div');
+  left.className = 'stanza-header-left';
+
+  const badge = document.createElement('span');
+  badge.className = 'stanza-badge';
+  badge.innerHTML = `❦ Estrofe ${stanzaIdx + 1}`;
+  left.appendChild(badge);
+
+  const drawer = document.createElement('div');
+  drawer.className = 'stanza-audit-drawer';
+  drawer.style.display = 'none';
+
+  const morfStanza = webData && Array.isArray(webData.rimas_morfologicas)
+    ? webData.rimas_morfologicas.find(s => s.estrofe_indice === stanzaIdx)
+    : null;
+
+  if (morfStanza && Array.isArray(morfStanza.pares) && morfStanza.pares.length > 0) {
+    const strip = document.createElement('div');
+    strip.className = 'stanza-rhyme-strip';
+
+    morfStanza.pares.forEach((par, pIdx) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rhyme-pair-badge';
+
+      let qualityClass = 'quality-pobre';
+      let icon = '';
+      let qualLabel = par.qualidade;
+
+      switch (par.qualidade) {
+        case 'Rica':
+          qualityClass = 'quality-rica';
+          icon = '✨ ';
+          break;
+        case 'Preciosa':
+          qualityClass = 'quality-preciosa';
+          icon = '💎 ';
+          break;
+        case 'Rara':
+          qualityClass = 'quality-rara';
+          icon = '✦ ';
+          break;
+        case 'ProvavelPobre':
+          qualityClass = 'quality-provavel-pobre';
+          icon = '⚡ ';
+          qualLabel = 'Provável';
+          break;
+        case 'ProvavelRica':
+          qualityClass = 'quality-provavel-rica';
+          icon = '⚡ ';
+          qualLabel = 'Provável Rica';
+          break;
+        case 'Indeterminada':
+          qualityClass = 'quality-indeterminada';
+          icon = '? ';
+          break;
+        default:
+          qualityClass = 'quality-pobre';
+          break;
+      }
+
+      btn.classList.add(qualityClass);
+      btn.innerHTML = `${icon}${qualLabel}: ${par.tokens[0]} × ${par.tokens[1]}`;
+
+      if (par.eh_cliche) {
+        const cTag = document.createElement('span');
+        cTag.className = 'cliche-tag';
+        cTag.textContent = '🔥 Clichê';
+        btn.appendChild(cTag);
+      }
+
+      btn.addEventListener('click', () => {
+        const isCurrent = activeRhymePair &&
+          activeRhymePair.stanzaIdx === stanzaIdx &&
+          activeRhymePair.pairIdx === pIdx;
+
+        document.querySelectorAll('.rhyme-pair-badge').forEach(b => b.classList.remove('is-selected'));
+        document.querySelectorAll('.stanza-audit-drawer').forEach(d => { d.style.display = 'none'; });
+
+        if (isCurrent) {
+          activeRhymePair = null;
+          highlightActiveRhymeVerses();
+        } else {
+          activeRhymePair = { stanzaIdx, pairIdx: pIdx, versos: par.versos };
+          btn.classList.add('is-selected');
+          highlightActiveRhymeVerses();
+
+          drawer.innerHTML = `
+            <div class="audit-card-header">
+              <span class="audit-card-title">✦ Auditoria da Rima • v${par.versos[0]} (${par.tokens[0]}) × v${par.versos[1]} (${par.tokens[1]})</span>
+              <button type="button" class="btn-close-audit" aria-label="Fechar">&times;</button>
+            </div>
+            <div class="audit-card-body">
+              <div class="audit-card-row">
+                <strong>Classificação:</strong> <span>${par.qualidade}</span>
+              </div>
+              ${par.detalhe ? `<div class="audit-card-row"><strong>Diagnóstico:</strong> <span>${par.detalhe}</span></div>` : ''}
+              ${par.eh_cliche ? `
+                <div class="audit-cliche-alert">
+                  <strong>🔥 Clichê Histórico:</strong> ${par.motivo_cliche || 'Par hiper-saturado na tradição lírica.'}
+                </div>
+              ` : ''}
+              <div class="audit-card-row" style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.2rem;">
+                <strong>Auditoria Fonotática:</strong> <span>${par.auditoria}</span>
+              </div>
+            </div>
+          `;
+          drawer.style.display = 'block';
+
+          drawer.querySelector('.btn-close-audit').addEventListener('click', () => {
+            drawer.style.display = 'none';
+            btn.classList.remove('is-selected');
+            activeRhymePair = null;
+            highlightActiveRhymeVerses();
+          });
+        }
+      });
+
+      strip.appendChild(btn);
+    });
+
+    left.appendChild(strip);
+  }
+
+  row.appendChild(left);
+
+  if (canDelete) {
+    const btnDel = document.createElement('button');
+    btnDel.className = 'btn-del-stanza';
+    btnDel.title = 'Remover quebra de estrofe';
+    btnDel.innerHTML = '&times;';
+    btnDel.addEventListener('click', onDelete);
+    row.appendChild(btnDel);
+  }
+
+  block.appendChild(row);
+  block.appendChild(drawer);
+  return block;
 }
 
 function renderWorkspace() {
@@ -415,6 +603,11 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
 
   versesContainer.innerHTML = '';
 
+  // Render first stanza header block if poem has stanzas
+  if (webData && Array.isArray(webData.estrofes) && webData.estrofes.length > 0) {
+    versesContainer.appendChild(createStanzaHeaderBlock(0, webData, false, null));
+  }
+
   let parsedIdx = 0;
   let lineCounter = 1;
   let stanzaCounter = 1;
@@ -422,31 +615,19 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
   verses.forEach((verseText, idx) => {
     // Quebra de estrofe (linha vazia entre versos)
     if (verseText.trim().length === 0) {
-      const divider = document.createElement('div');
-      divider.className = 'stanza-divider-row';
-
       stanzaCounter++;
-      const badge = document.createElement('span');
-      badge.className = 'stanza-badge';
-      badge.innerHTML = `❦ Estrofe ${stanzaCounter}`;
-
-      const btnDel = document.createElement('button');
-      btnDel.className = 'btn-del-stanza';
-      btnDel.title = 'Remover quebra de estrofe';
-      btnDel.innerHTML = '&times;';
-      btnDel.addEventListener('click', () => {
+      const block = createStanzaHeaderBlock(stanzaCounter - 1, webData, true, () => {
         verses.splice(idx, 1);
         renderWorkspace();
       });
-
-      divider.appendChild(badge);
-      divider.appendChild(btnDel);
-      versesContainer.appendChild(divider);
+      versesContainer.appendChild(block);
       return;
     }
 
     const row = document.createElement('div');
     row.className = 'verse-row';
+    const currentLineNum = lineCounter++;
+    row.dataset.lineNumber = `${currentLineNum}`;
 
     // Coluna Esquerda: Verso Editável
     const colLeft = document.createElement('div');
@@ -454,7 +635,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
 
     const numSpan = document.createElement('span');
     numSpan.className = 'line-num';
-    numSpan.textContent = `${lineCounter++}`;
+    numSpan.textContent = `${currentLineNum}`;
 
     const input = document.createElement('input');
     input.type = 'text';
@@ -517,9 +698,33 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
         rhymeBadge.className = 'badge-rima-compact';
-        rhymeBadge.textContent = vData.rima;
-        const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-        rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+
+        let verseIsCliche = false;
+        let clicheMotivo = '';
+        if (webData && Array.isArray(webData.rimas_morfologicas)) {
+          for (const est of webData.rimas_morfologicas) {
+            if (Array.isArray(est.pares)) {
+              for (const p of est.pares) {
+                if (p.eh_cliche && (p.versos[0] === currentLineNum || p.versos[1] === currentLineNum)) {
+                  verseIsCliche = true;
+                  clicheMotivo = p.motivo_cliche || '';
+                  break;
+                }
+              }
+            }
+            if (verseIsCliche) break;
+          }
+        }
+
+        if (verseIsCliche) {
+          rhymeBadge.classList.add('is-cliche');
+          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo})`;
+        } else {
+          rhymeBadge.textContent = vData.rima;
+          const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
+          rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+        }
         colRight.appendChild(rhymeBadge);
       }
 
@@ -618,9 +823,34 @@ function updateSingleRowLive() {
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
         rhymeBadge.className = 'badge-rima-compact';
-        rhymeBadge.textContent = vData.rima;
-        const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-        rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+        const lineNum = currentVerseRowIdx; // currentVerseRowIdx is 1-based line number
+
+        let verseIsCliche = false;
+        let clicheMotivo = '';
+        if (webData && Array.isArray(webData.rimas_morfologicas)) {
+          for (const est of webData.rimas_morfologicas) {
+            if (Array.isArray(est.pares)) {
+              for (const p of est.pares) {
+                if (p.eh_cliche && (p.versos[0] === lineNum || p.versos[1] === lineNum)) {
+                  verseIsCliche = true;
+                  clicheMotivo = p.motivo_cliche || '';
+                  break;
+                }
+              }
+            }
+            if (verseIsCliche) break;
+          }
+        }
+
+        if (verseIsCliche) {
+          rhymeBadge.classList.add('is-cliche');
+          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo})`;
+        } else {
+          rhymeBadge.textContent = vData.rima;
+          const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
+          rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+        }
         colRight.appendChild(rhymeBadge);
       }
 
