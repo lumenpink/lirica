@@ -558,3 +558,27 @@ fn test_site_gabarito_e_mutacoes_wasm() {
         }
     }
 }
+
+#[test]
+fn test_analise_web_rimas_morfologicas_e_cliches() {
+    let texto = "O meu primeiro e desolado amor,\nNa solidão profunda desta dor,\nLateja aflito o pobre coração,\nAlimentando a doce ilusão.";
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let web: AnaliseWeb =
+        serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de AnaliseWeb");
+
+    let rimas_morf = web
+        .rimas_morfologicas
+        .expect("AnaliseWeb deve conter rimas_morfologicas");
+    assert!(!rimas_morf.is_empty(), "Deve conter ao menos uma estrofe");
+
+    let pares = &rimas_morf[0].pares;
+    assert_eq!(pares.len(), 2, "Quarteto AABB deve conter 2 pares de rima");
+
+    // Par 1: amor x dor
+    let p1 = &pares[0];
+    assert_eq!(p1.tokens.0.to_lowercase(), "amor");
+    assert_eq!(p1.tokens.1.to_lowercase(), "dor");
+    assert!(p1.eh_cliche, "amor x dor deve ser marcado como clichê");
+    assert!(p1.motivo_cliche.is_some());
+}
+
