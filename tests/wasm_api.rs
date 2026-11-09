@@ -224,3 +224,126 @@ fn test_escansao_sem_diretivas_respeita_flag_rima() {
         "Não deve gerar esquema de rimas quando flag é false"
     );
 }
+
+#[test]
+fn test_soneto_shakespeariano_profana_100_por_cento_wasm() {
+    let texto = "\
+Cobiça a carne, que depois recusa,\n\
+Exige o molde, pronta a condenar;\n\
+Disfarça a culpa no pudor da musa\n\
+Enquanto o vício prende o seu olhar.\n\
+\n\
+Despreza a mão que levantou seu muro,\n\
+No lindo linho limpa o nojo e ri;\n\
+Consome o braço no trabalho duro,\n\
+Negando a quem mantém seu trono ali.\n\
+\n\
+Condena o gozo na oração que tece,\n\
+Reduz a vida a tráfico venal;\n\
+Compra o silêncio na vendida prece,\n\
+E julga o mundo em cego tribunal.\n\
+\n\
+Se o teu altar é palco de pecado,\n\
+Sangue, suor ou sêmen é sagrado?";
+
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("JSON visual");
+    let forma = web.forma_poetica.expect("Deve detectar forma");
+
+    assert_eq!(forma.nome, "Soneto Inglês (Shakespeariano)");
+    assert_eq!(
+        forma.confianca_percentual, 100,
+        "Profana deve atingir 100% no WASM"
+    );
+    assert!(
+        forma.observacoes.is_empty(),
+        "Nenhum alerta deve ser gerado para Profana"
+    );
+}
+
+#[test]
+fn test_soneto_shakespeariano_contraprova_diagnostico_wasm() {
+    let texto = "\
+Cobiça a carne, que depois recusa,\n\
+Exige o molde, pronta a condenar;\n\
+Disfarça a culpa no pudor da musa\n\
+Enquanto o vício prende o seu olhar.\n\
+\n\
+Despreza a mão que levantou seu muro,\n\
+No lindo linho limpa o nojo e ri;\n\
+Consome o braço no trabalho duro,\n\
+Negando a quem mantém seu trono ali.\n\
+\n\
+Condena o gozo na oração que tece,\n\
+Reduz a vida a tráfico venal;\n\
+Compra o silêncio na vendida prece,\n\
+E julga o mundo em cego tribunal.\n\
+\n\
+Se o teu altar é palco de pecado,\n\
+Todo este pranto agora é vão lamento.";
+
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("JSON visual");
+    let forma = web.forma_poetica.expect("Deve detectar forma");
+
+    assert_eq!(forma.nome, "Soneto Inglês (Shakespeariano)");
+    assert!(
+        forma.confianca_percentual < 100,
+        "Dístico desemparelhado deve pontuar abaixo de 100%"
+    );
+    assert!(
+        forma
+            .observacoes
+            .iter()
+            .any(|o| o.contains("dístico final")),
+        "Deve conter observação diagnóstica sobre o desvio de rima no dístico"
+    );
+}
+
+#[test]
+fn test_sonetilha_wasm() {
+    let texto = "\
+Na margem do rio manso,\n\
+Vejo a tarde desmaiar;\n\
+Em vão busco o meu descanso,\n\
+Cansado de navegar.\n\
+\n\
+O vento frio me avisa\n\
+Que a noite vem ao redor;\n\
+Num leve sopro de brisa,\n\
+Cresce no peito esta dor.\n\
+\n\
+As sombras cobrem a terra,\n\
+O céu perde a claridade;\n\
+A escuridão tudo encerra.\n\
+\n\
+Fica no peito a saudade,\n\
+Toda a dor que a alma aferra,\n\
+Chora na calma cidade.";
+
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("JSON visual");
+    let forma = web.forma_poetica.expect("Deve detectar Sonetilha");
+
+    assert_eq!(forma.nome, "Sonetilha (Sonetino)");
+    assert_eq!(forma.confianca_percentual, 100);
+}
+
+#[test]
+fn test_septilha_cordel_wasm() {
+    let texto = "\
+O verso de sete linhas\n\
+É bonito e compassado;\n\
+Quem lê com muita atenção\n\
+Fica o leitor encantado;\n\
+Tem beleza e perfeição,\n\
+Tem nobreza no sertão,\n\
+E o verso é bem respeitado.";
+
+    let saida = escandir(texto, "visual", false, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&saida).expect("JSON visual");
+    let forma = web.forma_poetica.expect("Deve detectar Septilha");
+
+    assert_eq!(forma.nome, "Septilha de Cordel");
+    assert_eq!(forma.confianca_percentual, 100);
+}
