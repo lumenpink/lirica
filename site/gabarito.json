@@ -15,7 +15,8 @@
       10,
       4
     ],
-    "texto": "Ai flores, ai flores do verde pino,\nse sabedes novas do meu amigo?\nai deus, e u é?\nAi flores, ai flores do verde ramo,\nse sabedes novas do meu amado?\nai deus, e u é?"
+    "texto": "Ai flores, ai flores do verde pino,\nse sabedes novas do meu amigo?\nai deus, e u é?\nAi flores, ai flores do verde ramo,\nse sabedes novas do meu amado?\nai deus, e u é?",
+    "mutacoes": []
   },
   {
     "id": "pero_meogo_loucana",
@@ -33,7 +34,8 @@
       11,
       11
     ],
-    "texto": "Levou-se a louçana, levou-se a velida:\nvai lavar cabelos na fontana fria,\nledo dos amores, dos amores ledo.\nLevou-se a velida, levou-se a louçana:\nvai lavar cabelos na fria fontana,\nledo dos amores, dos amores ledo."
+    "texto": "Levou-se a louçana, levou-se a velida:\nvai lavar cabelos na fontana fria,\nledo dos amores, dos amores ledo.\nLevou-se a velida, levou-se a louçana:\nvai lavar cabelos na fria fontana,\nledo dos amores, dos amores ledo.",
+    "mutacoes": []
   },
   {
     "id": "joao_zorro_lixboa",
@@ -51,7 +53,8 @@
       8,
       7
     ],
-    "texto": "Em Lixboa sobre o mar\nbarcas novas mandei lavrar,\nai minha senhor velida!\nEm Lixboa sobre o mar\nbarcas novas mandei criar,\nai minha senhor velida!"
+    "texto": "Em Lixboa sobre o mar\nbarcas novas mandei lavrar,\nai minha senhor velida!\nEm Lixboa sobre o mar\nbarcas novas mandei criar,\nai minha senhor velida!",
+    "mutacoes": []
   },
   {
     "id": "sa_de_miranda_sol",
@@ -71,7 +74,8 @@
       6,
       6
     ],
-    "texto": "O sol é grande,\nCaem com calma as aves,\nDo tempo em tal sazão,\nQue sói ser fria;\nEsta água que de alto cai\nSuave e branda,\nAs aves a cantar\nOuvir se costumavam."
+    "texto": "O sol é grande,\nCaem com calma as aves,\nDo tempo em tal sazão,\nQue sói ser fria;\nEsta água que de alto cai\nSuave e branda,\nAs aves a cantar\nOuvir se costumavam.",
+    "mutacoes": []
   },
   {
     "id": "camoes_amor_e_fogo",
@@ -97,7 +101,80 @@
       10,
       10
     ],
-    "texto": "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.\n\nÉ um não querer mais que bem querer;\nÉ um andar solitário entre a gente;\nÉ nunca contentar-se de contente;\nÉ um cuidar que ganha em se perder.\n\nÉ querer estar preso por vontade;\nÉ servir a quem vence, o vencedor;\nÉ ter com quem nos mata, lealdade.\n\nMas como causar pode seu favor\nNos corações humanos amizade,\nSe tão contrário a si é o mesmo Amor?"
+    "texto": "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.\n\nÉ um não querer mais que bem querer;\nÉ um andar solitário entre a gente;\nÉ nunca contentar-se de contente;\nÉ um cuidar que ganha em se perder.\n\nÉ querer estar preso por vontade;\nÉ servir a quem vence, o vencedor;\nÉ ter com quem nos mata, lealdade.\n\nMas como causar pode seu favor\nNos corações humanos amizade,\nSe tão contrário a si é o mesmo Amor?",
+    "mutacoes": [
+      {
+        "id": "camoes_amor_e_fogo_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "camoes_amor_e_fogo_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "camoes_amor_e_fogo_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "camoes_amor_e_fogo_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "camoes_jacob",
@@ -123,7 +200,80 @@
       10,
       10
     ],
-    "texto": "Sete anos de pastor Jacob servia\nLabão, pai de Raquel, serrana bela;\nMas não servia ao pai, servia a ela,\nE a ela só por prêmio pretendia.\n\nOs dias, na esperança de um só dia,\nPassava, contentando-se com vê-la;\nPorém o pai, usando de cautela,\nEm lugar de Raquel lhe dava Lia.\n\nVendo o triste pastor que com enganos\nAssim lhe tinham pago seu serviço,\nComo se não tivera merecido,\n\nComeça de servir outros sete anos,\nDizendo: Mais servira, se não fora\nPara tão longo amor tão curta a vida."
+    "texto": "Sete anos de pastor Jacob servia\nLabão, pai de Raquel, serrana bela;\nMas não servia ao pai, servia a ela,\nE a ela só por prêmio pretendia.\n\nOs dias, na esperança de um só dia,\nPassava, contentando-se com vê-la;\nPorém o pai, usando de cautela,\nEm lugar de Raquel lhe dava Lia.\n\nVendo o triste pastor que com enganos\nAssim lhe tinham pago seu serviço,\nComo se não tivera merecido,\n\nComeça de servir outros sete anos,\nDizendo: Mais servira, se não fora\nPara tão longo amor tão curta a vida.",
+    "mutacoes": [
+      {
+        "id": "camoes_jacob_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "camoes_jacob_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "camoes_jacob_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "camoes_jacob_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "camoes_alma_minha",
@@ -149,7 +299,80 @@
       10,
       10
     ],
-    "texto": "Alma minha gentil, que te partiste\nTão cedo desta vida, descontente,\nRepousa lá no Céu eternamente,\nE viva eu cá na terra sempre triste.\n\nSe lá no assento etéreo, onde subiste,\nMemória desta vida se consente,\nNão te esqueças daquele amor ardente\nQue já nos olhos meus tão puro viste.\n\nE se vires que pode merecer-te\nAlguma cousa a dor que me ficou\nDa mágoa, sem remédio, de perder-te,\n\nRoga a Deus, que teus anos encurtou,\nQue tão cedo de cá me leve a ver-te,\nQuão cedo de meus olhos te levou."
+    "texto": "Alma minha gentil, que te partiste\nTão cedo desta vida, descontente,\nRepousa lá no Céu eternamente,\nE viva eu cá na terra sempre triste.\n\nSe lá no assento etéreo, onde subiste,\nMemória desta vida se consente,\nNão te esqueças daquele amor ardente\nQue já nos olhos meus tão puro viste.\n\nE se vires que pode merecer-te\nAlguma cousa a dor que me ficou\nDa mágoa, sem remédio, de perder-te,\n\nRoga a Deus, que teus anos encurtou,\nQue tão cedo de cá me leve a ver-te,\nQuão cedo de meus olhos te levou.",
+    "mutacoes": [
+      {
+        "id": "camoes_alma_minha_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "camoes_alma_minha_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "camoes_alma_minha_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "camoes_alma_minha_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "camoes_lusiadas_canto1",
@@ -169,7 +392,62 @@
       10,
       10
     ],
-    "texto": "As armas e os barões assinalados,\nQue da ocidental praia Lusitana,\nPor mares nunca de antes navegados,\nPassaram ainda além da Taprobana,\nEm perigos e guerras esforçados,\nMais do que prometia a força humana,\nE entre gente remota edificaram\nNovo Reino, que tanto sublimaram;"
+    "texto": "As armas e os barões assinalados,\nQue da ocidental praia Lusitana,\nPor mares nunca de antes navegados,\nPassaram ainda além da Taprobana,\nEm perigos e guerras esforçados,\nMais do que prometia a força humana,\nE entre gente remota edificaram\nNovo Reino, que tanto sublimaram;",
+    "mutacoes": [
+      {
+        "id": "oitava_quebra_distico",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no dístico final (versos 7 e 8)",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 8,
+            "texto": "E a verdade se espalha pelo mundo."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Oitava Camoniana (Rima Real)",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "dístico final"
+          ]
+        }
+      },
+      {
+        "id": "oitava_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "As armas gloriosas e os barões assinalados,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Oitava Camoniana (Rima Real)",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "oitava_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Oitava Camoniana (Rima Real)",
+          "nota_min": 65,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "camoes_verdes_campos",
@@ -185,7 +463,8 @@
       5,
       5
     ],
-    "texto": "Verdes são os campos,\nDe cor de limão;\nAssim são os olhos\nDo meu coração."
+    "texto": "Verdes são os campos,\nDe cor de limão;\nAssim são os olhos\nDo meu coração.",
+    "mutacoes": []
   },
   {
     "id": "camoes_transformase",
@@ -211,7 +490,80 @@
       10,
       10
     ],
-    "texto": "Transforma-se o amador na cousa amada,\nPor virtude do muito imaginar;\nNão tenho logo mais que desejar,\nPois em mim tenho a parte desejada.\n\nSe nela está minha alma transformada,\nQue mais deseja o corpo de alcançar?\nEm si somente pode descansar,\nPois com ele tal alma está liada.\n\nMas esta linda e pura semideia,\nQue como o acidente em seu sujeito,\nAssim com a alma minha se conforma,\n\nEstá no pensamento como ideia;\nE o vivo e puro amor de que sou feito,\nComo matéria simples busca a forma."
+    "texto": "Transforma-se o amador na cousa amada,\nPor virtude do muito imaginar;\nNão tenho logo mais que desejar,\nPois em mim tenho a parte desejada.\n\nSe nela está minha alma transformada,\nQue mais deseja o corpo de alcançar?\nEm si somente pode descansar,\nPois com ele tal alma está liada.\n\nMas esta linda e pura semideia,\nQue como o acidente em seu sujeito,\nAssim com a alma minha se conforma,\n\nEstá no pensamento como ideia;\nE o vivo e puro amor de que sou feito,\nComo matéria simples busca a forma.",
+    "mutacoes": [
+      {
+        "id": "camoes_transformase_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "camoes_transformase_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "camoes_transformase_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "camoes_transformase_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "gregorio_matos_instabilidade",
@@ -237,7 +589,80 @@
       10,
       10
     ],
-    "texto": "Nasce o Sol, e não dura mais que um dia,\nDepois da Luz se segue a noite escura,\nEm tristes sombras morre a formosura,\nEm contínuas tristezas a alegria.\n\nPorém se acaba o Sol, por que nascia?\nSe formosa a Luz é, por que não dura?\nComo a beleza assim se transfigura?\nComo o gosto da pena assim se fia?\n\nMas no Sol, e na Luz, falte a firmeza,\nNa formosura não se dê constância,\nE na alegria sinta-se tristeza.\n\nComeça o mundo enfim pela ignorância,\nE tem qualquer dos bens sua incerteza,\nFirmeza somente na inconstância."
+    "texto": "Nasce o Sol, e não dura mais que um dia,\nDepois da Luz se segue a noite escura,\nEm tristes sombras morre a formosura,\nEm contínuas tristezas a alegria.\n\nPorém se acaba o Sol, por que nascia?\nSe formosa a Luz é, por que não dura?\nComo a beleza assim se transfigura?\nComo o gosto da pena assim se fia?\n\nMas no Sol, e na Luz, falte a firmeza,\nNa formosura não se dê constância,\nE na alegria sinta-se tristeza.\n\nComeça o mundo enfim pela ignorância,\nE tem qualquer dos bens sua incerteza,\nFirmeza somente na inconstância.",
+    "mutacoes": [
+      {
+        "id": "gregorio_matos_instabilidade_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_instabilidade_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_instabilidade_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_instabilidade_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "gregorio_matos_maria",
@@ -263,7 +688,80 @@
       10,
       10
     ],
-    "texto": "Discreta e formosíssima Maria,\nEnquanto estamos vendo a qualquer hora\nEm tuas faces a rosada Aurora,\nEm teus olhos e boca o Sol e o dia;\n\nEnquanto com gentil descortesia\nO ar do tempo frouxo não desflora\nA rosa que em teu rosto se colora,\nNem te converte em neve a prata fria:\n\nGoza, goza da flor da mocidade,\nQue o tempo trota a toda a ligeireza,\nE imprime em toda flor sua pisada.\n\nOh não aguardes que a madura idade\nTe converta essa flor em terra e cinza,\nEm terra, em cinza, em pó, em sombra, em nada."
+    "texto": "Discreta e formosíssima Maria,\nEnquanto estamos vendo a qualquer hora\nEm tuas faces a rosada Aurora,\nEm teus olhos e boca o Sol e o dia;\n\nEnquanto com gentil descortesia\nO ar do tempo frouxo não desflora\nA rosa que em teu rosto se colora,\nNem te converte em neve a prata fria:\n\nGoza, goza da flor da mocidade,\nQue o tempo trota a toda a ligeireza,\nE imprime em toda flor sua pisada.\n\nOh não aguardes que a madura idade\nTe converta essa flor em terra e cinza,\nEm terra, em cinza, em pó, em sombra, em nada.",
+    "mutacoes": [
+      {
+        "id": "gregorio_matos_maria_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_maria_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_maria_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_maria_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "gregorio_matos_cristo",
@@ -289,7 +787,80 @@
       10,
       10
     ],
-    "texto": "A vós correndo vou, braços sagrados,\nNessa cruz sacrossanta descobertos,\nQue, para receber-me, estais abertos,\nE, por não castigar-me, estais cravados.\n\nA vós, divinos olhos, eclipsados\nDe tanto sangue e lágrimas abertos,\nPois, para perdoar-me, estais despertos,\nE, por não condenar-me, estais fechados.\n\nA vós, pregados pés, por não deixar-me,\nA vós, sangue vertido, para ungir-me,\nA vós, cabeça baixa, p'ra chamar-me;\n\nA vós, lado aberto, para acolher-me;\nA vós, cravos preciosos, para unir-me;\nA vós, doce Jesus, para salvar-me."
+    "texto": "A vós correndo vou, braços sagrados,\nNessa cruz sacrossanta descobertos,\nQue, para receber-me, estais abertos,\nE, por não castigar-me, estais cravados.\n\nA vós, divinos olhos, eclipsados\nDe tanto sangue e lágrimas abertos,\nPois, para perdoar-me, estais despertos,\nE, por não condenar-me, estais fechados.\n\nA vós, pregados pés, por não deixar-me,\nA vós, sangue vertido, para ungir-me,\nA vós, cabeça baixa, p'ra chamar-me;\n\nA vós, lado aberto, para acolher-me;\nA vós, cravos preciosos, para unir-me;\nA vós, doce Jesus, para salvar-me.",
+    "mutacoes": [
+      {
+        "id": "gregorio_matos_cristo_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_cristo_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_cristo_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "gregorio_matos_cristo_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "prosopopeia_canto1",
@@ -309,7 +880,8 @@
       10,
       10
     ],
-    "texto": "Cantem Poetas o poder mais alto,\nAs armas de Mavorte sanguinosas,\nE dos fortes Troianos o sobressalto\nCom outras mil vitórias belicosas;\nEu canto o doce estro e o brando assalto\nDas ninfas de Ilhéus tão graciosas,\nQue em louvor de Albuquerques celebramos,\nE em suas doces sombras descansamos."
+    "texto": "Cantem Poetas o poder mais alto,\nAs armas de Mavorte sanguinosas,\nE dos fortes Troianos o sobressalto\nCom outras mil vitórias belicosas;\nEu canto o doce estro e o brando assalto\nDas ninfas de Ilhéus tão graciosas,\nQue em louvor de Albuquerques celebramos,\nE em suas doces sombras descansamos.",
+    "mutacoes": []
   },
   {
     "id": "botelho_ilha_mare",
@@ -325,7 +897,8 @@
       6,
       6
     ],
-    "texto": "Fecunda Ilha formosa,\nDe flores e de frutos,\nOnde os ares são brandos,\nE os campos mui jocundos."
+    "texto": "Fecunda Ilha formosa,\nDe flores e de frutos,\nOnde os ares são brandos,\nE os campos mui jocundos.",
+    "mutacoes": []
   },
   {
     "id": "gonzaga_marilia_lira1",
@@ -345,7 +918,8 @@
       10,
       10
     ],
-    "texto": "Eu, Marília, não sou algum vaqueiro,\nQue viva de guardar alheio gado;\nDe tosco trato, d'expressões grosseiro,\nDos frios gelos e do sol queimado.\nTenho próprio casal e nele assisto;\nDá-me vinho, legume, azeite, trigo;\nTraz de si o avelhório, que te visto;\nTrata com rica farda o meu abrigo."
+    "texto": "Eu, Marília, não sou algum vaqueiro,\nQue viva de guardar alheio gado;\nDe tosco trato, d'expressões grosseiro,\nDos frios gelos e do sol queimado.\nTenho próprio casal e nele assisto;\nDá-me vinho, legume, azeite, trigo;\nTraz de si o avelhório, que te visto;\nTrata com rica farda o meu abrigo.",
+    "mutacoes": []
   },
   {
     "id": "gonzaga_marilia_lira14",
@@ -361,7 +935,8 @@
       10,
       10
     ],
-    "texto": "Minha bela Marília, tudo passa;\nA sorte deste mundo é mal segura;\nSe canta alegre o rouxinol de dia,\nDe noite geme a triste rola escura."
+    "texto": "Minha bela Marília, tudo passa;\nA sorte deste mundo é mal segura;\nSe canta alegre o rouxinol de dia,\nDe noite geme a triste rola escura.",
+    "mutacoes": []
   },
   {
     "id": "claudio_manuel_soneto7",
@@ -387,7 +962,80 @@
       10,
       10
     ],
-    "texto": "Onde estou? Este sítio desconheço:\nQuem fez tão diferente aquele prado?\nTudo outra natureza tem tomado;\nE em contemplá-lo tímido esmoreço.\n\nUma fonte aqui houve; eu não me esqueço\nDe estar a ela um dia reclinado:\nAli correu um ribeiro apressado,\nQue agora com seus passos estremeço.\n\nSe terra me parece de pastores,\nComo assim não diviso o gado errante?\nOnde estão os rústicos cantores?\n\nAh, não eram assim as sombras dantes!\nOnde estão as aves e suas cores?\nPor que fogem de mim os meus amantes?"
+    "texto": "Onde estou? Este sítio desconheço:\nQuem fez tão diferente aquele prado?\nTudo outra natureza tem tomado;\nE em contemplá-lo tímido esmoreço.\n\nUma fonte aqui houve; eu não me esqueço\nDe estar a ela um dia reclinado:\nAli correu um ribeiro apressado,\nQue agora com seus passos estremeço.\n\nSe terra me parece de pastores,\nComo assim não diviso o gado errante?\nOnde estão os rústicos cantores?\n\nAh, não eram assim as sombras dantes!\nOnde estão as aves e suas cores?\nPor que fogem de mim os meus amantes?",
+    "mutacoes": [
+      {
+        "id": "claudio_manuel_soneto7_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "claudio_manuel_soneto7_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "claudio_manuel_soneto7_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "claudio_manuel_soneto7_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "bocage_olha_marilia",
@@ -413,7 +1061,80 @@
       10,
       10
     ],
-    "texto": "Olha, Marília, as flautas dos pastores\nQue bem que soam, como estão cadentes!\nOlha o Tejo a sorrir por entre as flores,\nVê como folgam plácidas correntes!\n\nOs gados vão pastando sem temores\nPor entre as relvas e as fontes claras;\nVêm das montanhas zéfiros ligeiros,\nQue aos arvoredos dão cheiros suaves.\n\nTudo nos convida a sermos ternos,\nA desfrutar de amor a pura essência,\nAntes que cheguem tristes os invernos\n\nE nos roubem dos anos a inocência;\nPois se os laços de amor não são eternos,\nAproveitemos doce a convivência."
+    "texto": "Olha, Marília, as flautas dos pastores\nQue bem que soam, como estão cadentes!\nOlha o Tejo a sorrir por entre as flores,\nVê como folgam plácidas correntes!\n\nOs gados vão pastando sem temores\nPor entre as relvas e as fontes claras;\nVêm das montanhas zéfiros ligeiros,\nQue aos arvoredos dão cheiros suaves.\n\nTudo nos convida a sermos ternos,\nA desfrutar de amor a pura essência,\nAntes que cheguem tristes os invernos\n\nE nos roubem dos anos a inocência;\nPois se os laços de amor não são eternos,\nAproveitemos doce a convivência.",
+    "mutacoes": [
+      {
+        "id": "bocage_olha_marilia_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "bocage_olha_marilia_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "bocage_olha_marilia_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "bocage_olha_marilia_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "bocage_inverno",
@@ -439,7 +1160,80 @@
       10,
       10
     ],
-    "texto": "Já se afastou de nós o Inverno agreste\nEnvolto em frios carpanos e ventos;\nJá Primavera o prado de ouro veste,\nJá torna alegre os tristes pensamentos.\n\nA doce Flora os vales matiza,\nObriga os gados a saltar contentes;\nPor sobre as flores sopra mansa a brisa,\nE riem claras todas as correntes.\n\nVem, ó Ninfa cruel, ó bela amada,\nDesfrutar deste tempo o novo ardor;\nDeixa que a vida passe perfumada,\n\nCheia de risos e de doce amor;\nPois que na terra a vida apressada\nPassa depressa como murcha a flor."
+    "texto": "Já se afastou de nós o Inverno agreste\nEnvolto em frios carpanos e ventos;\nJá Primavera o prado de ouro veste,\nJá torna alegre os tristes pensamentos.\n\nA doce Flora os vales matiza,\nObriga os gados a saltar contentes;\nPor sobre as flores sopra mansa a brisa,\nE riem claras todas as correntes.\n\nVem, ó Ninfa cruel, ó bela amada,\nDesfrutar deste tempo o novo ardor;\nDeixa que a vida passe perfumada,\n\nCheia de risos e de doce amor;\nPois que na terra a vida apressada\nPassa depressa como murcha a flor.",
+    "mutacoes": [
+      {
+        "id": "bocage_inverno_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "bocage_inverno_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "bocage_inverno_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "bocage_inverno_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "basilio_gama_uraguai",
@@ -455,7 +1249,8 @@
       10,
       10
     ],
-    "texto": "Fumam ainda nas desertas praias\nOs restos fumarentos dos combates;\nE de corpos sem conta se povoam\nAs fundas serras e as escuras matas."
+    "texto": "Fumam ainda nas desertas praias\nOs restos fumarentos dos combates;\nE de corpos sem conta se povoam\nAs fundas serras e as escuras matas.",
+    "mutacoes": []
   },
   {
     "id": "goncalves_dias_cancao_exilio",
@@ -471,7 +1266,8 @@
       7,
       7
     ],
-    "texto": "Minha terra tem palmeiras,\nOnde canta o Sabiá;\nAs aves que aqui gorjeiam,\nNão gorjeiam como lá."
+    "texto": "Minha terra tem palmeiras,\nOnde canta o Sabiá;\nAs aves que aqui gorjeiam,\nNão gorjeiam como lá.",
+    "mutacoes": []
   },
   {
     "id": "goncalves_dias_ijuca",
@@ -489,7 +1285,8 @@
       5,
       5
     ],
-    "texto": "Meu canto de morte,\nGuerreiros, ouvi:\nSou filho das matas,\nNas matas cresci;\nGuerreiros, descendo\nDa tribo tupi."
+    "texto": "Meu canto de morte,\nGuerreiros, ouvi:\nSou filho das matas,\nNas matas cresci;\nGuerreiros, descendo\nDa tribo tupi.",
+    "mutacoes": []
   },
   {
     "id": "goncalves_dias_ainda_uma_vez",
@@ -505,7 +1302,8 @@
       10,
       10
     ],
-    "texto": "Enfim te vejo! — enfim posso, curvado\nA teus pés, derramar lágrimas vivas,\nQue em vão no peito sufocava a custo,\nLonge de ti, nas solidões esquivas!"
+    "texto": "Enfim te vejo! — enfim posso, curvado\nA teus pés, derramar lágrimas vivas,\nQue em vão no peito sufocava a custo,\nLonge de ti, nas solidões esquivas!",
+    "mutacoes": []
   },
   {
     "id": "alvares_azevedo_se_eu_morresse",
@@ -521,7 +1319,8 @@
       10,
       10
     ],
-    "texto": "Se eu morresse amanhã, viria ao menos\nFechar meus olhos minha mãe tão doce;\nMinha irmã mais querida me beijava,\nE meu pobre irmãozinho me chorava."
+    "texto": "Se eu morresse amanhã, viria ao menos\nFechar meus olhos minha mãe tão doce;\nMinha irmã mais querida me beijava,\nE meu pobre irmãozinho me chorava.",
+    "mutacoes": []
   },
   {
     "id": "alvares_azevedo_lembranca_morrer",
@@ -537,7 +1336,8 @@
       10,
       10
     ],
-    "texto": "Quando em meu peito rebentar a fibra\nQue da dor nos estorcendo nos aperta,\nE o mundo em torno ao meu redor se cale,\nDeixai-me em paz na sepultura aberta."
+    "texto": "Quando em meu peito rebentar a fibra\nQue da dor nos estorcendo nos aperta,\nE o mundo em torno ao meu redor se cale,\nDeixai-me em paz na sepultura aberta.",
+    "mutacoes": []
   },
   {
     "id": "casimiro_abreu_oito_anos",
@@ -557,7 +1357,8 @@
       7,
       7
     ],
-    "texto": "Oh! que saudades que tenho\nDa aurora da minha vida,\nDa minha infância querida\nQue os anos não trazem mais!\nQue amor, que sonhos, que flores,\nNaquelas tardes fagueiras\nÀ sombra das bananeiras,\nDebaixo dos laranjais!"
+    "texto": "Oh! que saudades que tenho\nDa aurora da minha vida,\nDa minha infância querida\nQue os anos não trazem mais!\nQue amor, que sonhos, que flores,\nNaquelas tardes fagueiras\nÀ sombra das bananeiras,\nDebaixo dos laranjais!",
+    "mutacoes": []
   },
   {
     "id": "castro_alves_navio_negreiro",
@@ -575,7 +1376,8 @@
       10,
       6
     ],
-    "texto": "Era um sonho dantesco o tombadilho\nQue das luzernas avermelha o brilho,\nEm sangue a se banhar.\nTinir de ferros, estalar de açoite,\nLegiões de homens negros como a noite,\nHorrendos a dançar..."
+    "texto": "Era um sonho dantesco o tombadilho\nQue das luzernas avermelha o brilho,\nEm sangue a se banhar.\nTinir de ferros, estalar de açoite,\nLegiões de homens negros como a noite,\nHorrendos a dançar...",
+    "mutacoes": []
   },
   {
     "id": "castro_alves_vozes_africa",
@@ -593,7 +1395,8 @@
       11,
       6
     ],
-    "texto": "Deus! ó Deus! onde estás que não respondes?\nEm que mundo, em qu'estrela tu te escondes\nEmbuçado nos céus?\nHá dois mil anos te enviei meu grito,\nQue embalde desde então corre o infinito...\nOnde estás, Senhor Deus?"
+    "texto": "Deus! ó Deus! onde estás que não respondes?\nEm que mundo, em qu'estrela tu te escondes\nEmbuçado nos céus?\nHá dois mil anos te enviei meu grito,\nQue embalde desde então corre o infinito...\nOnde estás, Senhor Deus?",
+    "mutacoes": []
   },
   {
     "id": "fagundes_varela_calvario",
@@ -609,7 +1412,8 @@
       10,
       10
     ],
-    "texto": "Eras a luz da minha escura vida,\nA meiga estrela da manhã formosa,\nO doce orvalho que na flor caída\nPousava em graça tépida e mimosa."
+    "texto": "Eras a luz da minha escura vida,\nA meiga estrela da manhã formosa,\nO doce orvalho que na flor caída\nPousava em graça tépida e mimosa.",
+    "mutacoes": []
   },
   {
     "id": "vicente_espinel_espinela",
@@ -631,7 +1435,8 @@
       7,
       7
     ],
-    "texto": "Ninguém viva descurado,\nQue a fortuna é mui mudável;\nNão há glória tão louvável\nQue não pare em triste estado.\nO bem é pouco durado,\nO mal dura e cresce tanto,\nQue torna o prazer em pranto;\nE quem vive mais contente\nAcha no fim mui patente\nCausa de perpétuo espanto."
+    "texto": "Ninguém viva descurado,\nQue a fortuna é mui mudável;\nNão há glória tão louvável\nQue não pare em triste estado.\nO bem é pouco durado,\nO mal dura e cresce tanto,\nQue torna o prazer em pranto;\nE quem vive mais contente\nAcha no fim mui patente\nCausa de perpétuo espanto.",
+    "mutacoes": []
   },
   {
     "id": "leandro_gomes_barros_cachorro",
@@ -649,7 +1454,8 @@
       7,
       7
     ],
-    "texto": "Vou contar uma história\nDe um tempo que passou,\nDe um cachorro leal e puro\nQue a seu dono estimou,\nQue mesmo depois de morto\nJamais o desamparou."
+    "texto": "Vou contar uma história\nDe um tempo que passou,\nDe um cachorro leal e puro\nQue a seu dono estimou,\nQue mesmo depois de morto\nJamais o desamparou.",
+    "mutacoes": []
   },
   {
     "id": "ze_limeira_martelo",
@@ -671,7 +1477,8 @@
       10,
       10
     ],
-    "texto": "Eu venho das bandas de onde o vento sopra,\nCavalgo cantando no lombo do gado,\nEnfrento a coruja, o tiziu e a cobra,\nCantando o meu verso bem compassado;\nNo mundo da rima ninguém me dobra,\nNem fica no meio do campo tombado;\nTrago a viola afinada e tinindo,\nE vejo o horizonte no sol surgindo,\nNa força e bravura de um cavaleiro,\nNo ritmo e compasso do chão brasileiro."
+    "texto": "Eu venho das bandas de onde o vento sopra,\nCavalgo cantando no lombo do gado,\nEnfrento a coruja, o tiziu e a cobra,\nCantando o meu verso bem compassado;\nNo mundo da rima ninguém me dobra,\nNem fica no meio do campo tombado;\nTrago a viola afinada e tinindo,\nE vejo o horizonte no sol surgindo,\nNa força e bravura de um cavaleiro,\nNo ritmo e compasso do chão brasileiro.",
+    "mutacoes": []
   },
   {
     "id": "patativa_assare_triste_partida",
@@ -687,7 +1494,8 @@
       10,
       11
     ],
-    "texto": "Setembro passou, outubro e novembro\nJá estamos em pleno rigor do sertão;\nNão cai uma gota de água na serra,\nNem brota uma folha sequer pelo chão."
+    "texto": "Setembro passou, outubro e novembro\nJá estamos em pleno rigor do sertão;\nNão cai uma gota de água na serra,\nNem brota uma folha sequer pelo chão.",
+    "mutacoes": []
   },
   {
     "id": "olavo_bilac_ouvir_estrelas",
@@ -713,7 +1521,80 @@
       10,
       10
     ],
-    "texto": "\"Ora (direis) ouvir estrelas! Certo\nPerdeste o senso!\" E eu vos direi, no entanto,\nQue, para ouvi-las, muita vez desperto\nE abro as janelas, pálido de espanto...\n\nE conversamos toda a noite, enquanto\nA Via-Láctea, como um pálio aberto,\nCintila. E, ao vir do sol, saudoso e em pranto,\nInda as procuro pelo céu deserto.\n\nDireis agora: \"Tresloucado amigo!\nQue conversas com elas? Que sentido\nTem o que dizem, quando estão contigo?\"\n\nE eu vos direi: \"Amai para entendê-las!\nPois só quem ama pode ter ouvido\nCapaz de ouvir e de entender estrelas\"."
+    "texto": "\"Ora (direis) ouvir estrelas! Certo\nPerdeste o senso!\" E eu vos direi, no entanto,\nQue, para ouvi-las, muita vez desperto\nE abro as janelas, pálido de espanto...\n\nE conversamos toda a noite, enquanto\nA Via-Láctea, como um pálio aberto,\nCintila. E, ao vir do sol, saudoso e em pranto,\nInda as procuro pelo céu deserto.\n\nDireis agora: \"Tresloucado amigo!\nQue conversas com elas? Que sentido\nTem o que dizem, quando estão contigo?\"\n\nE eu vos direi: \"Amai para entendê-las!\nPois só quem ama pode ter ouvido\nCapaz de ouvir e de entender estrelas\".",
+    "mutacoes": [
+      {
+        "id": "olavo_bilac_ouvir_estrelas_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_ouvir_estrelas_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_ouvir_estrelas_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_ouvir_estrelas_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "olavo_bilac_a_um_poeta",
@@ -739,7 +1620,80 @@
       10,
       10
     ],
-    "texto": "Longe do estéril turbilhão da rua,\nBeneditino, escreve! No aconchego\nDo claustro, na paciência e no sossego,\nTrabalha, e teima, e lima, e sofre, e sua!\n\nMas que na forma se disfarce o emprego\nDo esforço; e a trama viva se instrua\nDe tal modo que a Musa apareça nua,\nSem que se veja o pó do seu apego.\n\nNão te envergonhes desse amor bendito\nÀ perfeição da forma sublimada,\nQue vence o tempo e desafia o mito;\n\nPois quando a obra enfim for terminada,\nTerás erguido a glória do infinito\nEm bela taça de ouro cinzelada."
+    "texto": "Longe do estéril turbilhão da rua,\nBeneditino, escreve! No aconchego\nDo claustro, na paciência e no sossego,\nTrabalha, e teima, e lima, e sofre, e sua!\n\nMas que na forma se disfarce o emprego\nDo esforço; e a trama viva se instrua\nDe tal modo que a Musa apareça nua,\nSem que se veja o pó do seu apego.\n\nNão te envergonhes desse amor bendito\nÀ perfeição da forma sublimada,\nQue vence o tempo e desafia o mito;\n\nPois quando a obra enfim for terminada,\nTerás erguido a glória do infinito\nEm bela taça de ouro cinzelada.",
+    "mutacoes": [
+      {
+        "id": "olavo_bilac_a_um_poeta_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_a_um_poeta_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_a_um_poeta_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "olavo_bilac_a_um_poeta_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "raimundo_correia_as_pombas",
@@ -765,7 +1719,80 @@
       10,
       10
     ],
-    "texto": "Vai-se a primeira pomba despertada...\nVai-se outra mais... mais outra... enfim dezenas\nDe pombas vão-se dos pombais, apenas\nRaiou no céu a cândida alvorada...\n\nE à tarde, quando a lua prateada\nSurge no cimo das montanhas serenas,\nVoltam as pombas aos pombais, serenas,\nCom as asas cansadas da jornada...\n\nTambém da mocidade as esperanças\nVão-se na mocidade em bando aos céus,\nBuscando as regiões de luz e de venturas;\n\nMas ao declinar dos anos cansados,\nNão voltam ao pombal das noites escuras\nOs belos sonhos que partiram alados!"
+    "texto": "Vai-se a primeira pomba despertada...\nVai-se outra mais... mais outra... enfim dezenas\nDe pombas vão-se dos pombais, apenas\nRaiou no céu a cândida alvorada...\n\nE à tarde, quando a lua prateada\nSurge no cimo das montanhas serenas,\nVoltam as pombas aos pombais, serenas,\nCom as asas cansadas da jornada...\n\nTambém da mocidade as esperanças\nVão-se na mocidade em bando aos céus,\nBuscando as regiões de luz e de venturas;\n\nMas ao declinar dos anos cansados,\nNão voltam ao pombal das noites escuras\nOs belos sonhos que partiram alados!",
+    "mutacoes": [
+      {
+        "id": "raimundo_correia_as_pombas_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_as_pombas_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_as_pombas_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_as_pombas_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "raimundo_correia_mal_secreto",
@@ -791,7 +1818,80 @@
       10,
       10
     ],
-    "texto": "Se a cólera que espuma, a dor que mora\nNa alma, e se a desgraça inclemente\nFossem visíveis aos olhares da gente,\nQuanta gente que ri talvez que chora!\n\nQuantas almas que vão pelo ar cantando,\nComo as aves que cruzam pelo espaço,\nTrazem no peito um invisível laço\nQue em silêncio as vai estrangulando!\n\nSim, quem nos vê contentes e risonhos\nNão sabe o que no peito se comprime,\nNem as ruínas dos perdidos sonhos;\n\nNem sabe a dor secreta que redime\nOs nossos risos fáceis e medonhos,\nQue da amargura o fardo não exime!"
+    "texto": "Se a cólera que espuma, a dor que mora\nNa alma, e se a desgraça inclemente\nFossem visíveis aos olhares da gente,\nQuanta gente que ri talvez que chora!\n\nQuantas almas que vão pelo ar cantando,\nComo as aves que cruzam pelo espaço,\nTrazem no peito um invisível laço\nQue em silêncio as vai estrangulando!\n\nSim, quem nos vê contentes e risonhos\nNão sabe o que no peito se comprime,\nNem as ruínas dos perdidos sonhos;\n\nNem sabe a dor secreta que redime\nOs nossos risos fáceis e medonhos,\nQue da amargura o fardo não exime!",
+    "mutacoes": [
+      {
+        "id": "raimundo_correia_mal_secreto_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_mal_secreto_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_mal_secreto_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "raimundo_correia_mal_secreto_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "alberto_oliveira_vaso_chines",
@@ -817,7 +1917,80 @@
       10,
       10
     ],
-    "texto": "Estranho mimo aquele vaso! Fixa,\nOlho-o fiel, e de olhá-lo não me canso:\nNuma esguia fita azul, em pleno ar mansa,\nErgue-se uma ave e pelo espaço esguicha.\n\nMais além, por sobre a relva clara,\nUma donzela de olhar manso e meigo\nPasseia à borda do tranquilo lago,\nOnde uma barca solitária pára.\n\nEra de um grande artífice da China\nA mão sutil que modelou tão pura\nA forma leve da cerâmica fina;\n\nE ao contemplar tamanha formosura,\nParece que uma música divina\nDentro daquela argila inda perdura."
+    "texto": "Estranho mimo aquele vaso! Fixa,\nOlho-o fiel, e de olhá-lo não me canso:\nNuma esguia fita azul, em pleno ar mansa,\nErgue-se uma ave e pelo espaço esguicha.\n\nMais além, por sobre a relva clara,\nUma donzela de olhar manso e meigo\nPasseia à borda do tranquilo lago,\nOnde uma barca solitária pára.\n\nEra de um grande artífice da China\nA mão sutil que modelou tão pura\nA forma leve da cerâmica fina;\n\nE ao contemplar tamanha formosura,\nParece que uma música divina\nDentro daquela argila inda perdura.",
+    "mutacoes": [
+      {
+        "id": "alberto_oliveira_vaso_chines_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_chines_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_chines_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_chines_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "alberto_oliveira_vaso_grego",
@@ -843,7 +2016,80 @@
       10,
       10
     ],
-    "texto": "Esta, de áureos relevos, trabalhado\nDe fino artífice na idade de ouro,\nFoi taça em que beberam de um tesouro\nOs deuses no banquete celebrado.\n\nVê: do mar pela espuma prateado,\nSurge Afrodite sobre as águas claras,\nEnquanto ao longe, pelas praias raras,\nBate o tridente o deus do mar irado.\n\nEm torno à borda, em cândido relevo,\nAs horas dançam sob o céu sereno,\nE entre os ramos de murta e de loureiro,\n\nBrilha da graça o resplendor supremo,\nQue o tempo audaz não pode destruir,\nNem a poeira das eras encobrir."
+    "texto": "Esta, de áureos relevos, trabalhado\nDe fino artífice na idade de ouro,\nFoi taça em que beberam de um tesouro\nOs deuses no banquete celebrado.\n\nVê: do mar pela espuma prateado,\nSurge Afrodite sobre as águas claras,\nEnquanto ao longe, pelas praias raras,\nBate o tridente o deus do mar irado.\n\nEm torno à borda, em cândido relevo,\nAs horas dançam sob o céu sereno,\nE entre os ramos de murta e de loureiro,\n\nBrilha da graça o resplendor supremo,\nQue o tempo audaz não pode destruir,\nNem a poeira das eras encobrir.",
+    "mutacoes": [
+      {
+        "id": "alberto_oliveira_vaso_grego_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_grego_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_grego_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "alberto_oliveira_vaso_grego_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "cruz_sousa_sinfonias",
@@ -859,7 +2105,8 @@
       10,
       10
     ],
-    "texto": "Mórbidos sons de flautas e de violas\nVagam nas brumas lívidas da tarde,\nEntre os lamentos vagos das corolas\nOnde a chama da vida ainda arde."
+    "texto": "Mórbidos sons de flautas e de violas\nVagam nas brumas lívidas da tarde,\nEntre os lamentos vagos das corolas\nOnde a chama da vida ainda arde.",
+    "mutacoes": []
   },
   {
     "id": "cruz_sousa_bracos",
@@ -885,7 +2132,80 @@
       10,
       10
     ],
-    "texto": "Braços nervosos, brancas amplidões\nDe formas puras, límpidas, serenas,\nQue lembram doces e tranquilas penas\nEm brandas noites de ilusões divinas.\n\nBraços de seda e névoas e luar,\nQue acolhem mágoas, confortando as dores,\nE espalham no ar puríssimos olores,\nComo perfumes que flutuam no mar.\n\nÓ braços castos, níveos e benditos,\nQue me envolveis na vossa doce calma\nE me levais aos templos infinitos,\n\nOnde descansa serenada a alma,\nLivrai meu peito dos penosos gritos\nE dai-me enfim a desejada palma!"
+    "texto": "Braços nervosos, brancas amplidões\nDe formas puras, límpidas, serenas,\nQue lembram doces e tranquilas penas\nEm brandas noites de ilusões divinas.\n\nBraços de seda e névoas e luar,\nQue acolhem mágoas, confortando as dores,\nE espalham no ar puríssimos olores,\nComo perfumes que flutuam no mar.\n\nÓ braços castos, níveos e benditos,\nQue me envolveis na vossa doce calma\nE me levais aos templos infinitos,\n\nOnde descansa serenada a alma,\nLivrai meu peito dos penosos gritos\nE dai-me enfim a desejada palma!",
+    "mutacoes": [
+      {
+        "id": "cruz_sousa_bracos_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "cruz_sousa_bracos_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "cruz_sousa_bracos_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "cruz_sousa_bracos_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "alphonsus_ismalia",
@@ -905,7 +2225,8 @@
       7,
       7
     ],
-    "texto": "Quando Ismália enlouqueceu,\nPôs-se na torre a sonhar...\nViu uma lua no céu,\nViu outra lua no mar.\nNo sonho em que se perdeu,\nBanhou-se toda em luar...\nQueria subir ao céu,\nQueria descer ao mar..."
+    "texto": "Quando Ismália enlouqueceu,\nPôs-se na torre a sonhar...\nViu uma lua no céu,\nViu outra lua no mar.\nNo sonho em que se perdeu,\nBanhou-se toda em luar...\nQueria subir ao céu,\nQueria descer ao mar...",
+    "mutacoes": []
   },
   {
     "id": "camilo_pessanha_caminho",
@@ -931,7 +2252,80 @@
       10,
       10
     ],
-    "texto": "Tenho sonhos cruéis; n'alma doente\nSinto um vago terror que me consome;\nSinto que a morte vem, calada e rente,\nE que o meu próprio coração me some.\n\nEstradas sem saída, ermas estradas\nPor onde sigo, trêmulo e sozinho,\nSob as estrelas frias, apagadas,\nQue não alumiam meu caminho.\n\nPara onde vou? Que sombras dolorosas\nSão estas que me cercam pelo chão?\nOnde estão as manhãs esplendorosas?\n\nOnde a esperança do meu coração?\nTudo jaz mudo sob as pedras frias,\nE em pranto expiram todas as poesias."
+    "texto": "Tenho sonhos cruéis; n'alma doente\nSinto um vago terror que me consome;\nSinto que a morte vem, calada e rente,\nE que o meu próprio coração me some.\n\nEstradas sem saída, ermas estradas\nPor onde sigo, trêmulo e sozinho,\nSob as estrelas frias, apagadas,\nQue não alumiam meu caminho.\n\nPara onde vou? Que sombras dolorosas\nSão estas que me cercam pelo chão?\nOnde estão as manhãs esplendorosas?\n\nOnde a esperança do meu coração?\nTudo jaz mudo sob as pedras frias,\nE em pranto expiram todas as poesias.",
+    "mutacoes": [
+      {
+        "id": "camilo_pessanha_caminho_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "camilo_pessanha_caminho_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "camilo_pessanha_caminho_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "camilo_pessanha_caminho_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "pessoa_autopsicografia",
@@ -955,7 +2349,8 @@
       7,
       7
     ],
-    "texto": "O poeta é um fingidor.\nFinge tão completamente\nQue chega a fingir que é dor\nA dor que deveras sente.\n\nE os que leem o que escreve,\nNa dor lida sentem bem,\nNão as duas que ele teve,\nMas só a que eles não têm.\n\nE assim nas calhas de roda\nGira, a entreter a razão,\nEsse comboio de corda\nQue se chama coração."
+    "texto": "O poeta é um fingidor.\nFinge tão completamente\nQue chega a fingir que é dor\nA dor que deveras sente.\n\nE os que leem o que escreve,\nNa dor lida sentem bem,\nNão as duas que ele teve,\nMas só a que eles não têm.\n\nE assim nas calhas de roda\nGira, a entreter a razão,\nEsse comboio de corda\nQue se chama coração.",
+    "mutacoes": []
   },
   {
     "id": "pessoa_isto",
@@ -972,7 +2367,8 @@
       6,
       6
     ],
-    "texto": "Dizem que finjo ou minto\nTudo que escrevo. Não.\nEu simplesmente sinto\nCom a imaginação.\nNão uso o coração."
+    "texto": "Dizem que finjo ou minto\nTudo que escrevo. Não.\nEu simplesmente sinto\nCom a imaginação.\nNão uso o coração.",
+    "mutacoes": []
   },
   {
     "id": "pessoa_ricardo_reis_grande",
@@ -990,7 +2386,8 @@
       10,
       4
     ],
-    "texto": "Para ser grande, sê inteiro: nada\nTeu exagera ou exclui.\nSê todo em cada coisa. Põe quanto és\nNo mínimo que fazes.\nAssim na lua a noite toda brilha,\nPorque alta vive."
+    "texto": "Para ser grande, sê inteiro: nada\nTeu exagera ou exclui.\nSê todo em cada coisa. Põe quanto és\nNo mínimo que fazes.\nAssim na lua a noite toda brilha,\nPorque alta vive.",
+    "mutacoes": []
   },
   {
     "id": "vinicius_fidelidade",
@@ -1016,7 +2413,80 @@
       10,
       10
     ],
-    "texto": "De tudo, ao meu amor serei atento\nAntes, e com tal zelo, e sempre tanto\nQue mesmo em face do maior encanto\nDele se encante mais meu pensamento.\n\nQuero vivê-lo em cada vão momento\nE em seu louvor hei de espalhar meu canto\nE rir meu riso e derramar meu pranto\nAo seu pesar ou seu contentamento.\n\nE assim, quando mais tarde me procure\nQuem sabe a morte, angústia de quem vive\nQuem sabe a solidão, fim de quem ama\n\nEu possa me dizer do amor (que tive):\nQue não seja imortal, posto que é chama\nMas que seja infinito enquanto dure."
+    "texto": "De tudo, ao meu amor serei atento\nAntes, e com tal zelo, e sempre tanto\nQue mesmo em face do maior encanto\nDele se encante mais meu pensamento.\n\nQuero vivê-lo em cada vão momento\nE em seu louvor hei de espalhar meu canto\nE rir meu riso e derramar meu pranto\nAo seu pesar ou seu contentamento.\n\nE assim, quando mais tarde me procure\nQuem sabe a morte, angústia de quem vive\nQuem sabe a solidão, fim de quem ama\n\nEu possa me dizer do amor (que tive):\nQue não seja imortal, posto que é chama\nMas que seja infinito enquanto dure.",
+    "mutacoes": [
+      {
+        "id": "vinicius_fidelidade_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_fidelidade_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_fidelidade_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_fidelidade_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "vinicius_separacao",
@@ -1042,7 +2512,80 @@
       10,
       10
     ],
-    "texto": "De repente do riso fez-se o pranto\nSilencioso e branco como a bruma\nE das bocas unidas fez-se a espuma\nE das mãos espalmadas fez-se o espanto.\n\nDe repente da calma fez-se o vento\nQue dos olhos desfez a última chama\nE da paixão fez-se o pressentimento\nE do momento imóvel fez-se o drama.\n\nDe repente, não mais que de repente\nFez-se de triste o que se fez amante\nE de sozinho o que se fez contente\n\nFez-se do amigo próximo o distante\nFez-se da vida uma aventura errante\nDe repente, não mais que de repente."
+    "texto": "De repente do riso fez-se o pranto\nSilencioso e branco como a bruma\nE das bocas unidas fez-se a espuma\nE das mãos espalmadas fez-se o espanto.\n\nDe repente da calma fez-se o vento\nQue dos olhos desfez a última chama\nE da paixão fez-se o pressentimento\nE do momento imóvel fez-se o drama.\n\nDe repente, não mais que de repente\nFez-se de triste o que se fez amante\nE de sozinho o que se fez contente\n\nFez-se do amigo próximo o distante\nFez-se da vida uma aventura errante\nDe repente, não mais que de repente.",
+    "mutacoes": [
+      {
+        "id": "vinicius_separacao_quebra_rima_quarteto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no verso 4 do primeiro quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "É dor que fere sem causar espanto."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 60,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_separacao_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico com 11 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O grande amor profundo é fogo que arde sem se ver,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 55,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_separacao_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaçamento entre quartetos e tercetos",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 50,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "vinicius_separacao_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto",
+          "nota_min": 40,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "cecilia_meireles_motivo",
@@ -1062,7 +2605,8 @@
       8,
       2
     ],
-    "texto": "Eu canto porque o instante existe\ne a minha vida está completa.\nNão sou alegre nem sou triste:\nsou poeta.\n\nIrmão das coisas fugidias,\nnão sinto gozo nem tormento.\nAtravesso noites e dias\nno vento."
+    "texto": "Eu canto porque o instante existe\ne a minha vida está completa.\nNão sou alegre nem sou triste:\nsou poeta.\n\nIrmão das coisas fugidias,\nnão sinto gozo nem tormento.\nAtravesso noites e dias\nno vento.",
+    "mutacoes": []
   },
   {
     "id": "drummond_meio_caminho",
@@ -1084,7 +2628,8 @@
       11,
       11
     ],
-    "texto": "No meio do caminho tinha uma pedra\ntinha uma pedra no meio do caminho\ntinha uma pedra\nno meio do caminho tinha uma pedra.\n\nNunca me esquecerei desse acontecimento\nna vida de minhas retinas tão fatigadas.\nNunca me esquecerei que no meio do caminho\ntinha uma pedra\ntinha uma pedra no meio do caminho\nno meio do caminho tinha uma pedra."
+    "texto": "No meio do caminho tinha uma pedra\ntinha uma pedra no meio do caminho\ntinha uma pedra\nno meio do caminho tinha uma pedra.\n\nNunca me esquecerei desse acontecimento\nna vida de minhas retinas tão fatigadas.\nNunca me esquecerei que no meio do caminho\ntinha uma pedra\ntinha uma pedra no meio do caminho\nno meio do caminho tinha uma pedra.",
+    "mutacoes": []
   },
   {
     "id": "profana_shakespeariano",
@@ -1110,7 +2655,106 @@
       10,
       10
     ],
-    "texto": "Cobiça a carne, que depois recusa,\nExige o molde, pronta a condenar;\nDisfarça a culpa no pudor da musa\nEnquanto o vício prende o seu olhar.\n\nDespreza a mão que levantou seu muro,\nNo lindo linho limpa o nojo e ri;\nConsome o braço no trabalho duro,\nNegando a quem mantém seu trono ali.\n\nCondena o gozo na oração que tece,\nReduz a vida a tráfico venal;\nCompra o silêncio na vendida prece,\nE julga o mundo em cego tribunal.\n\nSe o teu altar é palco de pecado,\nSangue, suor ou sêmen é sagrado?"
+    "texto": "Cobiça a carne, que depois recusa,\nExige o molde, pronta a condenar;\nDisfarça a culpa no pudor da musa\nEnquanto o vício prende o seu olhar.\n\nDespreza a mão que levantou seu muro,\nNo lindo linho limpa o nojo e ri;\nConsome o braço no trabalho duro,\nNegando a quem mantém seu trono ali.\n\nCondena o gozo na oração que tece,\nReduz a vida a tráfico venal;\nCompra o silêncio na vendida prece,\nE julga o mundo em cego tribunal.\n\nSe o teu altar é palco de pecado,\nSangue, suor ou sêmen é sagrado?",
+    "mutacoes": [
+      {
+        "id": "profana_quebra_distico",
+        "tipo": "rima",
+        "descricao": "Dístico final desemparelhado (verso 14 sem rima com verso 13)",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 14,
+            "texto": "Todo este pranto agora é vão lamento."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Shakespeariano)",
+          "nota_min": 90,
+          "nota_max": 99,
+          "observacoes_obrigatorias": [
+            "dístico final"
+          ]
+        }
+      },
+      {
+        "id": "profana_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 2 hendecassílabo (11 sílabas métricas)",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 2,
+            "texto": "Exige o molde antigo, pronta a condenar;"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Shakespeariano)",
+          "nota_min": 90,
+          "nota_max": 99,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "profana_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaços entre estrofes (bloco de 14 versos contínuos)",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Shakespeariano)",
+          "nota_min": 85,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "profana_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho para avaliação em contagem absoluta",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Shakespeariano)",
+          "nota_min": 70,
+          "nota_max": 100
+        }
+      },
+      {
+        "id": "profana_combinada_metrica_e_rima",
+        "tipo": "combinada",
+        "descricao": "Combinação simultânea de métrica quebrada no verso 2 e rima quebrada no verso 14",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 2,
+            "texto": "Exige o molde antigo, pronta a condenar;"
+          },
+          {
+            "op": "substituir",
+            "linha": 14,
+            "texto": "Todo este pranto agora é vão lamento."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Shakespeariano)",
+          "nota_min": 80,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "dístico final",
+            "métrica"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "spenseriano_nome_areia",
@@ -1136,7 +2780,100 @@
       10,
       10
     ],
-    "texto": "Um dia escrevi seu nome na areia,\nPorém a onda logo o arrebatou;\nMais uma vez a minha mão alteia,\nMas outra vaga o rastro devorou.\n\nMulher mortal em vão já pelejou,\nDisse ela então com seu tão triste olhar:\nPois o meu ser a cinza já levou,\nE o tempo o meu perfil há de apagar.\n\nNão há de ser, respondo ao teu cantar,\nPois na canção teu brilho viverá,\nE os céus verão a música ecoar,\nOnde minh'alma sempre brilhará.\n\nQuando este chão for puro e bem perfeito,\nNosso amor dormirá em santo leito."
+    "texto": "Um dia escrevi seu nome na areia,\nPorém a onda logo o arrebatou;\nMais uma vez a minha mão alteia,\nMas outra vaga o rastro devorou.\n\nMulher mortal em vão já pelejou,\nDisse ela então com seu tão triste olhar:\nPois o meu ser a cinza já levou,\nE o tempo o meu perfil há de apagar.\n\nNão há de ser, respondo ao teu cantar,\nPois na canção teu brilho viverá,\nE os céus verão a música ecoar,\nOnde minh'alma sempre brilhará.\n\nQuando este chão for puro e bem perfeito,\nNosso amor dormirá em santo leito.",
+    "mutacoes": [
+      {
+        "id": "spenseriano_quebra_distico",
+        "tipo": "rima",
+        "descricao": "Dístico final desemparelhado (verso 14 sem rima com verso 13)",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 14,
+            "texto": "E o vosso nome viverá no vento."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Spenseriano)",
+          "nota_min": 90,
+          "nota_max": 99,
+          "observacoes_obrigatorias": [
+            "dístico final"
+          ]
+        }
+      },
+      {
+        "id": "spenseriano_quebra_cadeia_bcbc",
+        "tipo": "rima",
+        "descricao": "Rompimento do encadeamento de rimas no segundo quarteto",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 6,
+            "texto": "Mas o destino logo tudo apaga;"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "spenseriano_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaços entre estrofes",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Spenseriano)",
+          "nota_min": 85,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "spenseriano_verso_hipometrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 reduzido para 5 sílabas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "Na areia escrevi;"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês",
+          "nota_min": 75,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "spenseriano_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Soneto Inglês (Spenseriano)",
+          "nota_min": 70,
+          "nota_max": 100
+        }
+      }
+    ]
   },
   {
     "id": "sonetilha_lirica",
@@ -1162,7 +2899,106 @@
       7,
       7
     ],
-    "texto": "Na margem do rio manso,\nVejo a tarde desmaiar;\nEm vão busco o meu descanso,\nCansado de navegar.\n\nO vento frio me avisa\nQue a noite vem ao redor;\nNum leve sopro de brisa,\nCresce no peito esta dor.\n\nAs sombras cobrem a terra,\nO céu perde a claridade;\nA escuridão tudo encerra.\n\nFica no peito a saudade,\nToda a dor que a alma aferra,\nChora na calma cidade."
+    "texto": "Na margem do rio manso,\nVejo a tarde desmaiar;\nEm vão busco o meu descanso,\nCansado de navegar.\n\nO vento frio me avisa\nQue a noite vem ao redor;\nNum leve sopro de brisa,\nCresce no peito esta dor.\n\nAs sombras cobrem a terra,\nO céu perde a claridade;\nA escuridão tudo encerra.\n\nFica no peito a saudade,\nToda a dor que a alma aferra,\nChora na calma cidade.",
+    "mutacoes": [
+      {
+        "id": "sonetilha_verso_decassilabo",
+        "tipo": "metrica",
+        "descricao": "Verso 1 decassílabo quebrando a redondilha",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "Na margem deste rio fundo e manso,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sonetilha (Sonetino)",
+          "nota_min": 90,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "sonetilha_quebra_rima_terceto",
+        "tipo": "rima",
+        "descricao": "Quebra de rima no último verso",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 14,
+            "texto": "O sonho voa no vento."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sonetilha (Sonetino)",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "sonetilha_bloco_continuo",
+        "tipo": "estrutura",
+        "descricao": "Remoção de espaços entre estrofes",
+        "operacoes": [
+          {
+            "op": "remover_espacos_estroficos"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sonetilha (Sonetino)",
+          "nota_min": 85,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "bloco único"
+          ]
+        }
+      },
+      {
+        "id": "sonetilha_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Sonetilha (Sonetino)",
+          "nota_min": 70,
+          "nota_max": 100
+        }
+      },
+      {
+        "id": "sonetilha_combinada_metrica_e_rima",
+        "tipo": "combinada",
+        "descricao": "Verso 1 decassílabo + verso 14 com rima quebrada",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "Na margem deste rio fundo e manso,"
+          },
+          {
+            "op": "substituir",
+            "linha": 14,
+            "texto": "O sonho voa no vento."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sonetilha (Sonetino)",
+          "nota_min": 75,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "métrica",
+            "rima"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "septilha_cordel_linhas",
@@ -1181,32 +3017,81 @@
       7,
       7
     ],
-    "texto": "O verso de sete linhas\nÉ bonito e compassado;\nQuem lê com muita atenção\nFica o leitor encantado;\nTem beleza e perfeição,\nTem nobreza no sertão,\nE o verso é bem respeitado."
-  },
-  {
-    "id": "profana_contraprova_distico",
-    "titulo": "Profana (Contra-prova: dístico quebrado)",
-    "autor": "Contra-prova de Auditoria",
-    "epoca": "Auditoria Métrica",
-    "metro_esperado": 10,
-    "forma_esperada": "Soneto Inglês (Shakespeariano)",
-    "elidir_pontuacao": false,
-    "versos_esperados": [
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10,
-      10
-    ],
-    "texto": "Cobiça a carne, que depois recusa,\nExige o molde, pronta a condenar;\nDisfarça a culpa no pudor da musa\nEnquanto o vício prende o seu olhar.\n\nDespreza a mão que levantou seu muro,\nNo lindo linho limpa o nojo e ri;\nConsome o braço no trabalho duro,\nNegando a quem mantém seu trono ali.\n\nCondena o gozo na oração que tece,\nReduz a vida a tráfico venal;\nCompra o silêncio na vendida prece,\nE julga o mundo em cego tribunal.\n\nSe o teu altar é palco de pecado,\nTodo este pranto agora é vão lamento."
+    "texto": "O verso de sete linhas\nÉ bonito e compassado;\nQuem lê com muita atenção\nFica o leitor encantado;\nTem beleza e perfeição,\nTem nobreza no sertão,\nE o verso é bem respeitado.",
+    "mutacoes": [
+      {
+        "id": "septilha_quebra_fecho_b",
+        "tipo": "rima",
+        "descricao": "Quebra da rima emparelhada central nos versos 5 e 6",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 6,
+            "texto": "Sou poeta verdadeiro,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Septilha de Cordel",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "septilha_verso_oito_silabas",
+        "tipo": "metrica",
+        "descricao": "Verso 1 hipermetrico (8 sílabas)",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "O verso de sete linhas bonitas"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Septilha de Cordel",
+          "nota_min": 85,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      },
+      {
+        "id": "septilha_verso_excedente",
+        "tipo": "estrutura",
+        "descricao": "Inserção de um 8º verso",
+        "operacoes": [
+          {
+            "op": "inserir",
+            "linha": 8,
+            "texto": "Cantando com alegria."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Septilha de Cordel",
+          "nota_min": 80,
+          "nota_max": 95,
+          "observacoes_obrigatorias": [
+            "7 exigidos"
+          ]
+        }
+      },
+      {
+        "id": "septilha_sem_regra_castilho",
+        "tipo": "configuracao",
+        "descricao": "Desativação da regra de Castilho",
+        "flags": {
+          "contagem_castilho": false
+        },
+        "expectativa": {
+          "forma_esperada": "Septilha de Cordel",
+          "nota_min": 70,
+          "nota_max": 100
+        }
+      }
+    ]
   }
 ]

@@ -24,6 +24,20 @@
     .badge-status-var { background-color: rgba(86, 182, 194, 0.2); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); padding: 0.15rem 0.4rem; border-radius: 3px; font-weight: 600; font-size: 0.75rem; }
     .btn-test-in-lab { background-color: var(--accent-gold-soft); border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.15s ease; }
     .btn-test-in-lab:hover { background-color: var(--accent-gold); color: var(--bg-primary); }
+    .mutacoes-accordion { margin-top: 0.5rem; }
+    .badge-mutacoes { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 600; color: var(--accent-gold); background-color: var(--bg-primary); border: 1px dashed var(--accent-gold); padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); cursor: pointer; user-select: none; }
+    .badge-mutacoes:hover { background-color: var(--accent-gold-soft); }
+    .mutacoes-container { margin-top: 0.5rem; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.5rem; overflow-x: auto; }
+    .mutacoes-mini-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+    .mutacoes-mini-table th, .mutacoes-mini-table td { border: 1px solid var(--border-color); padding: 0.35rem 0.5rem; }
+    .mutacoes-mini-table th { background-color: var(--bg-tertiary); color: var(--text-secondary); font-size: 0.75rem; }
+    .badge-mutacao-tipo { display: inline-block; padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+    .badge-mutacao-tipo.metrica { background-color: rgba(97, 175, 239, 0.2); color: var(--accent-blue); border: 1px solid var(--accent-blue); }
+    .badge-mutacao-tipo.rima { background-color: rgba(224, 108, 117, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+    .badge-mutacao-tipo.estrutura { background-color: rgba(229, 192, 123, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+    .badge-mutacao-tipo.configuracao { background-color: rgba(198, 120, 221, 0.2); color: var(--accent-magenta); border: 1px solid var(--accent-magenta); }
+    .badge-mutacao-tipo.combinada { background-color: rgba(152, 195, 121, 0.2); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .obs-tag { color: var(--text-muted); font-size: 0.72rem; }
   </style>
 </head>
 <body>
@@ -54,7 +68,7 @@
         Em processamento de linguagem natural e avaliação métrica computacional, muitos projetos adotam cortes frouxos de assertividade probabilística (como <em>"se 70% ou 80% dos versos estiverem certos, o teste passa"</em>).
       </p>
       <p>
-        O <strong>Lírica</strong> recusa esse paradigma. Em poesia de forma fixa clássica, <strong>um único verso errado invalida a arquitetura métrica da peça</strong>. Para combater falsos positivos silenciosos, todo o motor <code>joaju-lirica</code> é verificado por um <strong>Gabarito Canônico estrito</strong> (<code>tests/corpus/gabarito_canonico.json</code>) contendo 56 poemas e contra-provas auditados verso a verso.
+        O <strong>Lírica</strong> recusa esse paradigma. Em poesia de forma fixa clássica, <strong>um único verso errado invalida a arquitetura métrica da peça</strong>. Para combater falsos positivos silenciosos, todo o motor <code>joaju-lirica</code> é verificado por um <strong>Gabarito Canônico estrito</strong> (<code>tests/corpus/gabarito_canonico.json</code>) contendo 55 obras-primas canônicas de referência e uma matriz de 102 mutações declarativas de estresse auditadas verso a verso.
       </p>
 
       <div style="background-color: var(--bg-tertiary); padding: 1rem; border-left: 3px solid var(--accent-green); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">
@@ -65,7 +79,7 @@
 
     <section class="doc-section">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <h2>Corpus Histórico Auditado (56 Poemas e Contra-provas)</h2>
+        <h2>Corpus Histórico Auditado (55 Poemas Canônicos e 102 Mutações de Estresse)</h2>
         <input type="text" id="gabarito-search" class="search-box" placeholder="Buscar por título, autor ou época...">
       </div>
 
@@ -74,7 +88,7 @@
           <thead>
             <tr>
               <th>ID</th>
-              <th>Título</th>
+              <th>Título & Mutações de Estresse</th>
               <th>Autor</th>
               <th>Época / Movimento</th>
               <th>Metro Canônico</th>
@@ -125,9 +139,43 @@
         const tr = document.createElement('tr');
         const metroStr = p.metro_esperado ? `${p.metro_esperado} sílabas` : '<span class="badge-status-var">Variável / Livre</span>';
         const formaStr = p.forma_esperada || 'Livre / Estrofe Tradicional';
+        const hasMutacoes = p.mutacoes && p.mutacoes.length > 0;
+        
         tr.innerHTML = `
           <td><code>${p.id}</code></td>
-          <td><strong>${p.titulo}</strong></td>
+          <td>
+            <strong>${p.titulo}</strong>
+            ${hasMutacoes ? `
+              <details class="mutacoes-accordion">
+                <summary class="badge-mutacoes">⚡ ${p.mutacoes.length} mutações / contra-provas</summary>
+                <div class="mutacoes-container">
+                  <table class="mutacoes-mini-table">
+                    <thead>
+                      <tr>
+                        <th>ID da Mutação</th>
+                        <th>Tipo</th>
+                        <th>Descrição da Falha Induzida</th>
+                        <th>Resultado Esperado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${p.mutacoes.map(m => `
+                        <tr>
+                          <td><code>${m.id}</code></td>
+                          <td><span class="badge-mutacao-tipo ${m.tipo}">${m.tipo}</span></td>
+                          <td>${m.descricao}</td>
+                          <td>
+                            <strong>${m.expectativa.nota_min != null ? m.expectativa.nota_min + '%' : ''} ${m.expectativa.nota_max != null ? 'a ' + m.expectativa.nota_max + '%' : ''}</strong>
+                            ${m.expectativa.observacoes_obrigatorias && m.expectativa.observacoes_obrigatorias.length > 0 ? `<br><span class="obs-tag">Alerta: ${m.expectativa.observacoes_obrigatorias.join(', ')}</span>` : ''}
+                          </td>
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            ` : ''}
+          </td>
           <td>${p.autor}</td>
           <td>${p.epoca}</td>
           <td>${metroStr}</td>

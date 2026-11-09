@@ -130,9 +130,9 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 
 [[package]]
 name = "joaju-lirica"
-version = "0.5.1-dev.37+20261109.ba0924c"
+version = "0.6.0-dev.43+20261109.459a9e1"
 source = "sparse+https://gambi.2lp.in/api/packages/lumen/cargo/"
-checksum = "c32d36441ef30ec85e9a1553f59e6dda3a6912dfa190496d118f1c7e7c48c1a1"
+checksum = "b76af3a7a757a4c7fe6ec7eca7ee8ce796418e78e841fb095fd53ba7bbdd2451"
 dependencies = [
  "clap",
  "serde",
@@ -142,7 +142,7 @@ dependencies = [
 
 [[package]]
 name = "lirica"
-version = "0.1.0-dev.48+20261109.9375ad1"
+version = "0.1.0-dev.51+20261109.8b0cf4c"
 dependencies = [
  "joaju-lirica",
  "serde",
