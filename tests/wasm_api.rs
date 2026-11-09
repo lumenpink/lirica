@@ -581,3 +581,38 @@ fn test_analise_web_rimas_morfologicas_e_cliches() {
     assert!(p1.eh_cliche, "amor x dor deve ser marcado como clichê");
     assert!(p1.motivo_cliche.is_some());
 }
+
+#[test]
+fn test_mobile_touch_css_spec() {
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+
+    // 1. Breakpoint responsivo mobile
+    assert!(
+        css.contains("@media (max-width: 768px)") || css.contains("@media (max-width: 640px)"),
+        "CSS deve conter media query específica para mobile (<= 768px ou <= 640px)"
+    );
+
+    // 2. Dashboard em coluna única no mobile
+    assert!(
+        css.contains(".poetic-analysis-dashboard") && css.contains("grid-template-columns: 1fr"),
+        "Dashboard poético deve colapsar para 1 coluna no mobile"
+    );
+
+    // 3. Touch targets confortáveis para exclusão de verso
+    assert!(
+        css.contains(".btn-del-verse")
+            && (css.contains("min-width: 44px")
+                || css.contains("min-height: 44px")
+                || css.contains("width: 44px")
+                || css.contains("width: 2.75rem")),
+        "Botão de exclusão de verso deve ter alvo de toque acessível (>= 44px)"
+    );
+
+    // 4. Input sem auto-zoom no iOS (font-size >= 16px no mobile)
+    assert!(
+        css.contains(".verse-input")
+            && (css.contains("font-size: 1rem") || css.contains("font-size: 16px")),
+        "Input de verso no mobile deve ter font-size >= 16px para anular auto-zoom do Safari iOS"
+    );
+}
+
