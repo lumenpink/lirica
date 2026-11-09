@@ -615,4 +615,3 @@ fn test_mobile_touch_css_spec() {
         "Input de verso no mobile deve ter font-size >= 16px para anular auto-zoom do Safari iOS"
     );
 }
-
