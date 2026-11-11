@@ -121,6 +121,19 @@ pub struct AnaliseWeb {
 }
 
 /// Scans a text block of verses and returns the rendered result according to options.
+/// Sanitiza o texto de entrada para escansão, expurgando cabeçalhos Markdown (# Título e ## Autor)
+/// para que não sejam computados como versos poéticos nem formem estrofes espúrias.
+fn sanitizar_texto_escansao(texto: &str) -> String {
+    let linhas_filtradas: Vec<&str> = texto
+        .lines()
+        .filter(|linha| {
+            let t = linha.trim_start();
+            !(t.starts_with("# ") || t.starts_with("## ") || t == "#" || t == "##")
+        })
+        .collect();
+    linhas_filtradas.join("\n")
+}
+
 #[wasm_bindgen]
 pub fn escandir(
     texto: &str,
@@ -134,16 +147,7 @@ pub fn escandir(
         return String::new();
     }
 
-    // Filtrar metadados Markdown (# Título, ## Autor) para não poluir versos nem estrofes
-    let linhas_filtradas: Vec<&str> = texto
-        .lines()
-        .filter(|linha| {
-            let t = linha.trim_start();
-            !(t.starts_with("# ") || t.starts_with("## ") || t == "#" || t == "##")
-        })
-        .collect();
-    let texto_limpo = linhas_filtradas.join("\n");
-
+    let texto_limpo = sanitizar_texto_escansao(texto);
     if texto_limpo.trim().is_empty() {
         return String::new();
     }
