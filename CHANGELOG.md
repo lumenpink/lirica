@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Campos de título e autor no topo do laboratório sincronizados com cabeçalhos Markdown (# e ##) no modo livre e persistência unificada (closes #24).
 - Corpus completo dos poemas de exemplo em WebAssembly (Gonçalves Dias, Cruz e Sousa, Fernando Pessoa e Olavo Bilac) (closes #22).
 - Persistência automática do poema em edição no localStorage com debounce de 400ms, restauração transparente no bootstrap e limpeza no reset (closes #20).
 - Laboratório interativo de escansão poética e análise métrica em WebAssembly.
