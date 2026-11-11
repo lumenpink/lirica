@@ -884,3 +884,54 @@ fn test_escansao_ignora_cabecalhos_markdown() {
         "app.js deve passar poemText (derivado de verses.join('\\n')) para escandir"
     );
 }
+
+#[test]
+fn test_modal_interativo_legenda_spec() {
+    let html = std::fs::read_to_string("site/index.html").expect("site/index.html deve existir");
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+
+    // 1. Estrutura semântica do modal de legenda
+    assert!(
+        html.contains("id=\"modal-legenda\""),
+        "index.html deve conter o container #modal-legenda"
+    );
+    assert!(
+        html.contains("id=\"btn-fechar-modal-legenda\""),
+        "index.html deve conter o botão de fechar #btn-fechar-modal-legenda"
+    );
+    assert!(
+        html.contains("role=\"dialog\"") && html.contains("aria-modal=\"true\""),
+        "Modal de legenda deve respeitar os atributos ARIA de acessibilidade"
+    );
+
+    // 2. Cobertura de todos os ícones fundamentais no conteúdo do modal
+    let icones_obrigatorios = [
+        "⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶", // Metros
+        "🔥", "✨", "💎", "✦", "⚡", // Rimas
+    ];
+    for icone in &icones_obrigatorios {
+        assert!(
+            html.contains(icone),
+            "Modal de legenda em index.html deve conter o ícone '{}'",
+            icone
+        );
+    }
+
+    // 3. Integração de clique e listeners em app.js
+    assert!(
+        js.contains("abrirModalLegenda") || js.contains("modalLegenda.hidden = false"),
+        "app.js deve conter a rotina para abrir o modal de legenda"
+    );
+    assert!(
+        js.contains("btn-fechar-modal-legenda"),
+        "app.js deve vincular o botão de fechar do modal de legenda"
+    );
+
+    // 4. Badges interativos no CSS e JS
+    assert!(
+        css.contains(".meter-badge") && css.contains("cursor: pointer"),
+        "CSS deve definir cursor: pointer para badges interativos"
+    );
+}
+
