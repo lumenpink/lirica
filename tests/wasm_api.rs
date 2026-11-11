@@ -807,3 +807,37 @@ fn test_markdown_title_author_spec() {
         "getFullText deve exportar título e autor formatados em Markdown"
     );
 }
+
+#[test]
+fn test_escansao_ignora_cabecalhos_markdown() {
+    let poema_com_metadados = "# Amor é Fogo\n## Luís de Camões\n\nAmor é um fogo que arde sem se ver,\nÉ ferida que dói, e não se sente;";
+    let json_str = escandir(poema_com_metadados, "visual", true, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&json_str)
+        .expect("Escansão de poema com título e autor Markdown deve gerar JSON válido");
+
+    // Não deve conter versos para o título nem para o autor
+    assert_eq!(
+        web.versos.len(), 2,
+        "Deve conter exatamente 2 versos poéticos, ignorando os cabeçalhos Markdown"
+    );
+    assert_eq!(
+        web.versos[0].original, "Amor é um fogo que arde sem se ver,",
+        "Primeiro verso deve ser o verso lírico real, não o título"
+    );
+    assert_eq!(
+        web.estrofes.len(), 1,
+        "Deve computar exatamente 1 estrofe real, sem estrofe espúria no índice 0"
+    );
+
+    // Validação de contrato no frontend: app.js não deve alimentar escansão com getFullText()
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    assert!(
+        !js.contains("escandir(getFullText()"),
+        "app.js jamais deve passar getFullText() (com headers Markdown) para a escansao do motor"
+    );
+    assert!(
+        js.contains("escandir(verses.join('\\n')") || js.contains("escandir(verses.join(\"\\n\")"),
+        "app.js deve passar estritamente os versos poeticos (verses.join('\\n')) para escandir"
+    );
+}
+
