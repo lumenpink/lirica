@@ -28,7 +28,7 @@ function agendarSalvamentoRascunho(texto = null) {
 }
 
 function flushRascunhoPendente() {
-  if (saveTimer) {
+  if (saveTimer && isDirty) {
     clearTimeout(saveTimer);
     saveTimer = null;
     salvarRascunhoImediato();
