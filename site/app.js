@@ -210,6 +210,12 @@ function carregarPoema(texto) {
   focusVerse(0);
 }
 
+function sortearExemploAleatorio() {
+  if (!Array.isArray(exemplos) || exemplos.length === 0) return null;
+  const idx = Math.floor(Math.random() * exemplos.length);
+  return exemplos[idx] && exemplos[idx].texto ? exemplos[idx].texto : null;
+}
+
 function limparLaboratorio() {
   limparRascunho();
   verses = [''];
@@ -252,11 +258,10 @@ async function main() {
     renderExemplosGrid('');
 
     // Se não houver rascunho salvo, sortear aleatoriamente um poema da biblioteca de exemplos
-    if (rascunhoSalvo === null && exemplos.length > 0) {
-      const idxAleatorio = Math.floor(Math.random() * exemplos.length);
-      const exemploEscolhido = exemplos[idxAleatorio];
-      if (exemploEscolhido && exemploEscolhido.texto) {
-        verses = exemploEscolhido.texto.split('\n');
+    if (rascunhoSalvo === null) {
+      const textoAleatorio = sortearExemploAleatorio();
+      if (textoAleatorio) {
+        verses = textoAleatorio.split('\n');
       }
     }
   } catch (e) {
