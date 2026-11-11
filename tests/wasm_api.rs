@@ -615,3 +615,44 @@ fn test_mobile_touch_css_spec() {
         "Input de verso no mobile deve ter font-size >= 16px para anular auto-zoom do Safari iOS"
     );
 }
+
+#[test]
+fn test_localstorage_draft_persistence_spec() {
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+
+    // 1. Chave canônica de persistência do rascunho
+    assert!(
+        js.contains("lirica_draft_poem"),
+        "app.js deve declarar e utilizar a chave canônica 'lirica_draft_poem'"
+    );
+
+    // 2. Debounce para salvamento contínuo durante a digitação
+    assert!(
+        js.contains("agendarSalvamentoRascunho") || (js.contains("debounce") && js.contains("400")),
+        "app.js deve implementar rotina de debounce (400ms) para salvamento do rascunho"
+    );
+
+    // 3. Tratamento defensivo try/catch para navegação anônima e quota
+    assert!(
+        js.contains("localStorage.setItem") && js.contains("catch"),
+        "Chamadas a localStorage devem conter tratamento defensivo try/catch"
+    );
+
+    // 4. Restauração do rascunho salvo na inicialização
+    assert!(
+        js.contains("localStorage.getItem") && (js.contains("recuperarRascunho") || js.contains("lirica_draft_poem")),
+        "app.js deve recuperar o rascunho salvo do localStorage na inicialização"
+    );
+
+    // 5. Limpeza do rascunho ao resetar laboratório
+    assert!(
+        js.contains("localStorage.removeItem") || js.contains("limparRascunho"),
+        "app.js deve remover o rascunho persistido ao acionar limparLaboratorio"
+    );
+
+    // 6. Prevenção de perda de dados nos eventos de saída/troca de aba
+    assert!(
+        js.contains("beforeunload") || js.contains("visibilitychange"),
+        "app.js deve monitorar beforeunload ou visibilitychange para flush imediato do rascunho pendente"
+    );
+}
