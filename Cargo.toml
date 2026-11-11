@@ -1,6 +1,6 @@
 [package]
 name = "lirica"
-version = "0.1.0-dev.84+20261111.46e3bdb"
+version = "0.1.0-dev.85+20261111.5406a60"
 edition = "2021"
 description = "Laboratório métrico e escansão poética em WebAssembly"
 license = "Apache-2.0"

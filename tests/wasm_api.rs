@@ -31,9 +31,8 @@ fn test_carregar_exemplos() {
     }
 
     // Contrato de integralidade dos poemas de exemplo
-    let versos_nao_vazios = |texto: &str| -> usize {
-        texto.lines().filter(|l| !l.trim().is_empty()).count()
-    };
+    let versos_nao_vazios =
+        |texto: &str| -> usize { texto.lines().filter(|l| !l.trim().is_empty()).count() };
 
     assert!(
         versos_nao_vazios(&exemplos[3].texto) >= 20,
