@@ -765,3 +765,31 @@ fn test_localstorage_draft_persistence_spec() {
         "carregarPoema deve marcar isDirty = false ao visualizar exemplos em memória"
     );
 }
+
+#[test]
+fn test_markdown_title_author_spec() {
+    let html = std::fs::read_to_string("site/index.html").expect("site/index.html deve existir");
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+
+    // 1. Inputs visuais de título e autor
+    assert!(
+        html.contains("id=\"input-titulo\"") && html.contains("id=\"input-autor\""),
+        "index.html deve conter os inputs #input-titulo e #input-autor"
+    );
+
+    // 2. Manipulação de título e autor em app.js
+    assert!(
+        js.contains("inputTitulo") && js.contains("inputAutor"),
+        "app.js deve declarar referências aos elementos inputTitulo e inputAutor"
+    );
+
+    // 3. Suporte a cabeçalhos Markdown (# e ##) no modo texto livre
+    assert!(
+        js.contains("startsWith('# ')") || js.contains("startsWith('#')"),
+        "app.js deve extrair título a partir de cabeçalho Markdown (# )"
+    );
+    assert!(
+        js.contains("startsWith('## ')") || js.contains("startsWith('##')"),
+        "app.js deve extrair autor a partir de cabeçalho Markdown (## )"
+    );
+}
