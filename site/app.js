@@ -225,6 +225,34 @@ function sortearExemploAleatorio() {
   return exemplos[idx] && exemplos[idx].texto ? exemplos[idx] : null;
 }
 
+function extrairMetadadosMarkdown(allLines) {
+  let titulo = '';
+  let autor = '';
+  const poemLines = [];
+
+  for (const l of allLines) {
+    const trimmed = l.trim();
+    if (trimmed.startsWith('%%')) continue;
+    if (trimmed.startsWith('# ')) {
+      titulo = trimmed.slice(2).trim();
+    } else if (trimmed.startsWith('## ')) {
+      autor = trimmed.slice(3).trim();
+    } else if (trimmed.startsWith('#') && !trimmed.startsWith('##')) {
+      titulo = trimmed.replace(/^#+/, '').trim();
+    } else if (trimmed.startsWith('##')) {
+      autor = trimmed.replace(/^#+/, '').trim();
+    } else {
+      poemLines.push(l);
+    }
+  }
+
+  while (poemLines.length > 0 && poemLines[0].trim() === '') {
+    poemLines.shift();
+  }
+
+  return { titulo, autor, verses: poemLines.length > 0 ? poemLines : [''] };
+}
+
 function limparLaboratorio() {
   limparRascunho();
   isDirty = false;
@@ -240,27 +268,10 @@ async function main() {
   // Recuperar rascunho persistido no localStorage (Ticket #20 / #24)
   const rascunhoSalvo = recuperarRascunho();
   if (rascunhoSalvo !== null) {
-    const allLines = rascunhoSalvo.split('\n');
-    let titRestaurado = '';
-    let autRestaurado = '';
-    const poemLines = [];
-    for (const l of allLines) {
-      const trimmed = l.trim();
-      if (trimmed.startsWith('%%')) continue;
-      if (trimmed.startsWith('# ')) {
-        titRestaurado = trimmed.slice(2).trim();
-      } else if (trimmed.startsWith('## ')) {
-        autRestaurado = trimmed.slice(3).trim();
-      } else {
-        poemLines.push(l);
-      }
-    }
-    if (inputTitulo) inputTitulo.value = titRestaurado;
-    if (inputAutor) inputAutor.value = autRestaurado;
-    while (poemLines.length > 0 && poemLines[0].trim() === '') {
-      poemLines.shift();
-    }
-    verses = poemLines.length > 0 ? poemLines : [''];
+    const meta = extrairMetadadosMarkdown(rascunhoSalvo.split('\n'));
+    if (inputTitulo) inputTitulo.value = meta.titulo;
+    if (inputAutor) inputAutor.value = meta.autor;
+    verses = meta.verses;
     isDirty = true;
   }
 
@@ -384,35 +395,12 @@ async function main() {
 
   btnApplyRaw.addEventListener('click', () => {
     const rawVal = rawTextarea.value;
-    const allLines = rawVal.split('\n');
-    let novoTitulo = '';
-    let novoAutor = '';
-    const poemLines = [];
+    const meta = extrairMetadadosMarkdown(rawVal.split('\n'));
 
-    for (const l of allLines) {
-      const trimmed = l.trim();
-      if (trimmed.startsWith('%%')) continue;
-      if (trimmed.startsWith('# ')) {
-        novoTitulo = trimmed.slice(2).trim();
-      } else if (trimmed.startsWith('## ')) {
-        novoAutor = trimmed.slice(3).trim();
-      } else if (trimmed.startsWith('#') && !trimmed.startsWith('##')) {
-        novoTitulo = trimmed.replace(/^#+/, '').trim();
-      } else if (trimmed.startsWith('##')) {
-        novoAutor = trimmed.replace(/^#+/, '').trim();
-      } else {
-        poemLines.push(l);
-      }
-    }
+    if (inputTitulo) inputTitulo.value = meta.titulo;
+    if (inputAutor) inputAutor.value = meta.autor;
+    verses = meta.verses;
 
-    if (inputTitulo) inputTitulo.value = novoTitulo;
-    if (inputAutor) inputAutor.value = novoAutor;
-
-    while (poemLines.length > 0 && poemLines[0].trim() === '') {
-      poemLines.shift();
-    }
-
-    verses = poemLines.length > 0 ? poemLines : [''];
     isDirty = true;
     salvarRascunhoImediato();
     rawEditorBox.style.display = 'none';
