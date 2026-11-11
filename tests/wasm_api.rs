@@ -943,3 +943,52 @@ fn test_modal_interativo_legenda_spec() {
         "Badges de metro e rima devem receber atributos ARIA role='button' e tabindex='0'"
     );
 }
+
+#[test]
+fn test_legenda_estatica_rodape_spec() {
+    let html = std::fs::read_to_string("site/index.html").expect("site/index.html deve existir");
+
+    // Localiza a seção estática do rodapé
+    let inicio_legenda = html
+        .find("class=\"notation-guide\"")
+        .expect("Deve conter .notation-guide");
+    let fim_legenda = html[inicio_legenda..]
+        .find("</section>")
+        .expect("Deve fechar a section da legenda");
+    let bloco_legenda = &html[inicio_legenda..inicio_legenda + fim_legenda];
+
+    // 1. Metros que estavam ausentes na legenda estática
+    let metros_obrigatorios = [
+        ("📜", "Decassílabo"),
+        ("🎵", "Octossílabo"),
+        ("🌊", "Eneassílabo"),
+        ("🕊️", "Hendecassílabo"),
+        ("⚜️", "Dodecassílabo"),
+    ];
+    for (ico, nome) in &metros_obrigatorios {
+        assert!(
+            bloco_legenda.contains(ico),
+            "Legenda estática do rodapé deve conter o ícone '{}' ({})",
+            ico,
+            nome
+        );
+    }
+
+    // 2. Linha de avaliação de rimas com todos os ícones
+    let rimas_obrigatorias = [
+        ("🔥", "Clichê"),
+        ("✨", "Rica"),
+        ("💎", "Preciosa"),
+        ("✦", "Consoante"),
+        ("⚡", "Toante"),
+    ];
+    for (ico, desc) in &rimas_obrigatorias {
+        assert!(
+            bloco_legenda.contains(ico),
+            "Legenda estática do rodapé deve conter o ícone de rima '{}' ({})",
+            ico,
+            desc
+        );
+    }
+}
+
