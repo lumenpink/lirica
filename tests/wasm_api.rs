@@ -684,4 +684,14 @@ fn test_localstorage_draft_persistence_spec() {
         js.contains("Math.random()") && js.contains("exemplos.length"),
         "Bootstrap sem rascunho salvo deve sortear aleatoriamente um poema da biblioteca de exemplos"
     );
+
+    // 11. Fortificação anti-mutante: função desacoplada de sorteio com guarda de array
+    assert!(
+        js.contains("function sortearExemploAleatorio"),
+        "app.js deve declarar a função canônica sortearExemploAleatorio"
+    );
+    assert!(
+        !js.contains("verses = defaultEx.texto.split"),
+        "Sobrescrita incondicional de Camões deve ser eliminada de app.js"
+    );
 }
