@@ -1,5 +1,58 @@
 import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.8';
 
+// Persistência em LocalStorage (Ticket #20)
+const STORAGE_KEY = 'lirica_draft_poem';
+const STORAGE_DEBOUNCE_MS = 400;
+let saveTimer = null;
+
+function salvarRascunhoImediato(texto) {
+  try {
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+      saveTimer = null;
+    }
+    localStorage.setItem(STORAGE_KEY, texto);
+  } catch (err) {
+    console.warn('Falha ao persistir rascunho no localStorage:', err);
+  }
+}
+
+function agendarSalvamentoRascunho(texto) {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    salvarRascunhoImediato(texto);
+  }, STORAGE_DEBOUNCE_MS);
+}
+
+function flushRascunhoPendente() {
+  if (saveTimer) {
+    clearTimeout(saveTimer);
+    saveTimer = null;
+    salvarRascunhoImediato(getFullText());
+  }
+}
+
+function recuperarRascunho() {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch (err) {
+    console.warn('Falha ao ler rascunho do localStorage:', err);
+    return null;
+  }
+}
+
+function limparRascunho() {
+  try {
+    if (saveTimer) {
+      clearTimeout(saveTimer);
+      saveTimer = null;
+    }
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (err) {
+    console.warn('Falha ao remover rascunho do localStorage:', err);
+  }
+}
+
 let exemplos = [];
 let verses = [
   "Amor é fogo que arde sem se ver,",
@@ -150,11 +203,13 @@ function renderExemplosGrid(filtro = '') {
 function carregarPoema(texto) {
   verses = texto.split('\n');
   if (rawTextarea) rawTextarea.value = texto;
+  salvarRascunhoImediato(texto);
   renderWorkspace();
   focusVerse(0);
 }
 
 function limparLaboratorio() {
+  limparRascunho();
   verses = [''];
   if (rawTextarea) rawTextarea.value = '';
   renderWorkspace();
@@ -162,6 +217,12 @@ function limparLaboratorio() {
 }
 
 async function main() {
+  // Recuperar rascunho persistido no localStorage (Ticket #20)
+  const rascunhoSalvo = recuperarRascunho();
+  if (rascunhoSalvo !== null && rascunhoSalvo.trim().length > 0) {
+    verses = rascunhoSalvo.split('\n');
+  }
+
   try {
     await init('./pkg/lirica_bg.wasm?v=0.1.8');
   } catch (err) {
@@ -243,6 +304,7 @@ async function main() {
 
   btnAddVerso.addEventListener('click', () => {
     verses.push('');
+    salvarRascunhoImediato(getFullText());
     renderWorkspace();
     focusVerse(verses.length - 1);
   });
@@ -253,6 +315,7 @@ async function main() {
         verses.push('');
       }
       verses.push('');
+      salvarRascunhoImediato(getFullText());
       renderWorkspace();
       focusVerse(verses.length - 1);
     });
@@ -264,6 +327,7 @@ async function main() {
     const rawVal = rawTextarea.value;
     const lines = rawVal.split('\n').filter(l => !l.trim().startsWith('%%'));
     verses = lines.length > 0 ? lines : [''];
+    salvarRascunhoImediato(verses.join('\n'));
     rawEditorBox.style.display = 'none';
     btnToggleRaw.textContent = 'Modo Texto Livre';
     renderWorkspace();
@@ -618,6 +682,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
       stanzaCounter++;
       const block = createStanzaHeaderBlock(stanzaCounter - 1, webData, true, () => {
         verses.splice(idx, 1);
+        salvarRascunhoImediato(getFullText());
         renderWorkspace();
       });
       versesContainer.appendChild(block);
@@ -647,6 +712,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
     input.addEventListener('input', (e) => {
       verses[idx] = e.target.value;
       updateSingleRowLive();
+      agendarSalvamentoRascunho(getFullText());
     });
 
     input.addEventListener('keydown', (e) => {
@@ -655,16 +721,19 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
         if (e.shiftKey) {
           // Shift+Enter insere quebra de estrofe
           verses.splice(idx + 1, 0, '', '');
+          salvarRascunhoImediato(getFullText());
           renderWorkspace();
           focusVerse(idx + 2);
         } else {
           verses.splice(idx + 1, 0, '');
+          salvarRascunhoImediato(getFullText());
           renderWorkspace();
           focusVerse(idx + 1);
         }
       } else if (e.key === 'Backspace' && e.target.value === '' && verses.length > 1) {
         e.preventDefault();
         verses.splice(idx, 1);
+        salvarRascunhoImediato(getFullText());
         renderWorkspace();
         focusVerse(Math.max(0, idx - 1));
       }
@@ -680,6 +749,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
       } else {
         verses = [''];
       }
+      salvarRascunhoImediato(getFullText());
       renderWorkspace();
     });
 
@@ -935,4 +1005,12 @@ async function copiarAnalise() {
 
 main().catch(err => {
   console.error('Falha crítica na inicialização do Lírica:', err);
+});
+
+// Flush imediato de rascunho em saída da página ou troca de aba (Ticket #20)
+window.addEventListener('beforeunload', flushRascunhoPendente);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    flushRascunhoPendente();
+  }
 });
