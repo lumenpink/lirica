@@ -1,11 +1,13 @@
 import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.8';
 
-// Persistência em LocalStorage (Ticket #20)
+// Persistência em LocalStorage (Ticket #20 / #23)
 const STORAGE_KEY = 'lirica_draft_poem';
 const STORAGE_DEBOUNCE_MS = 400;
 let saveTimer = null;
+let isDirty = false;
 
 function salvarRascunhoImediato(texto = null) {
+  isDirty = true;
   try {
     if (saveTimer) {
       clearTimeout(saveTimer);
@@ -205,7 +207,8 @@ function renderExemplosGrid(filtro = '') {
 function carregarPoema(texto) {
   verses = texto.split('\n');
   if (rawTextarea) rawTextarea.value = texto;
-  salvarRascunhoImediato(texto);
+  limparRascunho();
+  isDirty = false;
   renderWorkspace();
   focusVerse(0);
 }
@@ -218,6 +221,7 @@ function sortearExemploAleatorio() {
 
 function limparLaboratorio() {
   limparRascunho();
+  isDirty = false;
   verses = [''];
   if (rawTextarea) rawTextarea.value = '';
   renderWorkspace();
@@ -229,6 +233,7 @@ async function main() {
   const rascunhoSalvo = recuperarRascunho();
   if (rascunhoSalvo !== null) {
     verses = rascunhoSalvo.split('\n');
+    isDirty = true;
   }
 
   try {
