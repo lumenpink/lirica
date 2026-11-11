@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Legenda estática do rodapé (site/index.html) expandida com todos os 12 ícones de ritmos e metros clássicos e os 5 ícones de auditoria de rimas, com botão de atalho para o guia interativo completo (closes #27).
 - Modal interativo de legenda métrica e rímica (#modal-legenda), permitindo consulta acessível por clique/toque em badges (.meter-badge e .rhyme-badge) com suporte a teclado Escape (closes #26).
 - Campos de título e autor no topo do laboratório sincronizados com cabeçalhos Markdown (# e ##) no modo livre e persistência unificada (closes #24).
 - Corpus completo dos poemas de exemplo em WebAssembly (Gonçalves Dias, Cruz e Sousa, Fernando Pessoa e Olavo Bilac) (closes #22).
