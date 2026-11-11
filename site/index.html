@@ -239,6 +239,180 @@
     </div>
   </div>
 
+  <!-- Modal Dialog de Legenda e Notação Métrica -->
+  <div id="modal-legenda" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-legenda-titulo">
+    <div class="modal-container modal-legenda-container">
+      <div class="modal-header">
+        <div class="modal-header-text">
+          <h2 id="modal-legenda-titulo" class="modal-title">📖 Guia Completo de Notação & Legenda Lírica</h2>
+          <p class="modal-subtitle">Conceitos fundamentais de escansão clássica, metros lusófonos e auditoria de rimas:</p>
+        </div>
+        <button id="btn-fechar-modal-legenda" class="modal-close-btn" aria-label="Fechar janela de legenda">✕</button>
+      </div>
+      <div class="modal-body modal-legenda-body">
+        
+        <!-- Bloco 1: Metrificação & Ritmo -->
+        <div class="legenda-secao">
+          <h3 class="legenda-secao-titulo">📐 Metrificação e Formas Rítmicas</h3>
+          <div class="legenda-grid">
+            <div class="legenda-card">
+              <span class="legenda-card-icone">⚔️</span>
+              <div class="legenda-card-conteudo">
+                <strong>Decassílabo Heroico (6, 10)</strong>
+                <p>10 sílabas poéticas com acentuação rigorosa na 6ª e na 10ª sílaba. O metro mais nobre da epopeia camoniana.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🏛️</span>
+              <div class="legenda-card-conteudo">
+                <strong>Decassílabo Sáfico (4, 8, 10)</strong>
+                <p>10 sílabas poéticas com ênfase na 4ª, 8ª e 10ª sílaba. Tom melódico, clássico e grave.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🔨</span>
+              <div class="legenda-card-conteudo">
+                <strong>Decassílabo Martelo (3, 6, 10)</strong>
+                <p>10 sílabas poéticas com acentos na 3ª, 6ª e 10ª sílaba. Ritmo percussivo e incisivo, célebre no repente e cordel.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">📜</span>
+              <div class="legenda-card-conteudo">
+                <strong>Decassílabo Geral (10s)</strong>
+                <p>Verso decassílabo de cadência mista ou variação rítmica não restrita aos esquemas fixos clássicos.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🌿</span>
+              <div class="legenda-card-conteudo">
+                <strong>Redondilha Maior / Heptassílabo (7s)</strong>
+                <p>7 sílabas poéticas com acento na 7ª. O metro tradicional mais espontâneo e popular da lírica ibérica.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🍃</span>
+              <div class="legenda-card-conteudo">
+                <strong>Redondilha Menor / Pentassílabo (5s)</strong>
+                <p>5 sílabas poéticas. Metro ágil e gracioso, típico de cantigas, trovas e estribilhos breves.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">👑</span>
+              <div class="legenda-card-conteudo">
+                <strong>Alexandrino Clássico (12s)</strong>
+                <p>Dodecassílabo clássico com cesura hemistíquia perfeita após a 6ª sílaba (divisão simétrica 6 + 6).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">⚜️</span>
+              <div class="legenda-card-conteudo">
+                <strong>Dodecassílabo Geral (12s)</strong>
+                <p>Verso de 12 sílabas métricas sem divisão hemistíquia rigorosa (ex.: alexandrino romântico ou ternário 4+4+4).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🎵</span>
+              <div class="legenda-card-conteudo">
+                <strong>Octossílabo (8s)</strong>
+                <p>8 sílabas poéticas com acento final na 8ª. Muito presente em romances narrativos e poesia cantada.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🌊</span>
+              <div class="legenda-card-conteudo">
+                <strong>Eneassílabo (9s)</strong>
+                <p>9 sílabas poéticas. Cadência ondulante e fluida, marcante na poética romântica e simbolista.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🕊️</span>
+              <div class="legenda-card-conteudo">
+                <strong>Hendecassílabo (11s)</strong>
+                <p>11 sílabas poéticas. Metro extenso de cadência solene, intermediário entre o decassílabo e o alexandrino.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🪶</span>
+              <div class="legenda-card-conteudo">
+                <strong>Forma Livre / Verso Bárbaro</strong>
+                <p>Metros de extensão irregular, versos livres modernos ou combinações fora da grade silábica pré-fixada.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 2: Auditoria de Rimas & Fonologia -->
+        <div class="legenda-secao">
+          <h3 class="legenda-secao-titulo">🎯 Auditoria de Rimas & Morfologia</h3>
+          <div class="legenda-grid">
+            <div class="legenda-card">
+              <span class="legenda-card-icone">🔥</span>
+              <div class="legenda-card-conteudo">
+                <strong>Clichê Histórico de Rima</strong>
+                <p>Par rímico hiper-saturado na tradição clássica (ex.: <em>amor × dor</em>, <em>coração × ilusão</em>, <em>peito × leito</em>).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">✨</span>
+              <div class="legenda-card-conteudo">
+                <strong>Rima Rica</strong>
+                <p>Convergência fonética entre palavras de <strong>classes gramaticais distintas</strong> (ex.: verbo × substantivo).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">💎</span>
+              <div class="legenda-card-conteudo">
+                <strong>Rima Preciosa / Rara</strong>
+                <p>Combinações acústicas raras, rimas proparoxítonas (esdrúxulas) ou palavras de morfologia complexa.</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">✦</span>
+              <div class="legenda-card-conteudo">
+                <strong>Rima Consoante / Pobre</strong>
+                <p>Rima foneticamente perfeita entre termos da <strong>mesma classe gramatical</strong> (ex.: verbo × verbo, sufixo × sufixo).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">⚡</span>
+              <div class="legenda-card-conteudo">
+                <strong>Rima Toante / Imperfeita</strong>
+                <p>Identidade restrita à vogal tônica (assonância), divergindo nas consoantes subsequentes (ex.: <em>festa × terra</em>).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloco 3: Notação Fonética & Sinalefa -->
+        <div class="legenda-secao">
+          <h3 class="legenda-secao-titulo">🔤 Notação Fonética de Escansão</h3>
+          <div class="legenda-grid">
+            <div class="legenda-card">
+              <span class="legenda-card-icone">‿</span>
+              <div class="legenda-card-conteudo">
+                <strong>Sinalefa (Ligadura Vocálica)</strong>
+                <p>Fusão métrica de duas vogais contíguas em uma única sílaba poética (elisão intervocabular).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone">·</span>
+              <div class="legenda-card-conteudo">
+                <strong>Extramétrica (Regra de Castilho)</strong>
+                <p>Sílabas átonas finais após a última tônica do verso. Descartadas na contagem métrica tradicional lusófona.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <span class="modal-footer-hint">Toque ou clique em qualquer badge na lateral do verso para reabrir este guia a qualquer momento.</span>
+        <button id="btn-fechar-modal-legenda-bottom" class="btn-ghost">Fechar Guia</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="app-footer">
     <div class="footer-inner">
       <p class="footer-identity">

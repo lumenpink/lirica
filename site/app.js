@@ -87,6 +87,10 @@ const btnFecharModalBottom = document.getElementById('btn-fechar-modal-bottom');
 const inputBuscaExemplos = document.getElementById('input-busca-exemplos');
 const gridExemplos = document.getElementById('grid-exemplos');
 
+const modalLegenda = document.getElementById('modal-legenda');
+const btnFecharModalLegenda = document.getElementById('btn-fechar-modal-legenda');
+const btnFecharModalLegendaBottom = document.getElementById('btn-fechar-modal-legenda-bottom');
+
 const selectModo = document.getElementById('select-modo');
 const chkCastilho = document.getElementById('chk-castilho');
 const chkPontuacao = document.getElementById('chk-pontuacao');
@@ -146,6 +150,16 @@ function abrirModal() {
 function fecharModal() {
   if (!modalExemplos) return;
   modalExemplos.hidden = true;
+}
+
+function abrirModalLegenda() {
+  if (!modalLegenda) return;
+  modalLegenda.hidden = false;
+}
+
+function fecharModalLegenda() {
+  if (!modalLegenda) return;
+  modalLegenda.hidden = true;
 }
 
 function renderExemplosGrid(filtro = '') {
@@ -328,7 +342,7 @@ async function main() {
     console.warn('Erro ao carregar poema de sessionStorage:', e);
   }
 
-  // Event Listeners para Modal
+  // Event Listeners para Modal de Exemplos
   if (btnAbrirExemplos) btnAbrirExemplos.addEventListener('click', abrirModal);
   if (btnFecharModal) btnFecharModal.addEventListener('click', fecharModal);
   if (btnFecharModalBottom) btnFecharModalBottom.addEventListener('click', fecharModal);
@@ -337,9 +351,20 @@ async function main() {
       if (e.target === modalExemplos) fecharModal();
     });
   }
+
+  // Event Listeners para Modal de Legenda
+  if (btnFecharModalLegenda) btnFecharModalLegenda.addEventListener('click', fecharModalLegenda);
+  if (btnFecharModalLegendaBottom) btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegendaBottom);
+  if (modalLegenda) {
+    modalLegenda.addEventListener('click', (e) => {
+      if (e.target === modalLegenda) fecharModalLegenda();
+    });
+  }
+
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modalExemplos && !modalExemplos.hidden) {
-      fecharModal();
+    if (e.key === 'Escape') {
+      if (modalExemplos && !modalExemplos.hidden) fecharModal();
+      if (modalLegenda && !modalLegenda.hidden) fecharModalLegenda();
     }
   });
   if (inputBuscaExemplos) {
@@ -347,6 +372,12 @@ async function main() {
       renderExemplosGrid(e.target.value.toLowerCase().trim());
     });
   }
+
+  // Abrir modal de legenda ao clicar nas tags de guia do rodapé
+  document.querySelectorAll('.guide-icons-row .icon-tag, .guide-legend .guide-item').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', abrirModalLegenda);
+  });
 
   // Botões de Limpeza
   if (btnHeaderLimpar) btnHeaderLimpar.addEventListener('click', limparLaboratorio);
@@ -848,7 +879,16 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
       // Compact Rhyme badge
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
-        rhymeBadge.className = 'badge-rima-compact';
+        rhymeBadge.className = 'badge-rima-compact rhyme-badge';
+        rhymeBadge.setAttribute('role', 'button');
+        rhymeBadge.setAttribute('tabindex', '0');
+        rhymeBadge.addEventListener('click', abrirModalLegenda);
+        rhymeBadge.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            abrirModalLegenda();
+          }
+        });
 
         let verseIsCliche = false;
         let clicheMotivo = '';
@@ -870,20 +910,29 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
           rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
-          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo})`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver a legenda`;
         } else {
           rhymeBadge.textContent = vData.rima;
           const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-          rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver a legenda`;
         }
         colRight.appendChild(rhymeBadge);
       }
 
       // Compact Meter badge: count + icon with tooltip
       const meterBadge = document.createElement('span');
-      meterBadge.className = 'badge-metro-compact';
-      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas)`;
+      meterBadge.className = 'badge-metro-compact meter-badge';
+      meterBadge.setAttribute('role', 'button');
+      meterBadge.setAttribute('tabindex', '0');
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver a legenda`;
       meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
+      meterBadge.addEventListener('click', abrirModalLegenda);
+      meterBadge.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          abrirModalLegenda();
+        }
+      });
       colRight.appendChild(meterBadge);
 
       // Syllables strip
@@ -973,7 +1022,16 @@ function updateSingleRowLive() {
       // Compact Rhyme badge
       if (vData.rima) {
         const rhymeBadge = document.createElement('span');
-        rhymeBadge.className = 'badge-rima-compact';
+        rhymeBadge.className = 'badge-rima-compact rhyme-badge';
+        rhymeBadge.setAttribute('role', 'button');
+        rhymeBadge.setAttribute('tabindex', '0');
+        rhymeBadge.addEventListener('click', abrirModalLegenda);
+        rhymeBadge.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            abrirModalLegenda();
+          }
+        });
         const lineNum = currentVerseRowIdx; // currentVerseRowIdx is 1-based line number
 
         let verseIsCliche = false;
@@ -996,20 +1054,29 @@ function updateSingleRowLive() {
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
           rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
-          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo})`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver a legenda`;
         } else {
           rhymeBadge.textContent = vData.rima;
           const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-          rhymeBadge.title = `Rima: ${vData.rima}${term}`;
+          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver a legenda`;
         }
         colRight.appendChild(rhymeBadge);
       }
 
       // Compact Meter badge: count + icon with tooltip
       const meterBadge = document.createElement('span');
-      meterBadge.className = 'badge-metro-compact';
-      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas)`;
+      meterBadge.className = 'badge-metro-compact meter-badge';
+      meterBadge.setAttribute('role', 'button');
+      meterBadge.setAttribute('tabindex', '0');
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver a legenda`;
       meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
+      meterBadge.addEventListener('click', abrirModalLegenda);
+      meterBadge.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          abrirModalLegenda();
+        }
+      });
       colRight.appendChild(meterBadge);
 
       const strip = document.createElement('div');

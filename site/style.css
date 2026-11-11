@@ -935,7 +935,8 @@ body {
 }
 
 .badge-rima,
-.badge-rima-compact {
+.badge-rima-compact,
+.rhyme-badge {
   background-color: var(--accent-purple-soft);
   color: var(--accent-purple);
   border: 1px solid rgba(198, 120, 221, 0.35);
@@ -947,7 +948,9 @@ body {
   flex-shrink: 0;
   min-width: 1.5rem;
   text-align: center;
-  cursor: help;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .badge-metro {
@@ -962,7 +965,8 @@ body {
   white-space: nowrap;
 }
 
-.badge-metro-compact {
+.badge-metro-compact,
+.meter-badge {
   background-color: var(--accent-gold-soft);
   color: var(--accent-gold);
   border: 1px solid rgba(229, 192, 123, 0.3);
@@ -976,10 +980,28 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  cursor: help;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease, border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.badge-metro-compact .ico {
+.badge-metro-compact:hover,
+.meter-badge:hover,
+.badge-rima-compact:hover,
+.rhyme-badge:hover {
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.badge-metro-compact:active,
+.meter-badge:active,
+.badge-rima-compact:active,
+.rhyme-badge:active {
+  transform: translateY(0);
+}
+
+.badge-metro-compact .ico,
+.meter-badge .ico {
   font-size: 0.85rem;
   line-height: 1;
 }
@@ -1595,4 +1617,79 @@ body {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* Modal de Legenda & Notação Métrica */
+.modal-legenda-container {
+  max-width: 860px;
+}
+
+.modal-legenda-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.legenda-secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.legenda-secao-titulo {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.35rem;
+  margin: 0;
+}
+
+.legenda-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.75rem;
+}
+
+.legenda-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.85rem;
+  transition: border-color 0.15s ease, transform 0.1s ease;
+}
+
+.legenda-card:hover {
+  border-color: rgba(229, 192, 123, 0.4);
+  transform: translateY(-1px);
+}
+
+.legenda-card-icone {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+.legenda-card-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.legenda-card-conteudo strong {
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+}
+
+.legenda-card-conteudo p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
 }
