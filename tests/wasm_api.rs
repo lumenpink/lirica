@@ -938,8 +938,8 @@ fn test_modal_interativo_legenda_spec() {
         "CSS deve definir cursor: pointer para badges interativos"
     );
     assert!(
-        js.contains("setAttribute('role', 'button')") && js.contains("setAttribute('tabindex', '0')"),
+        js.contains("setAttribute('role', 'button')")
+            && js.contains("setAttribute('tabindex', '0')"),
         "Badges de metro e rima devem receber atributos ARIA role='button' e tabindex='0'"
     );
 }
-
