@@ -792,4 +792,18 @@ fn test_markdown_title_author_spec() {
         js.contains("startsWith('## ')") || js.contains("startsWith('##')"),
         "app.js deve extrair autor a partir de cabeçalho Markdown (## )"
     );
+
+    // 4. Fortificação anti-mutante: extração modularizada e limpeza no reset
+    assert!(
+        js.contains("function extrairMetadadosMarkdown"),
+        "app.js deve modularizar a extração em extrairMetadadosMarkdown"
+    );
+    assert!(
+        js.contains("inputTitulo.value = ''") && js.contains("inputAutor.value = ''"),
+        "limparLaboratorio deve resetar os campos de título e autor"
+    );
+    assert!(
+        js.contains("parts.push(`# ${tit}`)") || (js.contains("# ") && js.contains("getFullText")),
+        "getFullText deve exportar título e autor formatados em Markdown"
+    );
 }
