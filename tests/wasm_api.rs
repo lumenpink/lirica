@@ -672,4 +672,16 @@ fn test_localstorage_draft_persistence_spec() {
         js.contains("visibilityState === 'hidden'") || js.contains("hidden"),
         "Listener de visibilitychange deve detectar estado hidden para salvar dados no mobile"
     );
+
+    // 9. Precedência estrita: exemplos não devem sobrescrever rascunho recuperado
+    assert!(
+        js.contains("rascunhoSalvo === null"),
+        "Carga de exemplos no bootstrap deve ser condicionada a rascunhoSalvo === null"
+    );
+
+    // 10. Sorteio aleatório de exemplos no bootstrap sem rascunho
+    assert!(
+        js.contains("Math.random()") && js.contains("exemplos.length"),
+        "Bootstrap sem rascunho salvo deve sortear aleatoriamente um poema da biblioteca de exemplos"
+    );
 }
