@@ -122,6 +122,10 @@ const rawEditorBox = document.getElementById('raw-editor-box');
 const rawTextarea = document.getElementById('raw-textarea');
 const btnApplyRaw = document.getElementById('btn-apply-raw');
 
+// Metadados Poéticos (Ticket #24)
+const inputTitulo = document.getElementById('input-titulo');
+const inputAutor = document.getElementById('input-autor');
+
 const alignedWorkspace = document.getElementById('aligned-workspace');
 const versesContainer = document.getElementById('verses-container');
 
@@ -196,7 +200,7 @@ function renderExemplosGrid(filtro = '') {
     card.appendChild(preview);
 
     card.addEventListener('click', () => {
-      carregarPoema(ex.texto);
+      carregarPoema(ex.texto, ex.titulo, ex.autor);
       fecharModal();
     });
 
@@ -204,9 +208,11 @@ function renderExemplosGrid(filtro = '') {
   });
 }
 
-function carregarPoema(texto) {
+function carregarPoema(texto, titulo = '', autor = '') {
+  if (inputTitulo) inputTitulo.value = titulo;
+  if (inputAutor) inputAutor.value = autor;
   verses = texto.split('\n');
-  if (rawTextarea) rawTextarea.value = texto;
+  if (rawTextarea) rawTextarea.value = getFullText();
   limparRascunho();
   isDirty = false;
   renderWorkspace();
@@ -216,12 +222,14 @@ function carregarPoema(texto) {
 function sortearExemploAleatorio() {
   if (!Array.isArray(exemplos) || exemplos.length === 0) return null;
   const idx = Math.floor(Math.random() * exemplos.length);
-  return exemplos[idx] && exemplos[idx].texto ? exemplos[idx].texto : null;
+  return exemplos[idx] && exemplos[idx].texto ? exemplos[idx] : null;
 }
 
 function limparLaboratorio() {
   limparRascunho();
   isDirty = false;
+  if (inputTitulo) inputTitulo.value = '';
+  if (inputAutor) inputAutor.value = '';
   verses = [''];
   if (rawTextarea) rawTextarea.value = '';
   renderWorkspace();
@@ -229,10 +237,30 @@ function limparLaboratorio() {
 }
 
 async function main() {
-  // Recuperar rascunho persistido no localStorage (Ticket #20)
+  // Recuperar rascunho persistido no localStorage (Ticket #20 / #24)
   const rascunhoSalvo = recuperarRascunho();
   if (rascunhoSalvo !== null) {
-    verses = rascunhoSalvo.split('\n');
+    const allLines = rascunhoSalvo.split('\n');
+    let titRestaurado = '';
+    let autRestaurado = '';
+    const poemLines = [];
+    for (const l of allLines) {
+      const trimmed = l.trim();
+      if (trimmed.startsWith('%%')) continue;
+      if (trimmed.startsWith('# ')) {
+        titRestaurado = trimmed.slice(2).trim();
+      } else if (trimmed.startsWith('## ')) {
+        autRestaurado = trimmed.slice(3).trim();
+      } else {
+        poemLines.push(l);
+      }
+    }
+    if (inputTitulo) inputTitulo.value = titRestaurado;
+    if (inputAutor) inputAutor.value = autRestaurado;
+    while (poemLines.length > 0 && poemLines[0].trim() === '') {
+      poemLines.shift();
+    }
+    verses = poemLines.length > 0 ? poemLines : [''];
     isDirty = true;
   }
 
@@ -264,9 +292,11 @@ async function main() {
 
     // Se não houver rascunho salvo, sortear aleatoriamente um poema da biblioteca de exemplos
     if (rascunhoSalvo === null) {
-      const textoAleatorio = sortearExemploAleatorio();
-      if (textoAleatorio) {
-        verses = textoAleatorio.split('\n');
+      const exAleatorio = sortearExemploAleatorio();
+      if (exAleatorio && exAleatorio.texto) {
+        if (inputTitulo) inputTitulo.value = exAleatorio.titulo || '';
+        if (inputAutor) inputAutor.value = exAleatorio.autor || '';
+        verses = exAleatorio.texto.split('\n');
       }
     }
   } catch (e) {
@@ -336,12 +366,54 @@ async function main() {
     });
   }
 
+  // Listeners de Título e Autor (Ticket #24)
+  if (inputTitulo) {
+    inputTitulo.addEventListener('input', () => {
+      isDirty = true;
+      agendarSalvamentoRascunho();
+    });
+  }
+  if (inputAutor) {
+    inputAutor.addEventListener('input', () => {
+      isDirty = true;
+      agendarSalvamentoRascunho();
+    });
+  }
+
   btnToggleRaw.addEventListener('click', toggleRawEditor);
 
   btnApplyRaw.addEventListener('click', () => {
     const rawVal = rawTextarea.value;
-    const lines = rawVal.split('\n').filter(l => !l.trim().startsWith('%%'));
-    verses = lines.length > 0 ? lines : [''];
+    const allLines = rawVal.split('\n');
+    let novoTitulo = '';
+    let novoAutor = '';
+    const poemLines = [];
+
+    for (const l of allLines) {
+      const trimmed = l.trim();
+      if (trimmed.startsWith('%%')) continue;
+      if (trimmed.startsWith('# ')) {
+        novoTitulo = trimmed.slice(2).trim();
+      } else if (trimmed.startsWith('## ')) {
+        novoAutor = trimmed.slice(3).trim();
+      } else if (trimmed.startsWith('#') && !trimmed.startsWith('##')) {
+        novoTitulo = trimmed.replace(/^#+/, '').trim();
+      } else if (trimmed.startsWith('##')) {
+        novoAutor = trimmed.replace(/^#+/, '').trim();
+      } else {
+        poemLines.push(l);
+      }
+    }
+
+    if (inputTitulo) inputTitulo.value = novoTitulo;
+    if (inputAutor) inputAutor.value = novoAutor;
+
+    while (poemLines.length > 0 && poemLines[0].trim() === '') {
+      poemLines.shift();
+    }
+
+    verses = poemLines.length > 0 ? poemLines : [''];
+    isDirty = true;
     salvarRascunhoImediato();
     rawEditorBox.style.display = 'none';
     btnToggleRaw.textContent = 'Modo Texto Livre';
@@ -355,7 +427,7 @@ async function main() {
 
 function toggleRawEditor() {
   if (rawEditorBox.style.display === 'none') {
-    rawTextarea.value = verses.join('\n');
+    rawTextarea.value = getFullText();
     rawEditorBox.style.display = 'flex';
     btnToggleRaw.textContent = 'Fechar Texto Livre';
     rawTextarea.focus();
@@ -366,7 +438,13 @@ function toggleRawEditor() {
 }
 
 function getFullText() {
-  return verses.join('\n');
+  const parts = [];
+  const tit = inputTitulo ? inputTitulo.value.trim() : '';
+  const aut = inputAutor ? inputAutor.value.trim() : '';
+  if (tit) parts.push(`# ${tit}`);
+  if (aut) parts.push(`## ${aut}`);
+  if (parts.length > 0) parts.push('');
+  return parts.concat(verses).join('\n');
 }
 
 function updateStats(webData) {
@@ -991,7 +1069,7 @@ function focusVerse(index) {
 }
 
 async function copiarAnalise() {
-  const fullText = getFullText();
+  const fullText = verses.join('\n');
   if (!fullText.trim()) return;
 
   const modo = selectModo.value;

@@ -755,6 +755,46 @@ body {
   resize: vertical;
 }
 
+/* Poem Meta Bar (Título e Autor) */
+.poem-meta-bar {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.meta-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  width: 100%;
+  padding: 0.15rem 0;
+}
+
+.meta-input.title-input {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.meta-input.author-input {
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.meta-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.55;
+  font-style: italic;
+}
+
 /* Aligned Workspace (Linha ao lado da sua Irmã) */
 .aligned-workspace {
   background-color: var(--bg-secondary);
