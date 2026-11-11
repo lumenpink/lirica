@@ -155,6 +155,9 @@ function fecharModal() {
 function abrirModalLegenda() {
   if (!modalLegenda) return;
   modalLegenda.hidden = false;
+  if (btnFecharModalLegenda) {
+    btnFecharModalLegenda.focus();
+  }
 }
 
 function fecharModalLegenda() {
