@@ -754,4 +754,14 @@ fn test_localstorage_draft_persistence_spec() {
         !fn_carregar_poema.contains("salvarRascunho"),
         "carregarPoema não deve salvar no localStorage para não poluir o rascunho passivamente"
     );
+
+    // 13. Fortificação anti-mutante: controle explícito por flag isDirty
+    assert!(
+        js.contains("let isDirty = false") || js.contains("isDirty = true"),
+        "app.js deve gerenciar a flag de estado dirty (isDirty) para persistência seletiva"
+    );
+    assert!(
+        js.contains("isDirty = false") && fn_carregar_poema.contains("isDirty = false"),
+        "carregarPoema deve marcar isDirty = false ao visualizar exemplos em memória"
+    );
 }
