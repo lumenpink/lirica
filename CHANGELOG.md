@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Correção de precedência de rascunho recuperado no bootstrap para evitar sobrescrita pela biblioteca de exemplos e sorteio aleatório de poema inicial na ausência de rascunho (closes #21).
 - Configuração de wasm-opt = false para compatibilidade com bulk memory em builds WebAssembly (closes #15).
 - Compilação WebAssembly via wasm-pack no CI e empacotamento completo de site/pkg para deploy no Cloudflare Pages (closes #14).
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
