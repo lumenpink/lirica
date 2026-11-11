@@ -54,6 +54,30 @@ fn test_carregar_exemplos() {
         14,
         "Ouvir Estrelas deve ser o soneto decassílabo completo de Olavo Bilac (14 versos)"
     );
+
+    // Fortificação anti-mutante: contagem estrófica exata
+    let estrofes_count =
+        |texto: &str| -> usize { texto.split("\n\n").filter(|s| !s.trim().is_empty()).count() };
+    assert_eq!(
+        estrofes_count(&exemplos[3].texto),
+        5,
+        "Canção do Exílio deve ter 5 estrofes"
+    );
+    assert_eq!(
+        estrofes_count(&exemplos[4].texto),
+        4,
+        "Sinfonias do Ocaso deve ter 4 estrofes"
+    );
+    assert_eq!(
+        estrofes_count(&exemplos[5].texto),
+        3,
+        "Autopsicografia deve ter 3 estrofes"
+    );
+    assert_eq!(
+        estrofes_count(&exemplos[6].texto),
+        4,
+        "Ouvir Estrelas deve ter 4 estrofes"
+    );
 }
 
 #[test]
