@@ -743,4 +743,15 @@ fn test_localstorage_draft_persistence_spec() {
         !js.contains("verses = defaultEx.texto.split"),
         "Sobrescrita incondicional de Camões deve ser eliminada de app.js"
     );
+
+    // 12. Dirty state: carregarPoema não deve salvar rascunho de forma passiva
+    let fn_carregar_poema = js
+        .split("function carregarPoema")
+        .nth(1)
+        .and_then(|s| s.split('}').next())
+        .unwrap_or("");
+    assert!(
+        !fn_carregar_poema.contains("salvarRascunho"),
+        "carregarPoema não deve salvar no localStorage para não poluir o rascunho passivamente"
+    );
 }
