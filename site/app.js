@@ -251,10 +251,13 @@ async function main() {
     exemplos = JSON.parse(carregar_exemplos());
     renderExemplosGrid('');
 
-    // Default Camões se nenhum poema for fornecido via sessionStorage
-    const defaultEx = exemplos.find(ex => ex.id === 'camoes');
-    if (defaultEx) {
-      verses = defaultEx.texto.split('\n');
+    // Se não houver rascunho salvo, sortear aleatoriamente um poema da biblioteca de exemplos
+    if (rascunhoSalvo === null && exemplos.length > 0) {
+      const idxAleatorio = Math.floor(Math.random() * exemplos.length);
+      const exemploEscolhido = exemplos[idxAleatorio];
+      if (exemploEscolhido && exemploEscolhido.texto) {
+        verses = exemploEscolhido.texto.split('\n');
+      }
     }
   } catch (e) {
     console.error('Erro ao carregar exemplos:', e);
