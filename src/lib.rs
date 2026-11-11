@@ -124,14 +124,33 @@ pub struct AnaliseWeb {
 /// Sanitiza o texto de entrada para escansão, expurgando cabeçalhos Markdown (# Título e ## Autor)
 /// para que não sejam computados como versos poéticos nem formem estrofes espúrias.
 fn sanitizar_texto_escansao(texto: &str) -> String {
-    let linhas_filtradas: Vec<&str> = texto
+    let mut linhas: Vec<&str> = texto
         .lines()
         .filter(|linha| {
             let t = linha.trim_start();
             !(t.starts_with("# ") || t.starts_with("## ") || t == "#" || t == "##")
         })
         .collect();
-    linhas_filtradas.join("\n")
+
+    // Descarta linhas vazias residuais no início (ex.: espaçamento entre metadados e primeiro verso)
+    while let Some(primeira) = linhas.first() {
+        if primeira.trim().is_empty() {
+            linhas.remove(0);
+        } else {
+            break;
+        }
+    }
+
+    // Descarta linhas vazias residuais no final
+    while let Some(ultima) = linhas.last() {
+        if ultima.trim().is_empty() {
+            linhas.pop();
+        } else {
+            break;
+        }
+    }
+
+    linhas.join("\n")
 }
 
 #[wasm_bindgen]
@@ -204,7 +223,7 @@ pub fn escandir(
             Err(e) => format!("{{\"error\": \"{}\"}}", e),
         },
         "texto" => poema.linhas_originais.join("\n"),
-        "visual" | "html" => render_visual_json(&poema, texto),
+        "visual" | "html" => render_visual_json(&poema, &texto_limpo),
         _ => render_painel(&poema),
     }
 }

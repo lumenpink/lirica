@@ -829,6 +829,25 @@ fn test_escansao_ignora_cabecalhos_markdown() {
         "Deve computar exatamente 1 estrofe real, sem estrofe espúria no índice 0"
     );
 
+    // Texto com apenas títulos não deve criar versos artificiais nem entrar em pânico
+    let apenas_titulos = escandir("# Apenas Titulo\n## Apenas Autor\n\n", "visual", true, false, true, true);
+    assert!(
+        apenas_titulos.is_empty(),
+        "Texto composto somente de metadados Markdown deve resultar em retorno vazio"
+    );
+
+    // Validação de correspondência exata para estrofe única de Ninguém viva descurado
+    let espinela_com_header = "# Ninguém viva descurado\n## Gregório de Matos\n\nNinguém viva descurado,\nDo que lhe pode acontecer,\nQue o que hoje vemos viver,\nDepois de morto é pesado:\nDe um dia para outro o fado\nMudou tanto de feição,\nQue a flor de maior botão\nEm terra se viu murchada,\nPor mais que estivesse guardada\nNo centro do coração.";
+    let json_esp = escandir(espinela_com_header, "visual", false, false, true, true);
+    let web_esp: AnaliseWeb = serde_json::from_str(&json_esp)
+        .expect("Deve desserializar espinela com headers Markdown");
+    assert_eq!(web_esp.versos.len(), 10, "Décima espinela deve ter 10 versos líricos");
+    assert_eq!(web_esp.estrofes.len(), 1, "Décima espinela deve ter 1 estrofe");
+    let morf = web_esp.rimas_morfologicas.expect("Deve conter rimas morfológicas");
+    assert_eq!(morf.len(), 1);
+    assert_eq!(morf[0].estrofe_indice, 0, "A estrofe lírica deve estar no índice 0 para bater com o topo da estrofe visual");
+    assert!(!morf[0].pares.is_empty(), "Estrofe 0 deve conter pares de rima avaliados");
+
     // Validação de contrato no frontend: app.js não deve alimentar escansão com getFullText()
     let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
     assert!(
