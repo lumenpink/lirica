@@ -652,7 +652,23 @@ fn test_localstorage_draft_persistence_spec() {
 
     // 6. Prevenção de perda de dados nos eventos de saída/troca de aba
     assert!(
-        js.contains("beforeunload") || js.contains("visibilitychange"),
-        "app.js deve monitorar beforeunload ou visibilitychange para flush imediato do rascunho pendente"
+        js.contains("beforeunload") && js.contains("visibilitychange"),
+        "app.js deve monitorar beforeunload e visibilitychange para flush imediato do rascunho pendente"
+    );
+
+    // 7. Fortificação anti-mutante: debounce com cancelamento e constante de 400ms
+    assert!(
+        js.contains("STORAGE_DEBOUNCE_MS = 400") || js.contains("400"),
+        "Constante de debounce deve ser configurada para 400ms"
+    );
+    assert!(
+        js.contains("clearTimeout"),
+        "Rotina de debounce e limpeza deve invocar clearTimeout para anular timers órfãos"
+    );
+
+    // 8. Fortificação anti-mutante: proteção contra rascunho em background no mobile
+    assert!(
+        js.contains("visibilityState === 'hidden'") || js.contains("hidden"),
+        "Listener de visibilitychange deve detectar estado hidden para salvar dados no mobile"
     );
 }
