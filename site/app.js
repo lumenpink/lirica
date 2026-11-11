@@ -5,19 +5,20 @@ const STORAGE_KEY = 'lirica_draft_poem';
 const STORAGE_DEBOUNCE_MS = 400;
 let saveTimer = null;
 
-function salvarRascunhoImediato(texto) {
+function salvarRascunhoImediato(texto = null) {
   try {
     if (saveTimer) {
       clearTimeout(saveTimer);
       saveTimer = null;
     }
-    localStorage.setItem(STORAGE_KEY, texto);
+    const conteudo = typeof texto === 'string' ? texto : getFullText();
+    localStorage.setItem(STORAGE_KEY, conteudo);
   } catch (err) {
     console.warn('Falha ao persistir rascunho no localStorage:', err);
   }
 }
 
-function agendarSalvamentoRascunho(texto) {
+function agendarSalvamentoRascunho(texto = null) {
   if (saveTimer) clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     salvarRascunhoImediato(texto);
@@ -28,13 +29,14 @@ function flushRascunhoPendente() {
   if (saveTimer) {
     clearTimeout(saveTimer);
     saveTimer = null;
-    salvarRascunhoImediato(getFullText());
+    salvarRascunhoImediato();
   }
 }
 
 function recuperarRascunho() {
   try {
-    return localStorage.getItem(STORAGE_KEY);
+    const salvo = localStorage.getItem(STORAGE_KEY);
+    return typeof salvo === 'string' && salvo.trim().length > 0 ? salvo : null;
   } catch (err) {
     console.warn('Falha ao ler rascunho do localStorage:', err);
     return null;
@@ -219,7 +221,7 @@ function limparLaboratorio() {
 async function main() {
   // Recuperar rascunho persistido no localStorage (Ticket #20)
   const rascunhoSalvo = recuperarRascunho();
-  if (rascunhoSalvo !== null && rascunhoSalvo.trim().length > 0) {
+  if (rascunhoSalvo !== null) {
     verses = rascunhoSalvo.split('\n');
   }
 
@@ -304,7 +306,7 @@ async function main() {
 
   btnAddVerso.addEventListener('click', () => {
     verses.push('');
-    salvarRascunhoImediato(getFullText());
+    salvarRascunhoImediato();
     renderWorkspace();
     focusVerse(verses.length - 1);
   });
@@ -315,7 +317,7 @@ async function main() {
         verses.push('');
       }
       verses.push('');
-      salvarRascunhoImediato(getFullText());
+      salvarRascunhoImediato();
       renderWorkspace();
       focusVerse(verses.length - 1);
     });
@@ -327,7 +329,7 @@ async function main() {
     const rawVal = rawTextarea.value;
     const lines = rawVal.split('\n').filter(l => !l.trim().startsWith('%%'));
     verses = lines.length > 0 ? lines : [''];
-    salvarRascunhoImediato(verses.join('\n'));
+    salvarRascunhoImediato();
     rawEditorBox.style.display = 'none';
     btnToggleRaw.textContent = 'Modo Texto Livre';
     renderWorkspace();
@@ -682,7 +684,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
       stanzaCounter++;
       const block = createStanzaHeaderBlock(stanzaCounter - 1, webData, true, () => {
         verses.splice(idx, 1);
-        salvarRascunhoImediato(getFullText());
+        salvarRascunhoImediato();
         renderWorkspace();
       });
       versesContainer.appendChild(block);
@@ -712,7 +714,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
     input.addEventListener('input', (e) => {
       verses[idx] = e.target.value;
       updateSingleRowLive();
-      agendarSalvamentoRascunho(getFullText());
+      agendarSalvamentoRascunho();
     });
 
     input.addEventListener('keydown', (e) => {
@@ -721,19 +723,19 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
         if (e.shiftKey) {
           // Shift+Enter insere quebra de estrofe
           verses.splice(idx + 1, 0, '', '');
-          salvarRascunhoImediato(getFullText());
+          salvarRascunhoImediato();
           renderWorkspace();
           focusVerse(idx + 2);
         } else {
           verses.splice(idx + 1, 0, '');
-          salvarRascunhoImediato(getFullText());
+          salvarRascunhoImediato();
           renderWorkspace();
           focusVerse(idx + 1);
         }
       } else if (e.key === 'Backspace' && e.target.value === '' && verses.length > 1) {
         e.preventDefault();
         verses.splice(idx, 1);
-        salvarRascunhoImediato(getFullText());
+        salvarRascunhoImediato();
         renderWorkspace();
         focusVerse(Math.max(0, idx - 1));
       }
@@ -749,7 +751,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
       } else {
         verses = [''];
       }
-      salvarRascunhoImediato(getFullText());
+      salvarRascunhoImediato();
       renderWorkspace();
     });
 
