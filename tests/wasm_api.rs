@@ -640,7 +640,8 @@ fn test_localstorage_draft_persistence_spec() {
 
     // 4. Restauração do rascunho salvo na inicialização
     assert!(
-        js.contains("localStorage.getItem") && (js.contains("recuperarRascunho") || js.contains("lirica_draft_poem")),
+        js.contains("localStorage.getItem")
+            && (js.contains("recuperarRascunho") || js.contains("lirica_draft_poem")),
         "app.js deve recuperar o rascunho salvo do localStorage na inicialização"
     );
 
