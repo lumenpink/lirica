@@ -1096,9 +1096,34 @@ body {
 .guide-title {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.8125rem;
   color: var(--text-primary);
+}
+
+.guide-title-left {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-guia-atalho {
+  background-color: var(--accent-gold-soft);
+  color: var(--accent-gold);
+  border: 1px solid rgba(229, 192, 123, 0.35);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-guia-atalho:hover {
+  background-color: rgba(229, 192, 123, 0.25);
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
 }
 
 .guide-icon {

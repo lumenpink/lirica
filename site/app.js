@@ -376,7 +376,11 @@ async function main() {
     });
   }
 
-  // Abrir modal de legenda ao clicar nas tags de guia do rodapé
+  // Abrir modal de legenda ao clicar nas tags de guia do rodapé ou no botão atalho
+  const btnAbrirGuiaCompleto = document.getElementById('btn-abrir-guia-completo');
+  if (btnAbrirGuiaCompleto) {
+    btnAbrirGuiaCompleto.addEventListener('click', abrirModalLegenda);
+  }
   document.querySelectorAll('.guide-icons-row .icon-tag, .guide-legend .guide-item').forEach(el => {
     el.style.cursor = 'pointer';
     el.addEventListener('click', abrirModalLegenda);
