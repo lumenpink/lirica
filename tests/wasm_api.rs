@@ -1002,4 +1002,3 @@ fn test_legenda_estatica_rodape_spec() {
         "app.js deve vincular o botão de atalho para abrir o modal de legenda"
     );
 }
-
