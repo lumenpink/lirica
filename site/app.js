@@ -712,27 +712,27 @@ function renderWorkspace() {
   const dierese = chkDierese.checked;
   const rima = chkRima.checked;
 
-  const fullText = getFullText();
+  const poemText = verses.join('\n');
 
   if (modo === 'visual') {
     alignedWorkspace.style.display = 'flex';
     codeWorkspace.style.display = 'none';
-    renderAlignedRows(fullText, castilho, pontuacao, dierese, rima);
+    renderAlignedRows(poemText, castilho, pontuacao, dierese, rima);
   } else {
     alignedWorkspace.style.display = 'none';
     codeWorkspace.style.display = 'block';
-    const output = escandir(fullText, modo, pontuacao, dierese, castilho, rima);
+    const output = escandir(poemText, modo, pontuacao, dierese, castilho, rima);
     codeContent.textContent = output || '// Nenhum texto para analisar.';
     updateStats(null);
   }
 }
 
-function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
+function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
   let webData = null;
   let parsed = [];
-  if (fullText.trim().length > 0) {
+  if (poemText.trim().length > 0) {
     try {
-      const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
+      const jsonStr = escandir(poemText, 'visual', pontuacao, dierese, castilho, rima);
       webData = JSON.parse(jsonStr);
       if (webData && Array.isArray(webData.versos)) {
         parsed = webData.versos;
@@ -927,7 +927,7 @@ function renderAlignedRows(fullText, castilho, pontuacao, dierese, rima) {
 }
 
 function updateSingleRowLive() {
-  const fullText = getFullText();
+  const poemText = verses.join('\n');
   const castilho = chkCastilho.checked;
   const pontuacao = chkPontuacao.checked;
   const dierese = chkDierese.checked;
@@ -935,9 +935,9 @@ function updateSingleRowLive() {
 
   let webData = null;
   let parsed = [];
-  if (fullText.trim().length > 0) {
+  if (poemText.trim().length > 0) {
     try {
-      const jsonStr = escandir(fullText, 'visual', pontuacao, dierese, castilho, rima);
+      const jsonStr = escandir(poemText, 'visual', pontuacao, dierese, castilho, rima);
       webData = JSON.parse(jsonStr);
       if (webData && Array.isArray(webData.versos)) {
         parsed = webData.versos;
@@ -1057,8 +1057,8 @@ function focusVerse(index) {
 }
 
 async function copiarAnalise() {
-  const fullText = verses.join('\n');
-  if (!fullText.trim()) return;
+  const poemText = verses.join('\n');
+  if (!poemText.trim()) return;
 
   const modo = selectModo.value;
   const castilho = chkCastilho.checked;
@@ -1066,7 +1066,7 @@ async function copiarAnalise() {
   const dierese = chkDierese.checked;
   const rima = chkRima.checked;
 
-  const content = escandir(fullText, modo === 'visual' ? 'painel' : modo, pontuacao, dierese, castilho, rima);
+  const content = escandir(poemText, modo === 'visual' ? 'painel' : modo, pontuacao, dierese, castilho, rima);
 
   try {
     await navigator.clipboard.writeText(content);

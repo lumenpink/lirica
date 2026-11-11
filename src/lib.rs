@@ -134,14 +134,28 @@ pub fn escandir(
         return String::new();
     }
 
-    let has_directives = texto.lines().any(|l| l.trim().starts_with("%%"));
+    // Filtrar metadados Markdown (# Título, ## Autor) para não poluir versos nem estrofes
+    let linhas_filtradas: Vec<&str> = texto
+        .lines()
+        .filter(|linha| {
+            let t = linha.trim_start();
+            !(t.starts_with("# ") || t.starts_with("## ") || t == "#" || t == "##")
+        })
+        .collect();
+    let texto_limpo = linhas_filtradas.join("\n");
+
+    if texto_limpo.trim().is_empty() {
+        return String::new();
+    }
+
+    let has_directives = texto_limpo.lines().any(|l| l.trim().starts_with("%%"));
 
     let (config, poema) = if has_directives {
-        match parse_lirica_block(texto) {
+        match parse_lirica_block(&texto_limpo) {
             Ok((cfg, p)) => (cfg, p),
             Err(_) => {
                 let p = escandir_poema(
-                    texto,
+                    &texto_limpo,
                     elidir_pontuacao,
                     dierese_crescente,
                     contagem_castilho,
@@ -161,7 +175,7 @@ pub fn escandir(
         }
     } else {
         let p = escandir_poema(
-            texto,
+            &texto_limpo,
             elidir_pontuacao,
             dierese_crescente,
             contagem_castilho,

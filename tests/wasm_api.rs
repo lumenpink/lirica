@@ -832,12 +832,12 @@ fn test_escansao_ignora_cabecalhos_markdown() {
     // Validação de contrato no frontend: app.js não deve alimentar escansão com getFullText()
     let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
     assert!(
-        !js.contains("escandir(getFullText()"),
-        "app.js jamais deve passar getFullText() (com headers Markdown) para a escansao do motor"
+        !js.contains("escandir(fullText"),
+        "app.js jamais deve passar fullText (com headers Markdown) para a escansao do motor"
     );
     assert!(
-        js.contains("escandir(verses.join('\\n')") || js.contains("escandir(verses.join(\"\\n\")"),
-        "app.js deve passar estritamente os versos poeticos (verses.join('\\n')) para escandir"
+        js.contains("poemText = verses.join('\\n')") && js.contains("escandir(poemText,"),
+        "app.js deve passar poemText (derivado de verses.join('\\n')) para escandir"
     );
 }
 
