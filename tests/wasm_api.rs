@@ -924,14 +924,22 @@ fn test_modal_interativo_legenda_spec() {
         "app.js deve conter a rotina para abrir o modal de legenda"
     );
     assert!(
-        js.contains("btn-fechar-modal-legenda"),
-        "app.js deve vincular o botão de fechar do modal de legenda"
+        js.contains("btn-fechar-modal-legenda") && js.contains("btn-fechar-modal-legenda-bottom"),
+        "app.js deve vincular os botões de fechar do modal de legenda no topo e na base"
+    );
+    assert!(
+        js.contains("fecharModalLegenda") && js.contains("Escape"),
+        "app.js deve fechar o modal de legenda via tecla Escape"
     );
 
-    // 4. Badges interativos no CSS e JS
+    // 4. Badges interativos e acessibilidade ARIA no CSS e JS
     assert!(
         css.contains(".meter-badge") && css.contains("cursor: pointer"),
         "CSS deve definir cursor: pointer para badges interativos"
+    );
+    assert!(
+        js.contains("setAttribute('role', 'button')") && js.contains("setAttribute('tabindex', '0')"),
+        "Badges de metro e rima devem receber atributos ARIA role='button' e tabindex='0'"
     );
 }
 
