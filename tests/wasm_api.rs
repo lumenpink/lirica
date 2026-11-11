@@ -29,6 +29,32 @@ fn test_carregar_exemplos() {
             ex.id
         );
     }
+
+    // Contrato de integralidade dos poemas de exemplo
+    let versos_nao_vazios = |texto: &str| -> usize {
+        texto.lines().filter(|l| !l.trim().is_empty()).count()
+    };
+
+    assert!(
+        versos_nao_vazios(&exemplos[3].texto) >= 20,
+        "Canção do Exílio deve conter o poema completo (24 versos em 5 estrofes), mas continha {}",
+        versos_nao_vazios(&exemplos[3].texto)
+    );
+    assert_eq!(
+        versos_nao_vazios(&exemplos[4].texto),
+        14,
+        "Sinfonias do Ocaso deve ser o soneto completo de Cruz e Sousa (14 versos)"
+    );
+    assert_eq!(
+        versos_nao_vazios(&exemplos[5].texto),
+        12,
+        "Autopsicografia deve conter as 3 estrofes completas (12 versos)"
+    );
+    assert_eq!(
+        versos_nao_vazios(&exemplos[6].texto),
+        14,
+        "Ouvir Estrelas deve ser o soneto decassílabo completo de Olavo Bilac (14 versos)"
+    );
 }
 
 #[test]
