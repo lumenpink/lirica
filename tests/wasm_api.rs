@@ -990,5 +990,16 @@ fn test_legenda_estatica_rodape_spec() {
             desc
         );
     }
+
+    // 3. Fortificação anti-mutante: botão de atalho e vinculação com modal
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    assert!(
+        html.contains("id=\"btn-abrir-guia-completo\""),
+        "index.html deve conter o botão atalho #btn-abrir-guia-completo na legenda"
+    );
+    assert!(
+        js.contains("btn-abrir-guia-completo"),
+        "app.js deve vincular o botão de atalho para abrir o modal de legenda"
+    );
 }
 
