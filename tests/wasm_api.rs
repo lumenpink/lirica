@@ -1155,3 +1155,35 @@ fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
         "Motor deve produzir explicações em prosa canônicas sobre classes gramaticais"
     );
 }
+
+#[test]
+fn test_modal_contextual_metro_e_unificacao_rima_spec() {
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+
+    // 1. Deve declarar manipuladores contextuais de modal para metro e rima
+    assert!(
+        js.contains("function abrirModalMetroContextual"),
+        "app.js deve declarar abrirModalMetroContextual para foco exclusivo no metro do verso"
+    );
+    assert!(
+        js.contains("function abrirModalRimaContextual"),
+        "app.js deve declarar abrirModalRimaContextual para foco exclusivo na rima do verso"
+    );
+
+    // 2. Deve conter catálogo explicativo dos metros líricos em prosa
+    assert!(
+        js.contains("function obterExplicacaoMetroPoetico"),
+        "app.js deve modularizar as explicações de metros em obterExplicacaoMetroPoetico"
+    );
+
+    // 3. Badges individuais do verso devem apontar para os modais contextuais e não para a legenda genérica
+    assert!(
+        js.contains("abrirModalMetroContextual(vData"),
+        "meterBadge deve acionar abrirModalMetroContextual passando os dados do verso"
+    );
+    assert!(
+        js.contains("abrirModalRimaContextual("),
+        "rhymeBadge deve acionar abrirModalRimaContextual"
+    );
+}
+
