@@ -1002,3 +1002,22 @@ fn test_legenda_estatica_rodape_spec() {
         "app.js deve vincular o botão de atalho para abrir o modal de legenda"
     );
 }
+
+#[test]
+fn test_ci_workflow_spec() {
+    let ci_yaml = std::fs::read_to_string(".forgejo/workflows/ci.yaml")
+        .expect(".forgejo/workflows/ci.yaml deve existir");
+
+    // 1. Não deve invocar actions/cache@v4 (retorna 502 no Forgejo)
+    assert!(
+        !ci_yaml.contains("actions/cache"),
+        "Workflow de CI não deve usar actions/cache (serviço não suportado no runner local)"
+    );
+
+    // 2. Deve desativar o wrapper sccache herdado da imagem container
+    assert!(
+        ci_yaml.contains("RUSTC_WRAPPER:") && (ci_yaml.contains("RUSTC_WRAPPER: \"\"") || ci_yaml.contains("RUSTC_WRAPPER: ''")),
+        "Workflow de CI deve desativar RUSTC_WRAPPER para compilar diretamente sem falha de sccache"
+    );
+}
+
