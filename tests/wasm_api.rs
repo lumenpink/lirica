@@ -1241,11 +1241,10 @@ fn test_guia_canonico_avaliacao_rimas_spec() {
     );
 
     // 4. Integração no portal site/docs/index.html
-    let portal_html = std::fs::read_to_string("site/docs/index.html")
-        .expect("site/docs/index.html deve existir");
+    let portal_html =
+        std::fs::read_to_string("site/docs/index.html").expect("site/docs/index.html deve existir");
     assert!(
         portal_html.contains("rimas.html"),
         "site/docs/index.html deve conter link para rimas.html"
     );
 }
-
