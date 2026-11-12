@@ -1078,5 +1078,23 @@ fn test_callback_modal_legenda_e_integridade_eventos() {
             }
         }
     }
+
+    // 4. Fortificação anti-mutante: modularização e alcance do fluxo de inicialização
+    assert!(
+        js.contains("function configurarEventosModais()"),
+        "app.js deve modularizar configuração de modais na função configurarEventosModais"
+    );
+    assert!(
+        js.contains("configurarEventosModais();"),
+        "app.js deve invocar configurarEventosModais durante main()"
+    );
+    assert!(
+        js.contains("btnToggleRaw.addEventListener('click', toggleRawEditor);"),
+        "app.js deve vincular ouvinte de clique ao botão do modo texto livre"
+    );
+    assert!(
+        js.contains("renderWorkspace();"),
+        "app.js deve chamar renderWorkspace() na inicialização para renderizar versos"
+    );
 }
 
