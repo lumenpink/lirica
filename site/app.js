@@ -165,6 +165,37 @@ function fecharModalLegenda() {
   modalLegenda.hidden = true;
 }
 
+function configurarEventosModais() {
+  // Event Listeners para Modal de Exemplos
+  if (btnAbrirExemplos) btnAbrirExemplos.addEventListener('click', abrirModal);
+  if (btnFecharModal) btnFecharModal.addEventListener('click', fecharModal);
+  if (btnFecharModalBottom) btnFecharModalBottom.addEventListener('click', fecharModal);
+  if (modalExemplos) {
+    modalExemplos.addEventListener('click', (e) => {
+      if (e.target === modalExemplos) fecharModal();
+    });
+  }
+
+  // Event Listeners para Modal de Legenda
+  if (btnFecharModalLegenda) btnFecharModalLegenda.addEventListener('click', fecharModalLegenda);
+  if (btnFecharModalLegendaBottom) btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegenda);
+  if (modalLegenda) {
+    modalLegenda.addEventListener('click', (e) => {
+      if (e.target === modalLegenda) fecharModalLegenda();
+    });
+  }
+
+  // Atalhos de abertura rápida no rodapé
+  const btnAbrirGuiaCompleto = document.getElementById('btn-abrir-guia-completo');
+  if (btnAbrirGuiaCompleto) {
+    btnAbrirGuiaCompleto.addEventListener('click', abrirModalLegenda);
+  }
+  document.querySelectorAll('.guide-icons-row .icon-tag, .guide-legend .guide-item').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', abrirModalLegenda);
+  });
+}
+
 function renderExemplosGrid(filtro = '') {
   if (!gridExemplos) return;
   gridExemplos.innerHTML = '';
@@ -345,24 +376,8 @@ async function main() {
     console.warn('Erro ao carregar poema de sessionStorage:', e);
   }
 
-  // Event Listeners para Modal de Exemplos
-  if (btnAbrirExemplos) btnAbrirExemplos.addEventListener('click', abrirModal);
-  if (btnFecharModal) btnFecharModal.addEventListener('click', fecharModal);
-  if (btnFecharModalBottom) btnFecharModalBottom.addEventListener('click', fecharModal);
-  if (modalExemplos) {
-    modalExemplos.addEventListener('click', (e) => {
-      if (e.target === modalExemplos) fecharModal();
-    });
-  }
-
-  // Event Listeners para Modal de Legenda
-  if (btnFecharModalLegenda) btnFecharModalLegenda.addEventListener('click', fecharModalLegenda);
-  if (btnFecharModalLegendaBottom) btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegenda);
-  if (modalLegenda) {
-    modalLegenda.addEventListener('click', (e) => {
-      if (e.target === modalLegenda) fecharModalLegenda();
-    });
-  }
+  // Configuração dos modais (Exemplos e Legendas)
+  configurarEventosModais();
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -375,16 +390,6 @@ async function main() {
       renderExemplosGrid(e.target.value.toLowerCase().trim());
     });
   }
-
-  // Abrir modal de legenda ao clicar nas tags de guia do rodapé ou no botão atalho
-  const btnAbrirGuiaCompleto = document.getElementById('btn-abrir-guia-completo');
-  if (btnAbrirGuiaCompleto) {
-    btnAbrirGuiaCompleto.addEventListener('click', abrirModalLegenda);
-  }
-  document.querySelectorAll('.guide-icons-row .icon-tag, .guide-legend .guide-item').forEach(el => {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', abrirModalLegenda);
-  });
 
   // Botões de Limpeza
   if (btnHeaderLimpar) btnHeaderLimpar.addEventListener('click', limparLaboratorio);
