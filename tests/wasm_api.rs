@@ -1202,3 +1202,50 @@ fn test_modal_contextual_metro_e_unificacao_rima_spec() {
         "style.css deve conter estilos visuais para os cards contextuais"
     );
 }
+
+#[test]
+fn test_guia_canonico_avaliacao_rimas_spec() {
+    // 1. O arquivo docs/rimas.html deve existir e ser extenso
+    let rimas_html = std::fs::read_to_string("site/docs/rimas.html")
+        .expect("site/docs/rimas.html deve existir como guia canônico de rimas");
+    assert!(
+        rimas_html.len() > 2000,
+        "site/docs/rimas.html deve ser um documento aprofundado para humanos (>2000 bytes)"
+    );
+
+    // 2. Deve abordar todas as categorias canônicas e fundamentos teóricos
+    let termos_obrigatorios = [
+        "Rima Pobre",
+        "Rima Rica",
+        "Rima Preciosa",
+        "Rima Rara",
+        "Graus Epistêmicos",
+        "Árvore de Decisão",
+        "Clichê",
+    ];
+    for termo in &termos_obrigatorios {
+        assert!(
+            rimas_html.contains(termo),
+            "site/docs/rimas.html deve conter a seção ou conceito '{}'",
+            termo
+        );
+    }
+
+    // 3. Deve citar ao menos uma autoridade clássica da teoria poética lusófona
+    assert!(
+        rimas_html.contains("Said Ali")
+            || rimas_html.contains("Bilac")
+            || rimas_html.contains("Castilho")
+            || rimas_html.contains("Spina"),
+        "site/docs/rimas.html deve citar autoridades da tradição lusófona"
+    );
+
+    // 4. Integração no portal site/docs/index.html
+    let portal_html = std::fs::read_to_string("site/docs/index.html")
+        .expect("site/docs/index.html deve existir");
+    assert!(
+        portal_html.contains("rimas.html"),
+        "site/docs/index.html deve conter link para rimas.html"
+    );
+}
+
