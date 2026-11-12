@@ -695,26 +695,7 @@ function createStanzaHeaderBlock(stanzaIdx, webData, canDelete, onDelete) {
           btn.classList.add('is-selected');
           highlightActiveRhymeVerses();
 
-          drawer.innerHTML = `
-            <div class="audit-card-header">
-              <span class="audit-card-title">✦ Auditoria da Rima • v${par.versos[0]} (${par.tokens[0]}) × v${par.versos[1]} (${par.tokens[1]})</span>
-              <button type="button" class="btn-close-audit" aria-label="Fechar">&times;</button>
-            </div>
-            <div class="audit-card-body">
-              <div class="audit-card-row">
-                <strong>Classificação:</strong> <span>${par.qualidade}</span>
-              </div>
-              ${par.detalhe ? `<div class="audit-card-row"><strong>Diagnóstico:</strong> <span>${par.detalhe}</span></div>` : ''}
-              ${par.eh_cliche ? `
-                <div class="audit-cliche-alert">
-                  <strong>🔥 Clichê Histórico:</strong> ${par.motivo_cliche || 'Par hiper-saturado na tradição lírica.'}
-                </div>
-              ` : ''}
-              <div class="audit-card-row" style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.2rem;">
-                <strong>Auditoria Fonotática:</strong> <span>${par.auditoria}</span>
-              </div>
-            </div>
-          `;
+          drawer.innerHTML = gerarConteudoAuditoriaRima(par, qualLabel);
           drawer.style.display = 'block';
 
           drawer.querySelector('.btn-close-audit').addEventListener('click', () => {
@@ -746,6 +727,37 @@ function createStanzaHeaderBlock(stanzaIdx, webData, canDelete, onDelete) {
   block.appendChild(row);
   block.appendChild(drawer);
   return block;
+}
+
+function gerarConteudoAuditoriaRima(par, qualLabel) {
+  const c1 = Array.isArray(par.classes_morfologicas?.[0]) && par.classes_morfologicas[0].length > 0
+    ? par.classes_morfologicas[0].join(' / ').toLowerCase()
+    : 'vocábulo';
+  const c2 = Array.isArray(par.classes_morfologicas?.[1]) && par.classes_morfologicas[1].length > 0
+    ? par.classes_morfologicas[1].join(' / ').toLowerCase()
+    : 'vocábulo';
+
+  const rotulo = qualLabel || par.qualidade || 'Rima';
+
+  return `
+    <div class="audit-card-header">
+      <span class="audit-card-title">✦ Rima ${rotulo} • v${par.versos[0]} × v${par.versos[1]}</span>
+      <button type="button" class="btn-close-audit" aria-label="Fechar">&times;</button>
+    </div>
+    <div class="audit-card-body">
+      <div class="audit-card-row confrontation-row">
+        <strong class="token-item">${par.tokens[0]}</strong> <span class="pos-item">(${c1})</span>
+        <span class="confrontation-sep">×</span>
+        <strong class="token-item">${par.tokens[1]}</strong> <span class="pos-item">(${c2})</span>
+      </div>
+      <p class="audit-prose-text">${par.explicacao_prosa || 'Rima avaliada pelo motor morfológico.'}</p>
+      ${par.eh_cliche ? `
+        <div class="audit-cliche-alert">
+          <strong>🔥 Clichê Lírico:</strong> ${par.motivo_cliche || 'Par desgastado pelo uso exaustivo na tradição lírica.'}
+        </div>
+      ` : ''}
+    </div>
+  `;
 }
 
 function renderWorkspace() {
