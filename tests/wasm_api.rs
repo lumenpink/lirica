@@ -1321,4 +1321,28 @@ fn test_resolucao_conservadora_lookback_e_convergencia_nominal() {
             || par_nom.explicacao_prosa.contains("substantiv"),
         "Prosa explicativa deve justificar convergência nominal"
     );
+
+    // 4. Modificação adjetival por intensificador (R-ADV-MOD)
+    let poema_adv = "Sentia o peito tão frio\nOlhava o vaso tão vazio";
+    let json_adv = escandir(poema_adv, "visual", true, false, true, true);
+    let web_adv: AnaliseWeb = serde_json::from_str(&json_adv).expect("JSON visual deve ser válido");
+    let rimas_adv = web_adv.rimas_morfologicas.expect("Deve haver rimas");
+    let par_adv = &rimas_adv[0].pares[0];
+    assert!(
+        par_adv.qualidade == "Pobre" || par_adv.qualidade == "ProvavelPobre",
+        "Pares modificados por tão (frio x vazio) devem resolver para adjetivos (Pobre/ProvavelPobre), obtido: {}",
+        par_adv.qualidade
+    );
+
+    // 5. Salvaguarda Epistêmica: Vocábulo não catalogado ou sem âncora sintática permanece Indeterminada
+    let poema_desconhecido = "Ele viu um xiloforbo\nCom olhar de zilorbo";
+    let json_desc = escandir(poema_desconhecido, "visual", true, false, true, true);
+    let web_desc: AnaliseWeb =
+        serde_json::from_str(&json_desc).expect("JSON visual deve ser válido");
+    let rimas_desc = web_desc.rimas_morfologicas.expect("Deve haver rimas");
+    let par_desc = &rimas_desc[0].pares[0];
+    assert_eq!(
+        par_desc.qualidade, "Indeterminada",
+        "Vocábulo desconhecido sem derivação deve reter Indeterminada por postura conservadora"
+    );
 }
