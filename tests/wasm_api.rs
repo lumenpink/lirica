@@ -1185,4 +1185,20 @@ fn test_modal_contextual_metro_e_unificacao_rima_spec() {
         js.contains("abrirModalRimaContextual("),
         "rhymeBadge deve acionar abrirModalRimaContextual"
     );
+
+    // 4. Fortificação anti-mutante: vinculadores dedicados e ausência de escansão duplicada
+    assert!(
+        js.contains("function vincularBadgeMetro") && js.contains("function vincularBadgeRima"),
+        "app.js deve modularizar a vinculação dos badges em vincularBadgeMetro e vincularBadgeRima"
+    );
+    assert!(
+        !js.contains("contextual-meter-card\").innerHTML = strip")
+            && !js.contains("contextual-meter-card .syllables-strip"),
+        "O modal contextual não deve duplicar a tira gráfica de sílabas da escansão"
+    );
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+    assert!(
+        css.contains(".contextual-meter-card") && css.contains(".meter-hero"),
+        "style.css deve conter estilos visuais para os cards contextuais"
+    );
 }
