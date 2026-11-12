@@ -2,12 +2,15 @@
 //!
 //! WebAssembly presentation layer for the `joaju-lirica` poetic engine.
 
-use joaju_lirica::morphology::{classificar_rimas_poema, extrair_token_rimante, QualidadeRima};
+pub mod morphology_resolver;
+
+use joaju_lirica::morphology::{classificar_rimas_poema, QualidadeRima};
 use joaju_lirica::{
     avaliar_forma_poetica, avaliar_qualidade_rimas, escandir_poema, icone_metro,
     parse_lirica_block, render_painel, render_typst, DiagnosticoForma, InfoAvaliacaoRima, Poema,
     PoemaConfig,
 };
+use morphology_resolver::{avaliar_par_conservador, refinar_token_terminal};
 use serde::{Deserialize, Serialize};
 use wasm_bindgen::prelude::*;
 
@@ -310,6 +313,11 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
             .filter(|l| !l.trim().starts_with("%%"))
             .collect::<Vec<_>>()
             .join("\n");
+        let todas_linhas_versos: Vec<&str> = texto_limpo
+            .lines()
+            .filter(|l| !l.trim().is_empty())
+            .collect();
+
         let rel = classificar_rimas_poema(&texto_limpo);
         let estrofes_web = rel
             .estrofes
@@ -321,76 +329,66 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
                     .pares_avaliados
                     .into_iter()
                     .map(|p| {
-                        let (qualidade, detalhe) = match &p.classificacao {
-                            QualidadeRima::Pobre => ("Pobre".to_string(), None),
-                            QualidadeRima::Rica => ("Rica".to_string(), None),
-                            QualidadeRima::Preciosa => ("Preciosa".to_string(), None),
-                            QualidadeRima::Rara => ("Rara".to_string(), None),
+                        let linha_1 = todas_linhas_versos
+                            .get(p.versos.0.saturating_sub(1))
+                            .copied()
+                            .unwrap_or("");
+                        let linha_2 = todas_linhas_versos
+                            .get(p.versos.1.saturating_sub(1))
+                            .copied()
+                            .unwrap_or("");
+
+                        let mut tok1 = refinar_token_terminal(linha_1);
+                        if tok1.texto.is_empty() {
+                            tok1.texto = p.tokens.0.clone();
+                            tok1.base = p.tokens.0.clone();
+                        }
+                        let mut tok2 = refinar_token_terminal(linha_2);
+                        if tok2.texto.is_empty() {
+                            tok2.texto = p.tokens.1.clone();
+                            tok2.base = p.tokens.1.clone();
+                        }
+
+                        let detalhe_orig = match &p.classificacao {
                             QualidadeRima::ProvavelPobre { justificativa } => {
-                                ("ProvavelPobre".to_string(), Some(justificativa.clone()))
+                                Some(justificativa.clone())
                             }
                             QualidadeRima::ProvavelRica { justificativa } => {
-                                ("ProvavelRica".to_string(), Some(justificativa.clone()))
+                                Some(justificativa.clone())
                             }
                             QualidadeRima::Indeterminada { motivo } => {
-                                ("Indeterminada".to_string(), Some(format!("{:?}", motivo)))
+                                Some(format!("{:?}", motivo))
                             }
-                        };
-                        let tok1 = extrair_token_rimante(&p.tokens.0, p.versos.0);
-                        let tok2 = extrair_token_rimante(&p.tokens.1, p.versos.1);
-
-                        let c1: Vec<String> =
-                            tok1.pos.nomes().iter().map(|s| s.to_string()).collect();
-                        let c2: Vec<String> =
-                            tok2.pos.nomes().iter().map(|s| s.to_string()).collect();
-
-                        let c1_final = if c1.is_empty() {
-                            vec!["Vocábulo".to_string()]
-                        } else {
-                            c1
-                        };
-                        let c2_final = if c2.is_empty() {
-                            vec!["Vocábulo".to_string()]
-                        } else {
-                            c2
+                            _ => None,
                         };
 
-                        let c1_str = c1_final.join(" / ").to_lowercase();
-                        let c2_str = c2_final.join(" / ").to_lowercase();
+                        let res = avaliar_par_conservador(
+                            &tok1,
+                            &tok2,
+                            &p.classificacao,
+                            detalhe_orig.as_deref(),
+                        );
 
-                        let explicacao_prosa = match &p.classificacao {
-                            QualidadeRima::Rica => format!(
-                                "Rima rica entre classes gramaticais diferentes ({c1_str} × {c2_str}), agregando variedade e expressividade à estrofe."
-                            ),
-                            QualidadeRima::Pobre => format!(
-                                "Rima pobre entre palavras da mesma classe gramatical ({c1_str}), comum e espontânea na tradição lírica."
-                            ),
-                            QualidadeRima::Preciosa => format!(
-                                "Rima preciosa construída com artifício fonético raro ou combinação morfológica singular ({c1_str} × {c2_str})."
-                            ),
-                            QualidadeRima::Rara => "Rima rara com terminações de baixa frequência ou difícil emparelhamento no léxico português.".to_string(),
-                            QualidadeRima::ProvavelRica { .. } => format!(
-                                "Rima com provável riqueza: as palavras tendem a pertencer a classes diferentes ({c1_str} × {c2_str}) no contexto poético."
-                            ),
-                            QualidadeRima::ProvavelPobre { .. } => format!(
-                                "Rima com provável convergência: as palavras tendem a atuar na mesma esfera gramatical ({c1_str})."
-                            ),
-                            QualidadeRima::Indeterminada { .. } => format!(
-                                "Rima com flexibilidade sintática: a função exata de '{}' ou '{}' varia conforme a interpretação da oração.",
-                                p.tokens.0, p.tokens.1
-                            ),
+                        let qualidade = match &res.qualidade {
+                            QualidadeRima::Pobre => "Pobre".to_string(),
+                            QualidadeRima::Rica => "Rica".to_string(),
+                            QualidadeRima::Preciosa => "Preciosa".to_string(),
+                            QualidadeRima::Rara => "Rara".to_string(),
+                            QualidadeRima::ProvavelPobre { .. } => "ProvavelPobre".to_string(),
+                            QualidadeRima::ProvavelRica { .. } => "ProvavelRica".to_string(),
+                            QualidadeRima::Indeterminada { .. } => "Indeterminada".to_string(),
                         };
 
                         ParRimaWeb {
                             versos: p.versos,
                             tokens: p.tokens,
                             qualidade,
-                            detalhe,
+                            detalhe: res.detalhe,
                             auditoria: format!("{:?}", p.auditoria),
                             eh_cliche: p.eh_cliche,
                             motivo_cliche: p.motivo_cliche,
-                            classes_morfologicas: (c1_final, c2_final),
-                            explicacao_prosa,
+                            classes_morfologicas: res.classes,
+                            explicacao_prosa: res.prosa,
                         }
                     })
                     .collect(),
