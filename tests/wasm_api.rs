@@ -1240,11 +1240,31 @@ fn test_guia_canonico_avaliacao_rimas_spec() {
         "site/docs/rimas.html deve citar autoridades da tradição lusófona"
     );
 
-    // 4. Integração no portal site/docs/index.html
-    let portal_html =
-        std::fs::read_to_string("site/docs/index.html").expect("site/docs/index.html deve existir");
+    // 4. Integração no portal site/docs/index.html e páginas irmãs
+    let doc_pages = [
+        "site/docs/index.html",
+        "site/docs/formas.html",
+        "site/docs/versos.html",
+        "site/docs/regras.html",
+        "site/docs/gabarito.html",
+        "site/docs/licencas.html",
+    ];
+    for page in &doc_pages {
+        let content = std::fs::read_to_string(page).expect("página de docs deve existir");
+        assert!(
+            content.contains("rimas.html"),
+            "{} deve conter link para rimas.html na navegação",
+            page
+        );
+    }
+
+    // 5. Verificação da regra conservadora epistêmica explícita
     assert!(
-        portal_html.contains("rimas.html"),
-        "site/docs/index.html deve conter link para rimas.html"
+        rimas_html.contains("conservador") || rimas_html.contains("Conservador"),
+        "site/docs/rimas.html deve explicitar o princípio conservador de classificação"
+    );
+    assert!(
+        rimas_html.contains("Indeterminada") || rimas_html.contains("indeterminada"),
+        "site/docs/rimas.html deve explicitar a categoria Indeterminada como salvaguarda"
     );
 }
