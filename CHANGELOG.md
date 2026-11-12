@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Estabilização da esteira de CI no Forgejo (.forgejo/workflows/ci.yaml), desativando actions/cache inexistente e desabilitando RUSTC_WRAPPER para compilar diretamente sem falhas de sccache em container efêmero (closes #28).
 - Isolamento dos versos poéticos na escansão para descartar cabeçalhos Markdown (# Título e ## Autor), eliminando estrofe espúria e restaurando a avaliação de rimas no topo das estrofes (closes #25).
 - Condicionamento de persistência no localStorage a edições reais via dirty state, evitando bloqueio do sorteio aleatório ao inspecionar exemplos (closes #23).
 - Correção de precedência de rascunho recuperado no bootstrap para evitar sobrescrita pela biblioteca de exemplos e sorteio aleatório de poema inicial na ausência de rascunho (closes #21).
