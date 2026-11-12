@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gambi.2lp.in/lumen/gost-ci-wasm:latest
+    env:
+      RUSTC_WRAPPER: ""
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,19 +21,6 @@ jobs:
         run: |
           rustc --version
           rustup target list --installed
-
-      - name: Cache Cargo Dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
 
       - name: Run Tests
         run: cargo test
