@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Substituição de campos técnicos e jargões no box de rimas das estrofes por confronto morfológico em português e explicação didática em prosa acessível (closes #30).
+
 ### Fixed
 - Correção de callback do modal de legenda em site/app.js e modularização dos ouvintes de eventos, eliminando ReferenceError e restaurando o modo texto livre e o workspace alinhado (closes #29).
 - Estabilização da esteira de CI no Forgejo (.forgejo/workflows/ci.yaml), desativando actions/cache inexistente e desabilitando RUSTC_WRAPPER para compilar diretamente sem falhas de sccache em container efêmero (closes #28).
