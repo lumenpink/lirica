@@ -1063,12 +1063,13 @@ fn test_callback_modal_legenda_e_integridade_eventos() {
                 if !callback_ident.is_empty()
                     && !callback_ident.starts_with('(')
                     && !callback_ident.starts_with('{')
-                    && callback_ident.chars().all(|c| c.is_alphanumeric() || c == '_')
+                    && callback_ident
+                        .chars()
+                        .all(|c| c.is_alphanumeric() || c == '_')
                 {
                     let fn_decl = format!("function {callback_ident}");
-                    let import_decl = format!("{callback_ident}");
                     let is_declared = js.contains(&fn_decl)
-                        || (js.contains("import") && js.contains(&import_decl));
+                        || (js.contains("import") && js.contains(callback_ident));
                     assert!(
                         is_declared,
                         "Callback '{}' registrado em addEventListener deve estar declarado ou importado em app.js",
@@ -1097,4 +1098,3 @@ fn test_callback_modal_legenda_e_integridade_eventos() {
         "app.js deve chamar renderWorkspace() na inicialização para renderizar versos"
     );
 }
-
