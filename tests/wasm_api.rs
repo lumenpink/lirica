@@ -1186,4 +1186,3 @@ fn test_modal_contextual_metro_e_unificacao_rima_spec() {
         "rhymeBadge deve acionar abrirModalRimaContextual"
     );
 }
-
