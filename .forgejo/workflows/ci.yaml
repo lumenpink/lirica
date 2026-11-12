@@ -23,7 +23,7 @@ jobs:
           rustup target list --installed
 
       - name: Run Tests
-        run: cargo test
+        run: cargo test --all-targets
 
       - name: Quality Gate (fmt & clippy)
         run: |
