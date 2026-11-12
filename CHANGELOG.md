@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Guia canônico de avaliação de rimas (`site/docs/rimas.html`) com fundamentação na tradição lusófona (Castilho, Said Ali, Bilac, Spina), árvore de decisão didática, graus epistêmicos e detector de clichês (closes #32).
 - Modal contextual dedicado para metro e ritmo ao clicar no badge do verso (sem duplicar escansão) e unificação do badge de rima com o diagnóstico da estrofe (closes #31).
 - Legenda estática do rodapé (site/index.html) expandida com todos os 12 ícones de ritmos e metros clássicos e os 5 ícones de auditoria de rimas, com botão de atalho para o guia interativo completo (closes #27).
 - Modal interativo de legenda métrica e rímica (#modal-legenda), permitindo consulta acessível por clique/toque em badges (.meter-badge e .rhyme-badge) com suporte a teclado Escape (closes #26).
