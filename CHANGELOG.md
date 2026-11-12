@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- Correção de callback do modal de legenda em site/app.js e modularização dos ouvintes de eventos, eliminando ReferenceError e restaurando o modo texto livre e o workspace alinhado (closes #29).
 - Estabilização da esteira de CI no Forgejo (.forgejo/workflows/ci.yaml), desativando actions/cache inexistente e desabilitando RUSTC_WRAPPER para compilar diretamente sem falhas de sccache em container efêmero (closes #28).
 - Isolamento dos versos poéticos na escansão para descartar cabeçalhos Markdown (# Título e ## Autor), eliminando estrofe espúria e restaurando a avaliação de rimas no topo das estrofes (closes #25).
 - Condicionamento de persistência no localStorage a edições reais via dirty state, evitando bloqueio do sorteio aleatório ao inspecionar exemplos (closes #23).
