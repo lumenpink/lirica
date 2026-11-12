@@ -1034,4 +1034,3 @@ fn test_ci_workflow_spec() {
         "Workflow de CI deve publicar o site no Cloudflare Pages"
     );
 }
-
