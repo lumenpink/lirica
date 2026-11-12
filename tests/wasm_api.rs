@@ -1148,7 +1148,9 @@ fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
 
     // 4. Verificação de conteúdo em prosa gerado pelo motor
     assert!(
-        rimas[0].pares.iter().any(|p| p.explicacao_prosa.contains("classes gramaticais diferentes")
+        rimas[0].pares.iter().any(|p| p
+            .explicacao_prosa
+            .contains("classes gramaticais diferentes")
             || p.explicacao_prosa.contains("mesma classe gramatical")),
         "Motor deve produzir explicações em prosa canônicas sobre classes gramaticais"
     );
