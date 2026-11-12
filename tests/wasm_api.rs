@@ -1134,4 +1134,22 @@ fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
         !par.classes_morfologicas.0.is_empty() && !par.classes_morfologicas.1.is_empty(),
         "ParRimaWeb deve conter 'classes_morfologicas' para ambos os termos"
     );
+
+    // 3. Fortificação anti-mutante: função modular e estilos dedicados
+    assert!(
+        js.contains("function gerarConteudoAuditoriaRima"),
+        "app.js deve modularizar o template na função gerarConteudoAuditoriaRima"
+    );
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+    assert!(
+        css.contains(".confrontation-row") && css.contains(".audit-prose-text"),
+        "style.css deve definir regras para o confronto de classes e prosa explicativa"
+    );
+
+    // 4. Verificação de conteúdo em prosa gerado pelo motor
+    assert!(
+        rimas[0].pares.iter().any(|p| p.explicacao_prosa.contains("classes gramaticais diferentes")
+            || p.explicacao_prosa.contains("mesma classe gramatical")),
+        "Motor deve produzir explicações em prosa canônicas sobre classes gramaticais"
+    );
 }
