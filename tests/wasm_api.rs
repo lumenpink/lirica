@@ -1098,3 +1098,39 @@ fn test_callback_modal_legenda_e_integridade_eventos() {
         "app.js deve chamar renderWorkspace() na inicialização para renderizar versos"
     );
 }
+
+#[test]
+fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
+    // 1. O código JS não deve exibir jargão interno de auditoria fonotática nem classificador cru
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    assert!(
+        !js.contains("Auditoria Fonotática:"),
+        "app.js não deve exibir o campo 'Auditoria Fonotática:' no box de rimas"
+    );
+    assert!(
+        !js.contains("<strong>Classificação:</strong>"),
+        "app.js não deve repetir o rótulo redundante 'Classificação:' no drawer de rimas"
+    );
+    assert!(
+        js.contains("audit-prose-text"),
+        "app.js deve conter a classe '.audit-prose-text' para prosa explicativa no drawer"
+    );
+
+    // 2. O backend WASM deve enriquecer ParRimaWeb com classes_morfologicas e explicacao_prosa
+    let poema = "Amor é um fogo que arde sem se ver,\nÉ ferida que dói, e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.";
+    let json_str = escandir(poema, "visual", true, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&json_str).expect("JSON visual deve ser válido");
+    let rimas = web.rimas_morfologicas.expect("Poema rimado deve conter rimas_morfologicas");
+    assert!(!rimas.is_empty(), "Deve conter ao menos 1 estrofe de rimas");
+    let par = &rimas[0].pares[0];
+
+    assert!(
+        !par.explicacao_prosa.is_empty(),
+        "ParRimaWeb deve conter 'explicacao_prosa' preenchida com explicação pedagógica"
+    );
+    assert!(
+        !par.classes_morfologicas.0.is_empty() && !par.classes_morfologicas.1.is_empty(),
+        "ParRimaWeb deve conter 'classes_morfologicas' para ambos os termos"
+    );
+}
+
