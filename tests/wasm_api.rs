@@ -1034,3 +1034,49 @@ fn test_ci_workflow_spec() {
         "Workflow de CI deve publicar o site no Cloudflare Pages"
     );
 }
+
+#[test]
+fn test_callback_modal_legenda_e_integridade_eventos() {
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+
+    // 1. O botão de fechar no rodapé do modal de legenda não deve invocar função inexistente
+    assert!(
+        !js.contains("fecharModalLegendaBottom"),
+        "app.js não deve referenciar 'fecharModalLegendaBottom' pois esta função não existe"
+    );
+
+    // 2. O botão de rodapé do modal de legenda deve invocar a função canônica fecharModalLegenda
+    assert!(
+        js.contains("btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegenda)"),
+        "btnFecharModalLegendaBottom deve registrar fecharModalLegenda como ouvinte de clique"
+    );
+
+    // 3. Integridade de callbacks: toda função passada diretamente a addEventListener deve existir
+    let lines: Vec<&str> = js.lines().collect();
+    for line in lines {
+        if let Some(pos) = line.find(".addEventListener(") {
+            let call_args = &line[pos + ".addEventListener(".len()..];
+            if let Some(comma_pos) = call_args.find(',') {
+                let rest = call_args[comma_pos + 1..].trim();
+                let callback_ident = rest.trim_end_matches(';').trim_end_matches(')').trim();
+                // Validar apenas referências diretas de identificadores alfanuméricos simples
+                if !callback_ident.is_empty()
+                    && !callback_ident.starts_with('(')
+                    && !callback_ident.starts_with('{')
+                    && callback_ident.chars().all(|c| c.is_alphanumeric() || c == '_')
+                {
+                    let fn_decl = format!("function {callback_ident}");
+                    let import_decl = format!("{callback_ident}");
+                    let is_declared = js.contains(&fn_decl)
+                        || (js.contains("import") && js.contains(&import_decl));
+                    assert!(
+                        is_declared,
+                        "Callback '{}' registrado em addEventListener deve estar declarado ou importado em app.js",
+                        callback_ident
+                    );
+                }
+            }
+        }
+    }
+}
+
