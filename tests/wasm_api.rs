@@ -1120,7 +1120,9 @@ fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
     let poema = "Amor é um fogo que arde sem se ver,\nÉ ferida que dói, e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.";
     let json_str = escandir(poema, "visual", true, false, true, true);
     let web: AnaliseWeb = serde_json::from_str(&json_str).expect("JSON visual deve ser válido");
-    let rimas = web.rimas_morfologicas.expect("Poema rimado deve conter rimas_morfologicas");
+    let rimas = web
+        .rimas_morfologicas
+        .expect("Poema rimado deve conter rimas_morfologicas");
     assert!(!rimas.is_empty(), "Deve conter ao menos 1 estrofe de rimas");
     let par = &rimas[0].pares[0];
 
@@ -1133,4 +1135,3 @@ fn test_prosa_didatica_e_remocao_auditoria_tecnica_box_rimas() {
         "ParRimaWeb deve conter 'classes_morfologicas' para ambos os termos"
     );
 }
-
