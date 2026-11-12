@@ -1268,3 +1268,57 @@ fn test_guia_canonico_avaliacao_rimas_spec() {
         "site/docs/rimas.html deve explicitar a categoria Indeterminada como salvaguarda"
     );
 }
+
+#[test]
+fn test_resolucao_conservadora_lookback_e_convergencia_nominal() {
+    // 1. Lookback estendido com determinantes mediatos (T-2 / T-3)
+    let poema_determinado = "O meu doce canto\nUm tão suave pranto";
+    let json_canto = escandir(poema_determinado, "visual", true, false, true, true);
+    let web_canto: AnaliseWeb =
+        serde_json::from_str(&json_canto).expect("JSON visual deve ser válido");
+    let rimas_canto = web_canto.rimas_morfologicas.expect("Deve haver rimas");
+    let par_canto = &rimas_canto[0].pares[0];
+    assert!(
+        par_canto.qualidade == "Pobre" || par_canto.qualidade == "ProvavelPobre",
+        "Pares com determinantes mediatos (canto x pranto) devem resolver para Pobre/ProvavelPobre, obtido: {}",
+        par_canto.qualidade
+    );
+    assert_ne!(par_canto.qualidade, "Indeterminada");
+
+    // 2. Lookback de preposição com clítico intercalado ("sem se ver" x "sem doer")
+    let poema_camones = "Amor é fogo que arde sem se ver,\nÉ ferida que dói e não se sente;\nÉ um contentamento descontente,\nÉ dor que desatina sem doer.";
+    let json_camones = escandir(poema_camones, "visual", true, false, true, true);
+    let web_camones: AnaliseWeb =
+        serde_json::from_str(&json_camones).expect("JSON visual deve ser válido");
+    let rimas_camones = web_camones.rimas_morfologicas.expect("Deve haver rimas");
+    let par_ver = rimas_camones[0]
+        .pares
+        .iter()
+        .find(|p| p.versos == (1, 4))
+        .expect("Deve achar par ver x doer");
+    assert!(
+        par_ver.qualidade == "Pobre" || par_ver.qualidade == "ProvavelPobre",
+        "'sem se ver' x 'sem doer' deve resolver verbos em Pobre/ProvavelPobre, obtido: {}",
+        par_ver.qualidade
+    );
+    assert_ne!(par_ver.qualidade, "Indeterminada");
+
+    // 3. Convergência nominal para pares na zona cinzenta substantivo/adjetivo
+    let poema_nominal = "O homem jazia morto\nPor um atalho torto";
+    let json_nom = escandir(poema_nominal, "visual", true, false, true, true);
+    let web_nom: AnaliseWeb = serde_json::from_str(&json_nom).expect("JSON visual deve ser válido");
+    let rimas_nom = web_nom.rimas_morfologicas.expect("Deve haver rimas");
+    let par_nom = &rimas_nom[0].pares[0];
+    assert!(
+        par_nom.qualidade == "ProvavelPobre" || par_nom.qualidade == "Pobre",
+        "Zona cinzenta substantivo/adjetivo (morto x torto) deve convergir para ProvavelPobre/Pobre, obtido: {}",
+        par_nom.qualidade
+    );
+    assert_ne!(par_nom.qualidade, "Indeterminada");
+    assert!(
+        par_nom.explicacao_prosa.contains("convergência")
+            || par_nom.explicacao_prosa.contains("esfera")
+            || par_nom.explicacao_prosa.contains("substantiv"),
+        "Prosa explicativa deve justificar convergência nominal"
+    );
+}
