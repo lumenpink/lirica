@@ -152,8 +152,20 @@ function fecharModal() {
   modalExemplos.hidden = true;
 }
 
+let templateGeralLegendaHTML = null;
+
 function abrirModalLegenda() {
   if (!modalLegenda) return;
+  const body = modalLegenda.querySelector('.modal-legenda-body');
+  if (body && templateGeralLegendaHTML !== null) {
+    body.innerHTML = templateGeralLegendaHTML;
+    const modalTitulo = document.getElementById('modal-legenda-titulo');
+    const modalSub = modalLegenda.querySelector('.modal-subtitle');
+    if (modalTitulo) modalTitulo.textContent = '📖 Guia Completo de Notação & Legenda Lírica';
+    if (modalSub) modalSub.textContent = 'Conceitos fundamentais de escansão clássica, metros lusófonos e auditoria de rimas:';
+  } else if (body && templateGeralLegendaHTML === null) {
+    templateGeralLegendaHTML = body.innerHTML;
+  }
   modalLegenda.hidden = false;
   if (btnFecharModalLegenda) {
     btnFecharModalLegenda.focus();
@@ -163,6 +175,224 @@ function abrirModalLegenda() {
 function fecharModalLegenda() {
   if (!modalLegenda) return;
   modalLegenda.hidden = true;
+}
+
+function obterExplicacaoMetroPoetico(vData) {
+  const n = vData.total_metricas;
+  const c = vData.classificacao || '';
+  let descricaoMetro = '';
+
+  if (n === 1) {
+    descricaoMetro = 'Verso monossílabo: constituído de uma única sílaba poética, com forte impacto conciso e expressivo.';
+  } else if (n === 2) {
+    descricaoMetro = 'Verso dissílabo: duas sílabas poéticas, de andamento acelerado, ágil e ritmado.';
+  } else if (n === 3) {
+    descricaoMetro = 'Verso trissílabo: três sílabas métricas, conferindo movimento ligeiro e cantabile.';
+  } else if (n === 4) {
+    descricaoMetro = 'Verso tetrassílabo: quatro sílabas, recorrente em trovas breves, cantigas e parlendas infantis.';
+  } else if (n === 5) {
+    descricaoMetro = 'Redondilha Menor (pentassílabo): metro clássico de cinco sílabas poéticas, tradicional nas cantigas medievais e na poesia popular ibérica.';
+  } else if (n === 6) {
+    descricaoMetro = 'Hexassílabo (ou Heróico Quebrado): metro de seis sílabas métricas, empregado como meia-estrofe ou quebra lírica.';
+  } else if (n === 7) {
+    descricaoMetro = 'Redondilha Maior (heptassílabo): o metro mais consagrado e espontâneo da poesia em língua portuguesa, com ritmo natural de fala e declamação.';
+  } else if (n === 8) {
+    descricaoMetro = 'Octassílabo: verso de oito sílabas poéticas, de cadência firme e narrativa, comum em romances e baladas tradicionais.';
+  } else if (n === 9) {
+    descricaoMetro = 'Eneassílabo: verso de nove sílabas poéticas, célebre pela cadência ondulante e ritmo ternário marcante, cultuado no romantismo e simbolismo.';
+  } else if (n === 10) {
+    if (c.includes('Heroico') || c.includes('Heróico')) {
+      descricaoMetro = 'Decassílabo Heróico: o metro nobre por excelência da lírica e da epopeia lusófona (Os Lusíadas), com ritmo marcado na 6ª e na 10ª sílabas métricas.';
+    } else if (c.includes('Sáfico')) {
+      descricaoMetro = 'Decassílabo Sáfico: variação clássica com ênfase nas sílabas 4, 8 e 10, conferindo tom solene, suave, melódico e grave.';
+    } else if (c.includes('Martelo')) {
+      descricaoMetro = 'Decassílabo Martelo: ritmo percussivo e vigoroso com acentos na 3ª, 6ª e 10ª sílabas, consagrado na poesia do repente e no cordel.';
+    } else {
+      descricaoMetro = 'Decassílabo: metro clássico de dez sílabas poéticas com acentuação tônica terminando na 10ª sílaba.';
+    }
+  } else if (n === 11) {
+    descricaoMetro = 'Hendecassílabo: verso solene de onze sílabas poéticas, intermediário entre o decassílabo e o alexandrino.';
+  } else if (n === 12) {
+    if (c.includes('Clássico') || c.includes('Classico')) {
+      descricaoMetro = 'Alexandrino Clássico: dodecassílabo dividido rigorosamente em dois hemistíquios de seis sílabas (6 + 6) pela cesura medial.';
+    } else {
+      descricaoMetro = 'Dodecassílabo Geral: verso de doze sílabas poéticas com respiração ampla e cadência contínua.';
+    }
+  } else {
+    descricaoMetro = 'Forma Livre ou Verso Bárbaro: metro de extensão irregular ou superior a doze sílabas, característico do versolibrismo moderno.';
+  }
+
+  const tonicas = Array.isArray(vData.silabas)
+    ? vData.silabas.filter(s => s.tonica && s.numero_metrico !== null).map(s => s.numero_metrico)
+    : [];
+
+  const elisoes = Array.isArray(vData.silabas)
+    ? vData.silabas.filter(s => s.elidida).length
+    : 0;
+
+  return {
+    nome: c || `${n} sílabas poéticas`,
+    icone: vData.icone || '🪶',
+    totalMetricas: n,
+    descricao: descricaoMetro,
+    tonicas,
+    elisoes
+  };
+}
+
+function abrirModalMetroContextual(vData, verseIndex) {
+  if (!modalLegenda) return;
+  const body = modalLegenda.querySelector('.modal-legenda-body');
+  if (!body) return;
+
+  if (templateGeralLegendaHTML === null) {
+    templateGeralLegendaHTML = body.innerHTML;
+  }
+
+  const info = obterExplicacaoMetroPoetico(vData);
+  const modalTitulo = document.getElementById('modal-legenda-titulo');
+  const modalSub = modalLegenda.querySelector('.modal-subtitle');
+
+  if (modalTitulo) {
+    modalTitulo.innerHTML = `${info.icone} ${info.nome}`;
+  }
+  if (modalSub) {
+    modalSub.textContent = `Diagnóstico métrico do verso ${verseIndex + 1} (${info.totalMetricas} sílabas poéticas):`;
+  }
+
+  const tonicasTexto = info.tonicas.length > 0
+    ? `Sílabas com acento métrico de intensidade: <strong>${info.tonicas.join('ª, ')}ª</strong>.`
+    : 'Acentuação tônica métrica contínua.';
+
+  const elisaoTexto = info.elisoes > 0
+    ? `<li><strong>Sinalefas:</strong> ${info.elisoes} ${info.elisoes === 1 ? 'fusão vocálica (sinalefa)' : 'fusões vocálicas (sinalefas)'} unindo sílabas contíguas.</li>`
+    : '';
+
+  body.innerHTML = `
+    <div class="contextual-meter-card">
+      <div class="meter-hero">
+        <span class="meter-hero-icon">${info.icone}</span>
+        <div class="meter-hero-text">
+          <h3>${info.nome}</h3>
+          <span class="meter-hero-count">${info.totalMetricas} sílabas poéticas</span>
+        </div>
+      </div>
+      <div class="meter-prose-section">
+        <h4>Tradição & Forma Lírica</h4>
+        <p class="audit-prose-text">${info.descricao}</p>
+      </div>
+      <div class="meter-context-section">
+        <h4>Contexto da Avaliação deste Verso</h4>
+        <ul class="meter-context-list">
+          <li><strong>Cadência e Acentos:</strong> ${tonicasTexto}</li>
+          <li><strong>Regra de Castilho:</strong> A contagem poética trunca na última sílaba tônica (posição ${info.totalMetricas}). As sílabas átonas finais após a tônica não entram no cômputo métrico.</li>
+          ${elisaoTexto}
+        </ul>
+      </div>
+      <div class="modal-contextual-footer">
+        <button type="button" class="btn-guia-atalho" id="btn-ver-legenda-completa">Ver tabela completa de metros e rimas no rodapé</button>
+      </div>
+    </div>
+  `;
+
+  const btnAtalho = body.querySelector('#btn-ver-legenda-completa');
+  if (btnAtalho) {
+    btnAtalho.addEventListener('click', () => {
+      fecharModalLegenda();
+      const guide = document.querySelector('.notation-guide');
+      if (guide) guide.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  modalLegenda.hidden = false;
+  if (btnFecharModalLegenda) btnFecharModalLegenda.focus();
+}
+
+function abrirModalRimaContextual(par, qualLabel, verseIndex) {
+  if (!modalLegenda) return;
+  const body = modalLegenda.querySelector('.modal-legenda-body');
+  if (!body) return;
+
+  if (templateGeralLegendaHTML === null) {
+    templateGeralLegendaHTML = body.innerHTML;
+  }
+
+  const modalTitulo = document.getElementById('modal-legenda-titulo');
+  const modalSub = modalLegenda.querySelector('.modal-subtitle');
+
+  if (modalTitulo) {
+    modalTitulo.innerHTML = `✦ Rima ${qualLabel || par.qualidade} • Verso ${verseIndex + 1}`;
+  }
+  if (modalSub) {
+    modalSub.textContent = `Avaliação morfológica e acústica do par rimante:`;
+  }
+
+  body.innerHTML = `
+    <div class="contextual-rhyme-card">
+      ${gerarConteudoAuditoriaRima(par, qualLabel)}
+      <div class="modal-contextual-footer" style="margin-top: 1rem;">
+        <button type="button" class="btn-guia-atalho" id="btn-ver-legenda-completa-rima">Ver tabela completa de metros e rimas no rodapé</button>
+      </div>
+    </div>
+  `;
+
+  const btnCloseDrawer = body.querySelector('.btn-close-audit');
+  if (btnCloseDrawer) btnCloseDrawer.remove();
+
+  const btnAtalho = body.querySelector('#btn-ver-legenda-completa-rima');
+  if (btnAtalho) {
+    btnAtalho.addEventListener('click', () => {
+      fecharModalLegenda();
+      const guide = document.querySelector('.notation-guide');
+      if (guide) guide.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  modalLegenda.hidden = false;
+  if (btnFecharModalLegenda) btnFecharModalLegenda.focus();
+}
+
+function vincularBadgeMetro(meterBadge, vData, lineNum) {
+  meterBadge.addEventListener('click', () => abrirModalMetroContextual(vData, lineNum - 1));
+  meterBadge.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      abrirModalMetroContextual(vData, lineNum - 1);
+    }
+  });
+}
+
+function vincularBadgeRima(rhymeBadge, vData, lineNum, webData) {
+  let matchingPair = null;
+  if (webData && Array.isArray(webData.rimas_morfologicas)) {
+    for (const est of webData.rimas_morfologicas) {
+      if (Array.isArray(est.pares)) {
+        const found = est.pares.find(p => p.versos[0] === lineNum || p.versos[1] === lineNum);
+        if (found) {
+          matchingPair = found;
+          break;
+        }
+      }
+    }
+  }
+
+  const handler = () => {
+    if (matchingPair) {
+      activeRhymePair = { versos: matchingPair.versos };
+      highlightActiveRhymeVerses();
+      abrirModalRimaContextual(matchingPair, matchingPair.qualidade, lineNum - 1);
+    } else {
+      abrirModalLegenda();
+    }
+  };
+
+  rhymeBadge.addEventListener('click', handler);
+  rhymeBadge.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handler();
+    }
+  });
 }
 
 function configurarEventosModais() {
@@ -906,13 +1136,6 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
         rhymeBadge.className = 'badge-rima-compact rhyme-badge';
         rhymeBadge.setAttribute('role', 'button');
         rhymeBadge.setAttribute('tabindex', '0');
-        rhymeBadge.addEventListener('click', abrirModalLegenda);
-        rhymeBadge.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            abrirModalLegenda();
-          }
-        });
 
         let verseIsCliche = false;
         let clicheMotivo = '';
@@ -934,12 +1157,13 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
           rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
-          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver a legenda`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver o diagnóstico`;
         } else {
           rhymeBadge.textContent = vData.rima;
           const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver a legenda`;
+          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver o diagnóstico`;
         }
+        vincularBadgeRima(rhymeBadge, vData, currentLineNum, webData);
         colRight.appendChild(rhymeBadge);
       }
 
@@ -948,15 +1172,9 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
       meterBadge.className = 'badge-metro-compact meter-badge';
       meterBadge.setAttribute('role', 'button');
       meterBadge.setAttribute('tabindex', '0');
-      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver a legenda`;
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver detalhes do metro`;
       meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
-      meterBadge.addEventListener('click', abrirModalLegenda);
-      meterBadge.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          abrirModalLegenda();
-        }
-      });
+      vincularBadgeMetro(meterBadge, vData, currentLineNum);
       colRight.appendChild(meterBadge);
 
       // Syllables strip
@@ -1049,13 +1267,6 @@ function updateSingleRowLive() {
         rhymeBadge.className = 'badge-rima-compact rhyme-badge';
         rhymeBadge.setAttribute('role', 'button');
         rhymeBadge.setAttribute('tabindex', '0');
-        rhymeBadge.addEventListener('click', abrirModalLegenda);
-        rhymeBadge.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            abrirModalLegenda();
-          }
-        });
         const lineNum = currentVerseRowIdx; // currentVerseRowIdx is 1-based line number
 
         let verseIsCliche = false;
@@ -1078,12 +1289,13 @@ function updateSingleRowLive() {
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
           rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
-          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver a legenda`;
+          rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver o diagnóstico`;
         } else {
           rhymeBadge.textContent = vData.rima;
           const term = vData.rima_terminacao ? ` (som: "${vData.rima_terminacao}")` : '';
-          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver a legenda`;
+          rhymeBadge.title = `Rima: ${vData.rima}${term} • Clique/toque para ver o diagnóstico`;
         }
+        vincularBadgeRima(rhymeBadge, vData, lineNum, webData);
         colRight.appendChild(rhymeBadge);
       }
 
@@ -1092,15 +1304,9 @@ function updateSingleRowLive() {
       meterBadge.className = 'badge-metro-compact meter-badge';
       meterBadge.setAttribute('role', 'button');
       meterBadge.setAttribute('tabindex', '0');
-      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver a legenda`;
+      meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver detalhes do metro`;
       meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
-      meterBadge.addEventListener('click', abrirModalLegenda);
-      meterBadge.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          abrirModalLegenda();
-        }
-      });
+      vincularBadgeMetro(meterBadge, vData, currentVerseRowIdx);
       colRight.appendChild(meterBadge);
 
       const strip = document.createElement('div');
