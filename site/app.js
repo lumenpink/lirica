@@ -357,7 +357,7 @@ async function main() {
 
   // Event Listeners para Modal de Legenda
   if (btnFecharModalLegenda) btnFecharModalLegenda.addEventListener('click', fecharModalLegenda);
-  if (btnFecharModalLegendaBottom) btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegendaBottom);
+  if (btnFecharModalLegendaBottom) btnFecharModalLegendaBottom.addEventListener('click', fecharModalLegenda);
   if (modalLegenda) {
     modalLegenda.addEventListener('click', (e) => {
       if (e.target === modalLegenda) fecharModalLegenda();
