@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliação e Morfologia de Rimas — Lírica // Documentação</title>
+  <meta name="description" content="Guia canônico e pedagógico da avaliação morfológica, acústica e epistêmica de rimas no Lírica: rimas ricas, pobres, preciosas, raras, árvore de decisão determinística e detector de clichês líricos.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <style>
+    .docs-nav-bar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .doc-tab { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.8125rem; font-weight: 600; color: var(--text-secondary); background-color: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); text-decoration: none; transition: all 0.15s ease; }
+    .doc-tab:hover, .doc-tab.active { color: var(--accent-gold); background-color: var(--accent-gold-soft); border-color: var(--accent-gold); }
+    .doc-body { max-width: 960px; margin: 2rem auto; padding: 0 1.5rem; display: flex; flex-direction: column; gap: 2rem; }
+    .doc-section { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.75rem; display: flex; flex-direction: column; gap: 1rem; }
+    .doc-section h2 { font-family: var(--font-serif); font-size: 1.5rem; color: var(--accent-gold); }
+    .doc-section h3 { font-family: var(--font-sans); font-size: 1.15rem; color: var(--accent-cyan); margin-top: 0.5rem; }
+    .rhyme-badge-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .badge { font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.55rem; border-radius: var(--radius-sm); }
+    .badge-pobre { background-color: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-color); }
+    .badge-rica { background-color: rgba(229, 192, 123, 0.15); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+    .badge-preciosa { background-color: rgba(97, 175, 239, 0.15); color: var(--accent-cyan); border: 1px solid var(--accent-cyan); }
+    .badge-rara { background-color: rgba(198, 120, 221, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+    .badge-cliche { background-color: rgba(224, 108, 117, 0.15); color: var(--accent); border: 1px solid var(--accent); }
+    .decision-step { display: flex; gap: 1rem; align-items: flex-start; padding: 0.85rem 1rem; background: var(--bg-elevated); border-left: 3px solid var(--accent-gold); border-radius: 4px; margin: 0.35rem 0; }
+    .step-number { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; color: var(--accent-gold); min-width: 1.8rem; }
+    .step-content { display: flex; flex-direction: column; gap: 0.3rem; }
+    .step-content strong { color: var(--text-primary); }
+    .epistemic-callout { background-color: rgba(152, 195, 121, 0.08); border-left: 4px solid var(--accent-green); padding: 1rem 1.25rem; border-radius: var(--radius-sm); }
+    .cliche-box { background-color: rgba(224, 108, 117, 0.08); border-left: 4px solid var(--accent); padding: 1rem 1.25rem; border-radius: var(--radius-sm); }
+    code { font-family: var(--font-mono); background-color: var(--bg-elevated); padding: 0.15rem 0.4rem; border-radius: var(--radius-sm); font-size: 0.85em; }
+    .pair-example { font-style: italic; color: var(--accent-gold); }
+    .verse-quote { border-left: 2px solid var(--border-color); padding-left: 1rem; margin: 0.5rem 0; font-family: var(--font-serif); font-size: 0.95rem; color: var(--text-primary); }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="header-brand-left">
+        <span class="logo-glyph" aria-hidden="true">❦</span>
+        <div>
+          <h1 class="app-title">Lírica // Documentação</h1>
+          <p class="app-tagline">Laboratório Métrico e Escansão Poética</p>
+        </div>
+      </div>
+      <div class="docs-nav-bar">
+        <a href="regras.html" class="doc-tab">⚙️ Motor & Regras</a>
+        <a href="formas.html" class="doc-tab">🏛️ Formas Poéticas</a>
+        <a href="versos.html" class="doc-tab">📏 Tipos de Versos</a>
+        <a href="rimas.html" class="doc-tab active">🎯 Avaliação de Rimas</a>
+        <a href="gabarito.html" class="doc-tab">🏆 Gabarito Canônico</a>
+        <a href="licencas.html" class="doc-tab">⚖️ Licenças & Corpus</a>
+        <a href="../index.html" class="doc-tab" style="border-color: var(--accent); color: var(--accent);">← Laboratório</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="doc-body">
+    <!-- Seção 1: Fundamentos da Rima na Lírica Lusófona -->
+    <section class="doc-section">
+      <h2>1. Fundamentos da Rima na Tradição Poética Lusófona</h2>
+      <p>
+        A rima é a coincidência ou harmonia acústica entre sons finais de dois ou mais versos a partir da última vogal tônica (a vogal de maior intensidade articulatória).
+        Na tradição clássica em língua portuguesa — codificada por tratadistas como <strong>Antônio Feliciano de Castilho</strong> (<em>Tratado de Metrificação Portugueza</em>), <strong>Manuel Said Ali</strong> (<em>Versificação Portuguesa</em>), <strong>Olavo Bilac e Guimarães Passos</strong> (<em>Tratado de Versificação</em>) e <strong>Segismundo Spina</strong> (<em>Manual de Poética</em>) —, as rimas são apreciadas não apenas pela perfeição acústica, mas principalmente pela sua <strong>qualidade morfológica</strong> e <strong>variedade estilística</strong>.
+      </p>
+      <h3>Dimensões Acústicas: Consoante vs. Toante</h3>
+      <ul>
+        <li><strong>Rima Consoante (Perfeita):</strong> Identidade total de sons vocálicos e consonantais a partir da última vogal tônica (ex.: <em>amar / passar</em>, <em>estrela / donzela</em>, <em>peito / leito</em>). É o padrão soberano da poética clássica lusófona.</li>
+        <li><strong>Rima Toante ou Assonante (Imperfeita):</strong> Identidade restrita às vogais tônicas e pós-tônicas, divergindo nas consoantes (ex.: <em>terra / festa</em>, <em>graça / mata</em>). Muito frequente na lírica medieval galego-portuguesa, no romanceiro tradicional e na poética moderna.</li>
+      </ul>
+    </section>
+
+    <!-- Seção 2: Categorias Morfológicas de Rima -->
+    <section class="doc-section">
+      <h2>2. Categorias Morfológicas de Rima</h2>
+      <p>
+        Diferente de idiomas de sintaxe rígida, o português possui rica flexão gramatical. Por isso, a poética clássica avalia se o poeta rima termos fáceis (da mesma categoria gramatical) ou se cruza classes gramaticais diferentes, demonstrando maior domínio léxico.
+      </p>
+
+      <div class="rhyme-badge-bar">
+        <span class="badge badge-pobre">Pobre: Mesma Classe</span>
+        <span class="badge badge-rica">Rica: Classes Distintas</span>
+        <span class="badge badge-preciosa">Preciosa: Ênclise / Morfologia Singular</span>
+        <span class="badge badge-rara">Rara: Escassez Léxica</span>
+      </div>
+
+      <h3>A. Rima Pobre</h3>
+      <p>
+        Ocorre quando os dois vocábulos rimantes pertencem à <strong>mesma classe gramatical</strong> ou compartilham a mesma desinência derivacional/flexional repetitiva:
+      </p>
+      <ul>
+        <li><strong>Substantivo × Substantivo:</strong> <span class="pair-example">coração × paixão</span>, <span class="pair-example">fogo × jogo</span>, <span class="pair-example">noite × açoite</span>.</li>
+        <li><strong>Verbo × Verbo:</strong> <span class="pair-example">cantar × chorar</span>, <span class="pair-example">vivia × sentia</span>, <span class="pair-example">perder × viver</span>.</li>
+        <li><strong>Adjetivo × Adjetivo:</strong> <span class="pair-example">escuro × puro</span>, <span class="pair-example">bela × singela</span>.</li>
+        <li><strong>Advérbio × Advérbio:</strong> <span class="pair-example">calmamente × docemente</span>.</li>
+      </ul>
+      <p>
+        <em>Nota crítica:</em> "Pobre" não significa defeituosa. Grandes mestres da literatura lusófona usaram rimas pobres expressivas. O termo é estritamente técnico e designa facilidade morfológica de combinação.
+      </p>
+
+      <h3>B. Rima Rica</h3>
+      <p>
+        Ocorre quando os vocábulos pertencem a <strong>classes gramaticais distintas</strong>, exigindo do poeta maior inventividade léxica:
+      </p>
+      <ul>
+        <li><strong>Substantivo × Verbo:</strong> <span class="pair-example">muro</span> (substantivo) × <span class="pair-example">juro</span> (verbo); <span class="pair-example">mar</span> (substantivo) × <span class="pair-example">amar</span> (verbo).</li>
+        <li><strong>Substantivo × Adjetivo:</strong> <span class="pair-example">doutor</span> (substantivo) × <span class="pair-example">melhor</span> (adjetivo); <span class="pair-example">luz</span> (substantivo) × <span class="pair-example">seduz</span> (verbo).</li>
+        <li><strong>Adjetivo × Verbo:</strong> <span class="pair-example">contente</span> (adjetivo) × <span class="pair-example">sente</span> (verbo).</li>
+      </ul>
+
+      <h3>C. Rima Preciosa</h3>
+      <p>
+        Rima construída com artifícios de alta sofisticação morfológica ou fonética:
+      </p>
+      <ul>
+        <li><strong>Assimetria de Ênclise:</strong> Rima de vocábulo pleno com termo acoplado a pronome enclítico ou mesoclítico (ex.: <span class="pair-example">estrela × vê-la</span>, <span class="pair-example">castelo × prometê-lo</span>).</li>
+        <li><strong>Palavras Compostas / Híbridas:</strong> Rimas que decompõem elementos sintáticos ou fonemas em fronteiras vocabulares inusitadas.</li>
+        <li><strong>Rimas Proparoxítonas (Esdrúxulas):</strong> Rimas onde a tônica recai na antepenúltima sílaba (ex.: <span class="pair-example">límpido × tímido</span>, <span class="pair-example">lágrima × pálpebra</span> [toante]).</li>
+      </ul>
+
+      <h3>D. Rima Rara</h3>
+      <p>
+        Rima realizada com palavras de terminações sonoras que possuem <strong>pouquíssimas correspondências</strong> em todo o léxico da língua portuguesa (escassez fonológica):
+      </p>
+      <ul>
+        <li>Terminações como <span class="pair-example">-órfão</span>, <span class="pair-example">-orvo</span>, <span class="pair-example">-uxo</span>, <span class="pair-example">-urze</span>, <span class="pair-example">-ázio</span>, <span class="pair-example">-úpia</span>.</li>
+      </ul>
+    </section>
+
+    <!-- Seção 3: A Árvore de Decisão do Algoritmo -->
+    <section class="doc-section">
+      <h2>3. A Árvore de Decisão do Algoritmo</h2>
+      <p>
+        O motor do Lírica é determinístico e não recorre a adivinhações probabilísticas opacas. A avaliação de cada par rímico segue uma árvore lógica rigorosa em 7 passos sequenciais:
+      </p>
+
+      <div class="decision-step">
+        <span class="step-number">01</span>
+        <div class="step-content">
+          <strong>Extração Fonotática do Termo Rimante</strong>
+          <p>O analisador limpa sinais gráficos residuais, isola a última palavra do verso, descola pronomes enclíticos (ex.: <em>conhecê-la</em> $\rightarrow$ base: <em>conhecer</em> + clítico: <em>la</em>) e mapeia a vogal tônica final.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">02</span>
+        <div class="step-content">
+          <strong>Verificação de Assimetria de Ênclise</strong>
+          <p>Se exatamente um dos termos contiver pronome enclítico (ex.: <em>vê-la × estrela</em>), a rima é classificada imediatamente como <strong>Preciosa</strong>.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">03</span>
+        <div class="step-content">
+          <strong>Triagem de Escassez Fonológica</strong>
+          <p>Se as terminações coincidirem com padrões léxicos de frequência ínfima no dicionário lusófono, o par é marcado como <strong>Rara</strong>.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">04</span>
+        <div class="step-content">
+          <strong>Comparação de Máscaras Disjuntas (100% Certeza de Rima Rica)</strong>
+          <p>O motor consulta o léxico formal (DAFSA / FST). Se o conjunto de classes possíveis do termo 1 e do termo 2 tiverem <em>interseção nula</em> (ex.: um só pode ser Verbo e o outro só pode ser Substantivo), é <strong>matematicamente impossível</strong> que pertençam à mesma classe. O resultado é categoricamente <strong>Rica</strong>.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">05</span>
+        <div class="step-content">
+          <strong>Identidade Morfológica Resolvida (100% Certeza de Rima Pobre)</strong>
+          <p>Se ambos os termos possuem uma única classe gramatical e ela for idêntica (ex.: dois verbos inequívocos como <em>sentir / fugir</em>), o resultado é categoricamente <strong>Pobre</strong>.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">06</span>
+        <div class="step-content">
+          <strong>Retroanálise Sintática (Lookback) & Graus Epistêmicos</strong>
+          <p>Quando há polissemia (ex.: palavras que podem ser substantivo ou verbo, como <em>canto</em> ou <em>olhar</em>), o motor analisa os vocábulos imediatamente anteriores no verso (determinantes, possessivos, preposições infinitivas). Havendo evidência contextual sólida, desambigua a classe ou classifica o par como <strong>Provável Rica</strong> ou <strong>Provável Pobre</strong>.</p>
+        </div>
+      </div>
+
+      <div class="decision-step">
+        <span class="step-number">07</span>
+        <div class="step-content">
+          <strong>Salvaguarda de Indeterminação</strong>
+          <p>Caso o contexto seja neutro e ambos os termos permaneçam ambíguos sem convergência evidente, o motor emite <strong>Indeterminada</strong>, protegendo a análise de rotulações falsas.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção 4: Postura Conservadora e Graus Epistêmicos -->
+    <section class="doc-section">
+      <h2>4. Postura Conservadora e Graus Epistêmicos</h2>
+      <div class="epistemic-callout">
+        <strong>Princípio Epistêmico Fundamental:</strong>
+        <p>
+          O Lírica adota postura estritamente conservadora: <strong>é preferível classificar como "Provável" ou "Indeterminado" do que induzir a pessoa usuária a um falso positivo</strong>. Na filologia poética, a integridade da análise depende de jamais inventar certezas onde o contexto gramatical for dúbio.
+        </p>
+      </div>
+
+      <h3>Graus Epistêmicos do Motor</h3>
+      <ul>
+        <li><strong>Certeza Categórica (Rica / Pobre / Preciosa / Rara):</strong> Evidência morfológica plena ou classes disjuntas provadas no autômato.</li>
+        <li><strong>Provável Rica:</strong> Um termo é comprovadamente de uma classe (ex.: verbo pleno) e o outro tem forte probabilidade substantiva no contexto poético.</li>
+        <li><strong>Provável Pobre (Convergência Nominal / Verbal):</strong> Ambos os vocábulos orbitam a mesma esfera categorial (ex.: pares de particípios como <em>cansado / amado</em> ou termos de transição substantivo/adjetivo como <em>morto / torto</em>).</li>
+        <li><strong>Indeterminada:</strong> Vocábulo não catalogado no léxico ou ambiguidade sintática sem pistas contextuais suficientes.</li>
+      </ul>
+    </section>
+
+    <!-- Seção 5: Detector de Clichês Históricos Líricos -->
+    <section class="doc-section">
+      <h2>5. O Detector de Clichês Históricos Líricos</h2>
+      <div class="cliche-box">
+        <span class="badge badge-cliche">🔥 Sinalizador de Clichê Lírico</span>
+        <p style="margin-top: 0.5rem;">
+          Na história da poesia em língua portuguesa, certas rimas tornaram-se tão obsessivamente repetidas ao longo dos séculos (desde os cancioneiros trovadorescos até o romantismo ultra-sentimental) que perderam o frescor inventivo, tornando-se <em>lugares-comuns</em> ou <em>chavões poéticos</em>.
+        </p>
+      </div>
+
+      <h3>Por que o Lírica sinaliza os clichês?</h3>
+      <p>
+        O objetivo do alerta <code>🔥 Clichê Lírico</code> não é censurar nem desqualificar o poema — muitos dos maiores poetas da língua recorreram a eles intencionalmente —, mas sim <strong>oferecer consciência estética</strong> a quem escreve ou estuda poesia.
+      </p>
+
+      <h3>Exemplos Clássicos Mapeados no Motor</h3>
+      <ul>
+        <li><span class="pair-example">amor × dor:</span> O par arquetípico da lírica amorosa portuguesa desde Camões até os românticos.</li>
+        <li><span class="pair-example">coração × paixão / ilusão:</span> Terminações nasais hiper-saturadas na poesia sentimental.</li>
+        <li><span class="pair-example">peito × leito:</span> Rima tópica do leito de morte ou da paixão carnal no ultra-romantismo.</li>
+        <li><span class="pair-example">vento × pensamento:</span> Emparelhamento abstrato recorrente na lírica meditativa.</li>
+        <li><span class="pair-example">vida × despedida / perdida:</span> Par dramático convencional de despedidas líricas.</li>
+        <li><span class="pair-example">flor × amor:</span> Combinação bucólica e pastoral frequente no arcadismo.</li>
+      </ul>
+    </section>
+
+    <!-- Seção 6: Glossário Rímico Rápido -->
+    <section class="doc-section">
+      <h2>6. Glossário Rímico Rápido de A a Z</h2>
+      <dl style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div>
+          <dt style="font-weight: 700; color: var(--accent-gold);">Rima Aguda (Masculina):</dt>
+          <dd style="color: var(--text-secondary); margin-left: 1rem;">Rima entre palavras oxítonas ou monossílabos tônicos (ex.: <em>amor / dor</em>, <em>sol / farol</em>).</dd>
+        </div>
+        <div>
+          <dt style="font-weight: 700; color: var(--accent-gold);">Rima Grave (Feminina):</dt>
+          <dd style="color: var(--text-secondary); margin-left: 1rem;">Rima entre palavras paroxítonas (ex.: <em>vida / ferida</em>, <em>terra / guerra</em>). É a rima mais natural na língua portuguesa.</dd>
+        </div>
+        <div>
+          <dt style="font-weight: 700; color: var(--accent-gold);">Rima Esdrúxula:</dt>
+          <dd style="color: var(--text-secondary); margin-left: 1rem;">Rima entre palavras proparoxítonas (ex.: <em>límpido / tímido</em>).</dd>
+        </div>
+        <div>
+          <dt style="font-weight: 700; color: var(--accent-gold);">Esquema Rímico:</dt>
+          <dd style="color: var(--text-secondary); margin-left: 1rem;">Distribuição das rimas na estrofe: emparelhada (AABB), alternada ou cruzada (ABAB), interpolada ou oposta (ABBA), encadeada (ABA BCB), misturada ou livre (versos brancos).</dd>
+        </div>
+        <div>
+          <dt style="font-weight: 700; color: var(--accent-gold);">Verso Branco (Solto):</dt>
+          <dd style="color: var(--text-secondary); margin-left: 1rem;">Verso que possui métrica e ritmo regulares, mas não rima com nenhum outro verso do poema.</dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-inner">
+      <p class="footer-identity">
+        Orgulhosamente produzido por uma <a href="https://travesti.2lp.in/pt/" target="_blank" rel="noopener">travesti latina</a> 🏳️‍⚧️ :)
+      </p>
+      <p class="footer-metadata">
+        Lírica • Documentação Oficial • por <a href="https://lumen.pink" target="_blank" rel="noopener">Lumen Pink</a> • Brasil 🇧🇷 • <a href="https://git.2lp.in/lumen/lirica/src/branch/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
