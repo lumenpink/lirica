@@ -1019,5 +1019,19 @@ fn test_ci_workflow_spec() {
         ci_yaml.contains("RUSTC_WRAPPER:") && (ci_yaml.contains("RUSTC_WRAPPER: \"\"") || ci_yaml.contains("RUSTC_WRAPPER: ''")),
         "Workflow de CI deve desativar RUSTC_WRAPPER para compilar diretamente sem falha de sccache"
     );
+
+    // 3. Fortificação de passos de compilação e deploy
+    assert!(
+        ci_yaml.contains("cargo test --all-targets"),
+        "Workflow de CI deve testar todos os targets (--all-targets)"
+    );
+    assert!(
+        ci_yaml.contains("wasm-pack build --target web --out-dir site/pkg --release"),
+        "Workflow de CI deve gerar o bundle de release WebAssembly"
+    );
+    assert!(
+        ci_yaml.contains("npx wrangler pages deploy site"),
+        "Workflow de CI deve publicar o site no Cloudflare Pages"
+    );
 }
 
