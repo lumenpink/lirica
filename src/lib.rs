@@ -52,6 +52,8 @@ pub struct VersoFormatado {
     pub rima: Option<String>,
     /// Rhyme termination phonemes (e.g. "-er", "-ente").
     pub rima_terminacao: Option<String>,
+    /// Índices métricos (1-based) após os quais ocorrem cesuras rítmicas canônicas.
+    pub cesuras: Vec<usize>,
 }
 
 /// Syllable details for visual highlighting.
@@ -284,6 +286,7 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
             silabas,
             rima: esc.rima.clone(),
             rima_terminacao: esc.rima_terminacao.clone(),
+            cesuras: Vec::new(),
         });
     }
 

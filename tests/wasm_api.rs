@@ -1346,3 +1346,57 @@ fn test_resolucao_conservadora_lookback_e_convergencia_nominal() {
         "Vocábulo desconhecido sem derivação deve reter Indeterminada por postura conservadora"
     );
 }
+
+#[test]
+fn test_deteccao_cesuras_decassilabos_e_alexandrinos_spec() {
+    // 1. Verso de Camões: decassílabo com cesura lírica em 'fogo' (índice 5), sem cortar 'arde'
+    let poema = "Amor é fogo que arde sem se ver";
+    let json = escandir(poema, "visual", true, false, true, true);
+    let web: AnaliseWeb = serde_json::from_str(&json).expect("JSON visual deve ser válido");
+    let verso = &web.versos[0];
+    assert!(
+        verso.cesuras.contains(&5),
+        "Decassílabo de Camões deve detectar cesura após 'fogo' (índice métrico 5), obtido: {:?}",
+        verso.cesuras
+    );
+    assert!(
+        !verso.cesuras.contains(&6),
+        "Cesura não deve ser cravada na 6ª sílaba métrica para não cortar 'arde' ao meio"
+    );
+
+    // 2. Verso com cesura heroica clara na 6ª sílaba
+    let poema_heroico = "Depois de tanta dor, o vencedor";
+    let json_h = escandir(poema_heroico, "visual", true, false, true, true);
+    let web_h: AnaliseWeb = serde_json::from_str(&json_h).expect("JSON visual deve ser válido");
+    let verso_h = &web_h.versos[0];
+    assert!(
+        verso_h.cesuras.contains(&6),
+        "Decassílabo heroico com fim de palavra na 6ª deve conter cesura no índice 6, obtido: {:?}",
+        verso_h.cesuras
+    );
+
+    // 3. Versos curtos (redondilhas) não possuem cesura
+    let poema_redondilha = "Minha terra tem palmeiras";
+    let json_r = escandir(poema_redondilha, "visual", true, false, true, true);
+    let web_r: AnaliseWeb = serde_json::from_str(&json_r).expect("JSON visual deve ser válido");
+    let verso_r = &web_r.versos[0];
+    assert!(
+        verso_r.cesuras.is_empty(),
+        "Redondilha maior (7 sílabas) não deve conter cesuras, obtido: {:?}",
+        verso_r.cesuras
+    );
+
+    // 4. Integridade da UI (CSS e JS devem suportar a exibição da cesura com o glifo ‖)
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+    assert!(
+        css.contains(".com-cesura")
+            || css.contains(".caesura-divider")
+            || css.contains(".caesura-mark"),
+        "style.css deve conter regras para exibição visual da cesura"
+    );
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    assert!(
+        js.contains("cesuras") || js.contains("cesura"),
+        "app.js deve processar e renderizar cesuras no workspace"
+    );
+}
