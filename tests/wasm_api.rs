@@ -12,7 +12,7 @@ fn test_carregar_exemplos() {
     let json_str = carregar_exemplos();
     let exemplos: Vec<ExemploPoema> =
         serde_json::from_str(&json_str).expect("Exemplos devem ser JSON válido");
-    assert_eq!(exemplos.len(), 7);
+    assert_eq!(exemplos.len(), 10);
     assert_eq!(exemplos[0].id, "camoes");
     assert_eq!(exemplos[1].id, "vinicius");
     assert_eq!(exemplos[2].id, "espinela");
@@ -20,6 +20,9 @@ fn test_carregar_exemplos() {
     assert_eq!(exemplos[4].id, "cruz_e_sousa");
     assert_eq!(exemplos[5].id, "pessoa");
     assert_eq!(exemplos[6].id, "bilac");
+    assert_eq!(exemplos[7].id, "pavao_misterioso");
+    assert_eq!(exemplos[8].id, "pajada_gaucha");
+    assert_eq!(exemplos[9].id, "galope_beira_mar");
 
     // Ensure none of the examples contain %% directives
     for ex in &exemplos {
@@ -1401,4 +1404,114 @@ fn test_deteccao_cesuras_decassilabos_e_alexandrinos_spec() {
         js.contains("Cesura Clássica (‖)"),
         "app.js deve conter diagnóstico pedagógico da cesura no modal contextual de metro"
     );
+}
+
+#[test]
+fn test_formas_populares_brasileiras_e_catalogo_spec() {
+    // 1. Catálogo deve conter as novas formas populares (Pavão Misterioso, Pajada Gaúcha e Galope à Beira-Mar)
+    let json_str = carregar_exemplos();
+    let exemplos: Vec<ExemploPoema> =
+        serde_json::from_str(&json_str).expect("Exemplos devem ser JSON válido");
+
+    let pavao = exemplos
+        .iter()
+        .find(|e| e.id == "pavao_misterioso")
+        .expect("Catálogo deve conter 'pavao_misterioso'");
+    assert!(
+        pavao.texto.contains("pavão misterioso") || pavao.texto.contains("Pavão Misterioso"),
+        "O Romance do Pavão Misterioso deve conter a abertura tradicional"
+    );
+
+    let pajada = exemplos
+        .iter()
+        .find(|e| e.id == "pajada_gaucha")
+        .expect("Catálogo deve conter 'pajada_gaucha'");
+    assert!(
+        pajada.descricao.contains("Pajada") || pajada.descricao.contains("Gaúcha"),
+        "Pajada Gaúcha deve conter descrição alusiva à tradição do Sul"
+    );
+
+    let galope = exemplos
+        .iter()
+        .find(|e| e.id == "galope_beira_mar")
+        .expect("Catálogo deve conter 'galope_beira_mar'");
+    assert!(
+        galope.texto.to_lowercase().contains("beira do mar")
+            || galope.texto.to_lowercase().contains("beira-mar"),
+        "Galope à Beira-Mar deve conter o refrão/deixa clássico"
+    );
+
+    // 2. Reconhecimento formal de Galope à Beira-Mar
+    let json_galope = escandir(&galope.texto, "visual", true, false, true, true);
+    let web_galope: AnaliseWeb =
+        serde_json::from_str(&json_galope).expect("JSON visual deve ser válido");
+    let forma_galope = web_galope
+        .forma_poetica
+        .expect("Galope à Beira-Mar deve ser reconhecido");
+    assert!(
+        forma_galope.nome.contains("Galope"),
+        "Diagnóstico de forma deve identificar 'Galope à Beira-Mar', obtido: {}",
+        forma_galope.nome
+    );
+
+    // 3. Reconhecimento formal da Pajada Gaúcha
+    let json_pajada = escandir(&pajada.texto, "visual", true, false, true, true);
+    let web_pajada: AnaliseWeb =
+        serde_json::from_str(&json_pajada).expect("JSON visual deve ser válido");
+    let forma_pajada = web_pajada
+        .forma_poetica
+        .expect("Pajada Gaúcha deve ser reconhecida");
+    assert!(
+        forma_pajada.nome.contains("Pajada") || forma_pajada.nome.contains("Décima"),
+        "Diagnóstico deve identificar Pajada Gaúcha ou Décima, obtido: {}",
+        forma_pajada.nome
+    );
+
+    // 4. Documentação atualizada em formas.html e gabarito.html
+    let formas_html =
+        std::fs::read_to_string("site/docs/formas.html").expect("formas.html deve existir");
+    assert!(
+        formas_html.contains("Galope") && formas_html.contains("Pajada"),
+        "site/docs/formas.html deve documentar Galope à Beira-Mar e Pajada Gaúcha"
+    );
+    let gabarito_html =
+        std::fs::read_to_string("site/docs/gabarito.html").expect("gabarito.html deve existir");
+    assert!(
+        gabarito_html.contains("Galope")
+            || gabarito_html.contains("Pajada")
+            || gabarito_html.contains("Cordel"),
+        "site/docs/gabarito.html deve conter referências às formas populares"
+    );
+
+    // 5. Teste de folheto de cordel: 2 estrofes vs 32 estrofes
+    let sextilha_padrao = "\
+Eu vou contar uma história\n\
+De um pavão misterioso\n\
+Que levantou grande glória\n\
+Com seu canto harmonioso\n\
+E na Grécia foi falado\n\
+Como pássaro famoso\n";
+
+    // 2 estrofes -> Sextilhas Encadeadas
+    let texto_2_estrofes = format!("{}\n{}", sextilha_padrao, sextilha_padrao);
+    let json_2 = escandir(&texto_2_estrofes, "visual", true, false, true, true);
+    let web_2: AnaliseWeb = serde_json::from_str(&json_2).expect("JSON visual deve ser válido");
+    let forma_2 = web_2
+        .forma_poetica
+        .expect("Cordel encadeado deve ser detectado");
+    assert_eq!(forma_2.nome, "Folheto de Cordel (Sextilhas Encadeadas)");
+
+    // 32 estrofes -> Folheto canônico in-octavo
+    let estrofes_32: Vec<String> = (0..32).map(|_| sextilha_padrao.to_string()).collect();
+    let texto_32 = estrofes_32.join("\n");
+    let json_32 = escandir(&texto_32, "visual", true, false, true, true);
+    let web_32: AnaliseWeb = serde_json::from_str(&json_32).expect("JSON visual deve ser válido");
+    let forma_32 = web_32
+        .forma_poetica
+        .expect("Folheto canônico de 32 estrofes deve ser detectado");
+    assert_eq!(forma_32.nome, "Folheto de Cordel (32 Estrofes Canônicas)");
+    assert!(forma_32
+        .observacoes
+        .iter()
+        .any(|obs| obs.contains("32 estrofes in-octavo")));
 }
