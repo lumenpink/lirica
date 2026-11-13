@@ -1386,17 +1386,19 @@ fn test_deteccao_cesuras_decassilabos_e_alexandrinos_spec() {
         verso_r.cesuras
     );
 
-    // 4. Integridade da UI (CSS e JS devem suportar a exibição da cesura com o glifo ‖)
+    // 4. Integridade da UI (CSS e JS devem suportar a exibição da cesura com o glifo clássico ‖)
     let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
     assert!(
-        css.contains(".com-cesura")
-            || css.contains(".caesura-divider")
-            || css.contains(".caesura-mark"),
-        "style.css deve conter regras para exibição visual da cesura"
+        css.contains(".com-cesura") && css.contains(".caesura-divider"),
+        "style.css deve conter regras para exibição visual da cesura com .com-cesura e .caesura-divider"
     );
     let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
     assert!(
-        js.contains("cesuras") || js.contains("cesura"),
-        "app.js deve processar e renderizar cesuras no workspace"
+        js.contains("'‖'"),
+        "app.js deve utilizar o glifo tipográfico canônico ‖ (U+2016) para a cesura"
+    );
+    assert!(
+        js.contains("Cesura Clássica (‖)"),
+        "app.js deve conter diagnóstico pedagógico da cesura no modal contextual de metro"
     );
 }
