@@ -1172,6 +1172,23 @@ body {
   border-style: dashed;
 }
 
+.syl-pill.com-cesura {
+  margin-right: 0.15rem;
+}
+
+.caesura-divider {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  opacity: 0.8;
+  font-family: var(--font-mono);
+  font-size: 0.825rem;
+  font-weight: 700;
+  margin: 0 0.25rem 0 0.15rem;
+  user-select: none;
+}
+
 /* Code Workspace */
 .code-workspace {
   background-color: var(--bg-secondary);

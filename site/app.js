@@ -268,6 +268,10 @@ function abrirModalMetroContextual(vData, verseIndex) {
     ? `<li><strong>Sinalefas:</strong> ${info.elisoes} ${info.elisoes === 1 ? 'fusão vocálica (sinalefa)' : 'fusões vocálicas (sinalefas)'} unindo sílabas contíguas.</li>`
     : '';
 
+  const cesuraTexto = vData.cesuras && vData.cesuras.length > 0
+    ? `<li><strong>Cesura Clássica (‖):</strong> Respiração medial na ${vData.cesuras.map(c => c + 'ª').join(' e ')} sílaba métrica, dividindo o verso em hemistíquios harmônicos sem corte intraverbal.</li>`
+    : '';
+
   body.innerHTML = `
     <div class="contextual-meter-card">
       <div class="meter-hero">
@@ -287,6 +291,7 @@ function abrirModalMetroContextual(vData, verseIndex) {
           <li><strong>Cadência e Acentos:</strong> ${tonicasTexto}</li>
           <li><strong>Regra de Castilho:</strong> A contagem poética trunca na última sílaba tônica (posição ${info.totalMetricas}). As sílabas átonas finais após a tônica não entram no cômputo métrico.</li>
           ${elisaoTexto}
+          ${cesuraTexto}
         </ul>
       </div>
       <div class="modal-contextual-footer">
@@ -1199,6 +1204,15 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
         syl.appendChild(idxSpan);
         syl.appendChild(txtSpan);
         strip.appendChild(syl);
+
+        if (s.numero_metrico !== null && vData.cesuras && vData.cesuras.includes(s.numero_metrico)) {
+          syl.classList.add('com-cesura');
+          const caesuraDiv = document.createElement('span');
+          caesuraDiv.className = 'caesura-divider';
+          caesuraDiv.title = 'Cesura métrica clássica (divisão em hemistíquios)';
+          caesuraDiv.textContent = '‖';
+          strip.appendChild(caesuraDiv);
+        }
       });
 
       colRight.appendChild(strip);
@@ -1330,6 +1344,15 @@ function updateSingleRowLive() {
         syl.appendChild(idxSpan);
         syl.appendChild(txtSpan);
         strip.appendChild(syl);
+
+        if (s.numero_metrico !== null && vData.cesuras && vData.cesuras.includes(s.numero_metrico)) {
+          syl.classList.add('com-cesura');
+          const caesuraDiv = document.createElement('span');
+          caesuraDiv.className = 'caesura-divider';
+          caesuraDiv.title = 'Cesura métrica clássica (divisão em hemistíquios)';
+          caesuraDiv.textContent = '‖';
+          strip.appendChild(caesuraDiv);
+        }
       });
 
       colRight.appendChild(strip);

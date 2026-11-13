@@ -237,6 +237,101 @@ pub fn escandir(
     }
 }
 
+fn is_fim_palavra(texto: &str, byte_pos: usize) -> bool {
+    if byte_pos >= texto.len() {
+        return true;
+    }
+    let restante = &texto[byte_pos..];
+    if let Some(c) = restante.chars().next() {
+        !c.is_alphabetic() && c != '\''
+    } else {
+        true
+    }
+}
+
+/// Identifica deterministricamente cesuras rítmicas clássicas em versos longos,
+/// respeitando estritamente a fronteira de vocábulo (word boundary).
+fn detectar_cesuras(
+    orig: &str,
+    silabas: &[joaju_lirica::SilabaPoetica],
+    total_metricas: usize,
+    tonicas: &[usize],
+    classificacao: &str,
+) -> Vec<usize> {
+    if total_metricas != 10 && total_metricas != 12 {
+        return Vec::new();
+    }
+
+    let mut cesuras = Vec::new();
+
+    if total_metricas == 10 {
+        let eh_safico = classificacao.contains("Sáfico")
+            || (tonicas.contains(&4) && (tonicas.contains(&8) || !tonicas.contains(&6)));
+
+        if eh_safico {
+            // Decassílabo Sáfico: cesura ancorada na 4ª sílaba métrica
+            let s4 = silabas.iter().find(|s| s.numero_metrico == Some(4));
+            let s5 = silabas.iter().find(|s| s.numero_metrico == Some(5));
+
+            if let Some(syl4) = s4 {
+                if is_fim_palavra(orig, syl4.span.end) {
+                    cesuras.push(4);
+                } else if let Some(syl5) = s5 {
+                    if is_fim_palavra(orig, syl5.span.end) {
+                        cesuras.push(5);
+                    }
+                }
+            }
+        } else {
+            // Decassílabo Heroico: preferência por cesura na 6ª sílaba métrica
+            let s6 = silabas.iter().find(|s| s.numero_metrico == Some(6));
+            let s4 = silabas.iter().find(|s| s.numero_metrico == Some(4));
+            let s5 = silabas.iter().find(|s| s.numero_metrico == Some(5));
+
+            if let Some(syl6) = s6 {
+                if is_fim_palavra(orig, syl6.span.end) {
+                    cesuras.push(6);
+                } else if tonicas.contains(&4) {
+                    // Se a 6ª sílaba não encerra palavra mas há tônica na 4ª (ex.: "Amor é fogo que arde..."),
+                    // a pausa natural ocorre no 1º hemistíquio sáfico/lírico (4 ou 5)
+                    if let Some(syl4) = s4 {
+                        if is_fim_palavra(orig, syl4.span.end) {
+                            cesuras.push(4);
+                        } else if let Some(syl5) = s5 {
+                            if is_fim_palavra(orig, syl5.span.end) {
+                                cesuras.push(5);
+                            }
+                        }
+                    }
+                } else {
+                    let s7 = silabas.iter().find(|s| s.numero_metrico == Some(7));
+                    if let Some(syl7) = s7 {
+                        if is_fim_palavra(orig, syl7.span.end) {
+                            cesuras.push(7);
+                        }
+                    }
+                }
+            }
+        }
+    } else if total_metricas == 12 {
+        // Alexandrino Clássico (6 + 6)
+        let s6 = silabas.iter().find(|s| s.numero_metrico == Some(6));
+        let s7 = silabas.iter().find(|s| s.numero_metrico == Some(7));
+
+        if let Some(syl6) = s6 {
+            if is_fim_palavra(orig, syl6.span.end) {
+                cesuras.push(6);
+            } else if let Some(syl7) = s7 {
+                if is_fim_palavra(orig, syl7.span.end) {
+                    cesuras.push(7);
+                }
+            }
+        }
+    }
+
+    cesuras
+}
+
 fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
     let mut resultado = Vec::new();
 
@@ -275,6 +370,14 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
             .unwrap_or_else(|| "Forma Livre".to_string());
         let icone = icone_metro(&class_name).to_string();
 
+        let cesuras = detectar_cesuras(
+            orig,
+            &esc.silabas,
+            esc.total_metricas,
+            &esc.esquema_tonico,
+            &class_name,
+        );
+
         resultado.push(VersoFormatado {
             original: orig.clone(),
             escansao: partes.join(" - "),
@@ -286,7 +389,7 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
             silabas,
             rima: esc.rima.clone(),
             rima_terminacao: esc.rima_terminacao.clone(),
-            cesuras: Vec::new(),
+            cesuras,
         });
     }
 

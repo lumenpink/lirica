@@ -149,7 +149,7 @@ dependencies = [
 
 [[package]]
 name = "lirica"
-version = "0.1.0-dev.160+20261112.b426404"
+version = "0.1.0-dev.161+20261112.a58ed00"
 dependencies = [
  "joaju-lirica",
  "serde",
