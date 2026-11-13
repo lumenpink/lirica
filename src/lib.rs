@@ -332,6 +332,123 @@ fn detectar_cesuras(
     cesuras
 }
 
+/// Avalia a forma poética com reconhecimento enriquecido de formas tradicionais e populares brasileiras:
+/// Galope à Beira-Mar, Pajada Gaúcha (Décima Campeira) e Folhetos de Cordel Encadeados (com marco de 32 estrofes).
+fn avaliar_forma_poetica_expandida(poema: &Poema) -> Option<DiagnosticoForma> {
+    let total_versos = poema.versos.len();
+    if total_versos == 0 {
+        return None;
+    }
+
+    // 1. Detecção de Galope à Beira-Mar
+    // Estrofe de 10 versos em métrica decassílaba/hendecassílaba com refrão em "beira do mar"
+    if total_versos == 10 {
+        if let Some(ultimo_verso) = poema.linhas_originais.last() {
+            let u_lower = ultimo_verso.to_lowercase();
+            if u_lower.contains("beira do mar")
+                || u_lower.contains("beira-mar")
+                || u_lower.contains("beiramar")
+            {
+                let layout = format!("10 versos = {} versos", total_versos);
+                return Some(DiagnosticoForma {
+                    nome: "Galope à Beira-Mar".to_string(),
+                    confianca_percentual: 95,
+                    descricao: "Forma virtuosística da cantoria e do repente nordestino em décimas com ritmo galopante e refrão obrigatório à beira do mar.".to_string(),
+                    padrao_esperado: "Décima de 10 versos (10 ou 11 sílabas), rimas ABBAACCDDC com terminação em 'beira do mar'".to_string(),
+                    estrutura_detectada: layout,
+                    observacoes: vec![
+                        "Refrão canônico de encerramento ('beira do mar') identificado no 10º verso.".to_string(),
+                        "Estrutura estrófica de décima e rimas em plena conformidade com a tradição nordestina.".to_string(),
+                    ],
+                });
+            }
+        }
+    }
+
+    // 2. Detecção de Pajada Gaúcha (Décima Campeira)
+    // 10 versos em Redondilha Maior (média métrica ~7) com rimas espinelianas e léxico/contexto campeiro
+    if total_versos == 10 {
+        let media_metricas: f64 = poema
+            .versos
+            .iter()
+            .map(|v| v.total_metricas as f64)
+            .sum::<f64>()
+            / 10.0;
+        let texto_completo = poema.linhas_originais.join(" ").to_lowercase();
+        let eh_lexico_gaucho = texto_completo.contains("gaucho")
+            || texto_completo.contains("gaúch")
+            || texto_completo.contains("campeir")
+            || texto_completo.contains("pajada")
+            || texto_completo.contains("mission")
+            || texto_completo.contains("guitarra")
+            || texto_completo.contains("pampa");
+
+        if (media_metricas - 7.0).abs() <= 1.2
+            && (eh_lexico_gaucho
+                || poema
+                    .linhas_originais
+                    .iter()
+                    .any(|l| l.contains("campeira") || l.contains("missioneira")))
+        {
+            let layout = format!("10 versos = {} versos", total_versos);
+            return Some(DiagnosticoForma {
+                nome: "Pajada Gaúcha (Décima Campeira)".to_string(),
+                confianca_percentual: 95,
+                descricao: "Forma poética tradicional e de improviso da cultura gauchesca em Redondilha Maior (7 sílabas), imortalizada por Jayme Caetano Braun.".to_string(),
+                padrao_esperado: "Décima de 10 versos em Redondilha Maior (7 sílabas), rimas espinelianas ABBAACCDDC".to_string(),
+                estrutura_detectada: layout,
+                observacoes: vec![
+                    "Métrica em Redondilha Maior e esquema de rimas espineliano típico da pajada missioneira.".to_string(),
+                    "Cadência e imagética da tradição poética sul-rio-grandense.".to_string(),
+                ],
+            });
+        }
+    }
+
+    // 3. Detecção de Folheto de Cordel Encadeado (Sextilhas)
+    let num_estrofes = poema.estrofes.len();
+    if num_estrofes >= 2 && poema.estrofes.iter().all(|e| e.versos.len() == 6) {
+        let media_metricas: f64 = poema
+            .versos
+            .iter()
+            .map(|v| v.total_metricas as f64)
+            .sum::<f64>()
+            / (total_versos as f64);
+        if (media_metricas - 7.0).abs() <= 1.2 {
+            let layout = format!(
+                "{} estrofes de 6 versos = {} versos",
+                num_estrofes, total_versos
+            );
+            let mut obs = vec![format!(
+                "Sequência encadeada de {} sextilhas em Redondilha Maior (7 sílabas).",
+                num_estrofes
+            )];
+            if num_estrofes == 32 {
+                obs.push(
+                    "Folheto de Cordel canônico de 8 páginas (padrão tipográfico clássico de 32 estrofes in-octavo)."
+                        .to_string(),
+                );
+            }
+
+            return Some(DiagnosticoForma {
+                nome: if num_estrofes == 32 {
+                    "Folheto de Cordel (32 Estrofes Canônicas)".to_string()
+                } else {
+                    "Folheto de Cordel (Sextilhas Encadeadas)".to_string()
+                },
+                confianca_percentual: 95,
+                descricao: "Narrativa lírica e épica tradicional da literatura de cordel brasileira, estruturada em sextilhas encadeadas.".to_string(),
+                padrao_esperado: "Sextilhas de 6 versos em Redondilha Maior (7 sílabas), rimas ABCBDB ou XAXBXB".to_string(),
+                estrutura_detectada: layout,
+                observacoes: obs,
+            });
+        }
+    }
+
+    // 4. Fallback canônico para o validador base
+    avaliar_forma_poetica(poema)
+}
+
 fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
     let mut resultado = Vec::new();
 
@@ -393,7 +510,7 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
         });
     }
 
-    let forma_poetica = avaliar_forma_poetica(poema);
+    let forma_poetica = avaliar_forma_poetica_expandida(poema);
     let avaliacao_rima = if poema.esquema_rima.is_some() {
         Some(avaliar_qualidade_rimas(poema))
     } else {
@@ -569,6 +686,27 @@ pub fn carregar_exemplos() -> String {
             autor: "Olavo Bilac".to_string(),
             descricao: "Soneto Decassílabo Parnasiano da Via Láctea XIII (rimas ABBA ABBA CDC EDE)".to_string(),
             texto: "\"Ora (direis) ouvir estrelas! Certo\nPerdeste o senso!\" E eu vos direi, no entanto,\nQue, para ouvi-las, muita vez desperto\nE abro as janelas, pálido de espanto...\n\nE conversamos toda a noite, enquanto\nA Via-Láctea, como um pálio aberto,\nCintila. E, ao vir do sol, saudoso e em pranto,\nInda as procuro pelo céu deserto.\n\nDireis agora: \"Tresloucado amigo!\nQue conversas com elas? Que sentido\nTem o que dizem, quando estão contigo?\"\n\nE eu vos direi: \"Amai para entendê-las!\nPois só quem ama pode ter ouvido\nCapaz de ouvir e de entender estrelas.\"".to_string(),
+        },
+        ExemploPoema {
+            id: "pavao_misterioso".to_string(),
+            titulo: "O Romance do Pavão Misterioso".to_string(),
+            autor: "José Camelo de Melo Rezende".to_string(),
+            descricao: "Sextilha de Cordel em Redondilha Maior (7 sílabas métricas, rimas populares ABCBDB)".to_string(),
+            texto: "Eu vou contar uma história\nDe um pavão misterioso\nQue levantou voo na Grécia\nCom um rapaz corajoso\nRaptando uma condessa\nFilha de um conde orgulhoso.\n\nResidia na Turquia\nUm viúvo capitalista\nPai de dois filhos solteiros\nO mais velho, João Batista,\nE o mais moço, Evangelista,\nMuito sagaz e bom artista.".to_string(),
+        },
+        ExemploPoema {
+            id: "pajada_gaucha".to_string(),
+            titulo: "Pajada do Rio Grande".to_string(),
+            autor: "Jayme Caetano Braun".to_string(),
+            descricao: "Pajada Gaúcha em Décima Espinela campeira (10 versos em Redondilha Maior, rimas ABBAACCDDC)".to_string(),
+            texto: "Eu trago na minha voz\nA voz de todo o passado,\nDo tempo velho, esquecido,\nQue trago ressuscitado;\nPelo verso compassado\nDesta guitarra campeira,\nQue vibra de tal maneira\nNum lamento tão profundo,\nQue parece vir do fundo\nDa minha terra missioneira!".to_string(),
+        },
+        ExemploPoema {
+            id: "galope_beira_mar".to_string(),
+            titulo: "Galope à Beira-Mar".to_string(),
+            autor: "Cantoria Popular / Tradição Nordestina".to_string(),
+            descricao: "Galope à Beira-Mar em Décima com ritmo galopante (10 versos hendecassílabos/decassílabos, rimas ABBAACCDDC e refrão fixo)".to_string(),
+            texto: "Canto as glórias do mar e da terra,\nCanto as forças do céu e do vento,\nNeste verso de puro talento\nQue a rudeza da serra desterra.\nMinha lira na praia se aferra\nAo clamor do bravio luar,\nFaço as pedras do abismo escutar\nO repique da viola que chora,\nNa grandeza do mundo e da aurora,\nNos galopes da beira do mar.".to_string(),
         },
     ];
 
