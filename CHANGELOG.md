@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Identificação determinística de cesuras clássicas em versos longos (decassílabos e alexandrinos) com proteção contra corte intraverbal e destaque com glifo canônico ‖ (closes #37).
 - Resolução conservadora de lookback sintático ampliado (janela de 3 tokens) e convergência nominal para zonas cinzentas de substantivos e adjetivos sem falsos positivos (closes #33).
 - Guia canônico de avaliação de rimas (`site/docs/rimas.html`) com fundamentação na tradição lusófona (Castilho, Said Ali, Bilac, Spina), árvore de decisão didática, graus epistêmicos e detector de clichês (closes #32).
 - Modal contextual dedicado para metro e ritmo ao clicar no badge do verso (sem duplicar escansão) e unificação do badge de rima com o diagnóstico da estrofe (closes #31).
