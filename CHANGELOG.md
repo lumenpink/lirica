@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Gerador de card poético vetorial em SVG nativo e exportação em PNG de alta resolução e documento Typst editorial (.typ), com 3 temas visuais (Manuscrito, Noturno e Minimalista) e modal de compartilhamento (closes #35).
 - Incorporação de formas populares brasileiras (Pavão Misterioso em sextilhas de Redondilha Maior, Pajada Gaúcha em décimas espinelianas, Galope à Beira-Mar com refrão canônico e reconhecimento de folhetos de cordel com marco de 32 estrofes in-octavo) (closes #36).
 - Identificação determinística de cesuras clássicas em versos longos (decassílabos e alexandrinos) com proteção contra corte intraverbal e destaque com glifo canônico ‖ (closes #37).
 - Resolução conservadora de lookback sintático ampliado (janela de 3 tokens) e convergência nominal para zonas cinzentas de substantivos e adjetivos sem falsos positivos (closes #33).
