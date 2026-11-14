@@ -20,6 +20,9 @@
       </div>
 
       <div class="header-actions">
+        <button id="btn-abrir-rascunhos" class="header-btn" title="Gerenciar múltiplos rascunhos poéticos salvos, alternar e exportar">
+          <span aria-hidden="true">📂</span> Rascunhos <span id="drafts-count-badge" class="drafts-badge">1</span>
+        </button>
         <button id="btn-exportar-card" class="header-btn" title="Exportar card visual do poema em alta resolução (PNG/SVG) ou Typst">
           <span aria-hidden="true">🎨</span> Exportar Card
         </button>
@@ -482,6 +485,42 @@
           <button id="btn-export-typst" class="btn-ghost" title="Baixar documento Typst (.typ) formatado">Exportar Typst (.typ)</button>
         </div>
         <button id="btn-fechar-modal-exportar-bottom" class="btn-ghost">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog de Múltiplos Rascunhos (Ticket #34) -->
+  <div id="modal-rascunhos" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-rascunhos-titulo">
+    <div class="modal-container modal-drafts-container">
+      <div class="modal-header">
+        <div class="modal-header-text">
+          <h2 id="modal-rascunhos-titulo" class="modal-title">📂 Meus Rascunhos Poéticos</h2>
+          <p class="modal-subtitle">Alterne entre suas obras em andamento, crie novos poemas e gerencie backups locais:</p>
+        </div>
+        <button id="btn-fechar-modal-rascunhos" class="modal-close-btn" aria-label="Fechar janela de rascunhos">✕</button>
+      </div>
+      <div class="modal-body modal-drafts-body">
+        <div class="drafts-toolbar">
+          <button id="btn-novo-rascunho" class="btn-primary-sm" title="Criar um novo rascunho em branco">
+            <span aria-hidden="true">➕</span> Novo Rascunho
+          </button>
+          <div class="drafts-backup-actions">
+            <button id="btn-exportar-rascunhos-json" class="btn-ghost-sm" title="Baixar todos os rascunhos em formato JSON">
+              <span aria-hidden="true">💾</span> Exportar Backup JSON
+            </button>
+            <label for="input-importar-rascunhos-json" id="btn-importar-rascunhos-json" class="btn-ghost-sm label-as-btn" title="Restaurar rascunhos a partir de arquivo JSON">
+              <span aria-hidden="true">📥</span> Importar Backup JSON
+              <input type="file" id="input-importar-rascunhos-json" accept=".json,application/json" style="display: none;">
+            </label>
+          </div>
+        </div>
+        <div id="lista-rascunhos" class="drafts-list" role="list" aria-label="Lista de rascunhos salvos">
+          <!-- Rascunhos renderizados dinamicamente via JS -->
+        </div>
+      </div>
+      <div class="modal-footer modal-drafts-footer">
+        <span class="modal-footer-hint">🔒 Armazenamento 100% privado no seu navegador via LocalStorage.</span>
+        <button id="btn-fechar-modal-rascunhos-bottom" class="btn-ghost">Fechar</button>
       </div>
     </div>
   </div>

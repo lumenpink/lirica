@@ -6,11 +6,85 @@ import init, {
   exportar_documento_typst,
 } from './pkg/lirica.js?v=0.1.8';
 
-// Persistência em LocalStorage (Ticket #20 / #23)
+// Persistência em LocalStorage e Gerenciador de Rascunhos (Ticket #20, #23, #34)
 const STORAGE_KEY = 'lirica_draft_poem';
+const STORAGE_DRAFTS_KEY = 'lirica_drafts_v1';
+const STORAGE_ACTIVE_ID_KEY = 'lirica_active_draft_id';
 const STORAGE_DEBOUNCE_MS = 400;
 let saveTimer = null;
 let isDirty = false;
+
+function obterRascunhos() {
+  try {
+    const raw = localStorage.getItem(STORAGE_DRAFTS_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (err) {
+    console.warn('Falha ao ler coleção lirica_drafts_v1:', err);
+  }
+
+  // Migração transparente a partir de lirica_draft_poem legado (Ticket #34)
+  try {
+    const legado = localStorage.getItem(STORAGE_KEY);
+    if (typeof legado === 'string' && legado.trim().length > 0) {
+      const meta = extrairMetadadosMarkdown(legado.split('\n'));
+      const draftMigrado = {
+        id: 'draft_legado_' + Date.now(),
+        titulo: meta.titulo || 'Rascunho Inicial',
+        autor: meta.autor || '',
+        texto: legado,
+        atualizadoEm: new Date().toISOString(),
+      };
+      const inicial = [draftMigrado];
+      localStorage.setItem(STORAGE_DRAFTS_KEY, JSON.stringify(inicial));
+      localStorage.setItem(STORAGE_ACTIVE_ID_KEY, draftMigrado.id);
+      return inicial;
+    }
+  } catch (err) {
+    console.warn('Falha na migração do rascunho legado:', err);
+  }
+
+  return [];
+}
+
+function salvarRascunhosColecao(drafts) {
+  try {
+    localStorage.setItem(STORAGE_DRAFTS_KEY, JSON.stringify(drafts));
+    atualizarBadgeContadorRascunhos();
+  } catch (err) {
+    console.warn('Falha ao persistir coleção lirica_drafts_v1:', err);
+  }
+}
+
+function obterRascunhoAtivoId() {
+  try {
+    const id = localStorage.getItem(STORAGE_ACTIVE_ID_KEY);
+    const drafts = obterRascunhos();
+    if (drafts.some((d) => d.id === id)) return id;
+    if (drafts.length > 0) return drafts[0].id;
+  } catch (err) {
+    console.warn('Falha ao obter rascunho ativo ID:', err);
+  }
+  return null;
+}
+
+function definirRascunhoAtivoId(id) {
+  try {
+    localStorage.setItem(STORAGE_ACTIVE_ID_KEY, id);
+  } catch (err) {
+    console.warn('Falha ao salvar rascunho ativo ID:', err);
+  }
+}
+
+function atualizarBadgeContadorRascunhos() {
+  const badge = document.getElementById('drafts-count-badge');
+  if (!badge) return;
+  const count = obterRascunhos().length;
+  badge.textContent = `${count}`;
+  badge.style.display = count > 0 ? 'inline-flex' : 'none';
+}
 
 function salvarRascunhoImediato(texto = null) {
   isDirty = true;
@@ -20,7 +94,34 @@ function salvarRascunhoImediato(texto = null) {
       saveTimer = null;
     }
     const conteudo = typeof texto === 'string' ? texto : getFullText();
+    // 1. Manter chave legada para retrocompatibilidade
     localStorage.setItem(STORAGE_KEY, conteudo);
+
+    // 2. Sincronizar na coleção de múltiplos rascunhos (Ticket #34)
+    let drafts = obterRascunhos();
+    let activeId = obterRascunhoAtivoId();
+    const meta = extrairMetadadosMarkdown(conteudo.split('\n'));
+    const tit = meta.titulo || (meta.verses[0] && meta.verses[0].trim() ? meta.verses[0].trim().slice(0, 40) : 'Rascunho sem título');
+    const aut = meta.autor || '';
+
+    let idx = drafts.findIndex((d) => d.id === activeId);
+    if (idx >= 0) {
+      drafts[idx].titulo = tit;
+      drafts[idx].autor = aut;
+      drafts[idx].texto = conteudo;
+      drafts[idx].atualizadoEm = new Date().toISOString();
+    } else {
+      const novoId = 'draft_' + Date.now();
+      drafts.unshift({
+        id: novoId,
+        titulo: tit,
+        autor: aut,
+        texto: conteudo,
+        atualizadoEm: new Date().toISOString(),
+      });
+      definirRascunhoAtivoId(novoId);
+    }
+    salvarRascunhosColecao(drafts);
   } catch (err) {
     console.warn('Falha ao persistir rascunho no localStorage:', err);
   }
@@ -43,6 +144,13 @@ function flushRascunhoPendente() {
 
 function recuperarRascunho() {
   try {
+    const drafts = obterRascunhos();
+    const activeId = obterRascunhoAtivoId();
+    const active = drafts.find((d) => d.id === activeId);
+    if (active && typeof active.texto === 'string' && active.texto.trim().length > 0) {
+      return active.texto;
+    }
+
     const salvo = localStorage.getItem(STORAGE_KEY);
     return typeof salvo === 'string' && salvo.trim().length > 0 ? salvo : null;
   } catch (err) {
@@ -60,6 +168,192 @@ function limparRascunho() {
     localStorage.removeItem(STORAGE_KEY);
   } catch (err) {
     console.warn('Falha ao remover rascunho do localStorage:', err);
+  }
+}
+
+function criarNovoRascunho(titulo = 'Novo Poema', autor = '', texto = '') {
+  flushRascunhoPendente();
+  const novoId = 'draft_' + Date.now();
+  const drafts = obterRascunhos();
+  const novoDraft = {
+    id: novoId,
+    titulo: titulo || 'Novo Poema',
+    autor: autor || '',
+    texto: texto || '',
+    atualizadoEm: new Date().toISOString(),
+  };
+  drafts.unshift(novoDraft);
+  salvarRascunhosColecao(drafts);
+  definirRascunhoAtivoId(novoId);
+  carregarRascunhoPorId(novoId);
+  renderizarListaRascunhos();
+}
+
+function carregarRascunhoPorId(id) {
+  flushRascunhoPendente();
+  const drafts = obterRascunhos();
+  const draft = drafts.find((d) => d.id === id);
+  if (!draft) return;
+
+  definirRascunhoAtivoId(id);
+  const meta = extrairMetadadosMarkdown((draft.texto || '').split('\n'));
+  if (inputTitulo) inputTitulo.value = meta.titulo || draft.titulo || '';
+  if (inputAutor) inputAutor.value = meta.autor || draft.autor || '';
+  verses = meta.verses && meta.verses.length > 0 ? meta.verses : [''];
+  if (rawTextarea) rawTextarea.value = getFullText();
+  isDirty = false;
+  try {
+    localStorage.setItem(STORAGE_KEY, draft.texto || '');
+  } catch (err) {
+    console.warn('Falha ao sincronizar chave legada:', err);
+  }
+
+  renderWorkspace();
+  focusVerse(0);
+  renderizarListaRascunhos();
+}
+
+function duplicarRascunho(id) {
+  flushRascunhoPendente();
+  const drafts = obterRascunhos();
+  const draft = drafts.find((d) => d.id === id);
+  if (!draft) return;
+
+  const novoId = 'draft_' + Date.now();
+  const copia = {
+    id: novoId,
+    titulo: `${draft.titulo || 'Poema'} (Cópia)`,
+    autor: draft.autor || '',
+    texto: draft.texto || '',
+    atualizadoEm: new Date().toISOString(),
+  };
+  drafts.unshift(copia);
+  salvarRascunhosColecao(drafts);
+  renderizarListaRascunhos();
+}
+
+function renomearRascunho(id, novoTitulo) {
+  if (!novoTitulo || novoTitulo.trim().length === 0) return;
+  const drafts = obterRascunhos();
+  const draft = drafts.find((d) => d.id === id);
+  if (!draft) return;
+
+  draft.titulo = novoTitulo.trim();
+  draft.atualizadoEm = new Date().toISOString();
+
+  const activeId = obterRascunhoAtivoId();
+  if (id === activeId && inputTitulo) {
+    inputTitulo.value = draft.titulo;
+    const conteudo = getFullText();
+    draft.texto = conteudo;
+    try {
+      localStorage.setItem(STORAGE_KEY, conteudo);
+    } catch (err) {
+      console.warn('Falha ao persistir rascunho renomeado:', err);
+    }
+  }
+
+  salvarRascunhosColecao(drafts);
+  renderizarListaRascunhos();
+}
+
+function excluirRascunho(id) {
+  let drafts = obterRascunhos();
+  const draft = drafts.find((d) => d.id === id);
+  const confirmMsg = draft
+    ? `Deseja realmente excluir o rascunho "${draft.titulo}"?`
+    : 'Deseja realmente excluir este rascunho?';
+
+  if (!confirm(confirmMsg)) return;
+
+  drafts = drafts.filter((d) => d.id !== id);
+
+  const activeId = obterRascunhoAtivoId();
+  if (drafts.length === 0) {
+    const novoId = 'draft_' + Date.now();
+    drafts = [
+      {
+        id: novoId,
+        titulo: 'Novo Poema',
+        autor: '',
+        texto: '',
+        atualizadoEm: new Date().toISOString(),
+      },
+    ];
+    definirRascunhoAtivoId(novoId);
+    salvarRascunhosColecao(drafts);
+    carregarRascunhoPorId(novoId);
+  } else if (activeId === id) {
+    const proximoId = drafts[0].id;
+    definirRascunhoAtivoId(proximoId);
+    salvarRascunhosColecao(drafts);
+    carregarRascunhoPorId(proximoId);
+  } else {
+    salvarRascunhosColecao(drafts);
+  }
+
+  renderizarListaRascunhos();
+}
+
+function exportarRascunhosJSON() {
+  flushRascunhoPendente();
+  const drafts = obterRascunhos();
+  const payload = {
+    schema: 'lirica-drafts-v1',
+    versao: '0.1.0',
+    exportadoEm: new Date().toISOString(),
+    rascunhos: drafts,
+  };
+
+  const jsonStr = JSON.stringify(payload, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `lirica-rascunhos-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importarRascunhosJSON(arquivoOuTexto) {
+  const processarTexto = (conteudoTexto) => {
+    try {
+      const data = JSON.parse(conteudoTexto);
+      if (!data || data.schema !== 'lirica-drafts-v1' || !Array.isArray(data.rascunhos)) {
+        alert('Arquivo de backup inválido! O esquema esperado é "lirica-drafts-v1".');
+        return;
+      }
+
+      let existentes = obterRascunhos();
+      let adicionados = 0;
+
+      for (const r of data.rascunhos) {
+        if (!r.id || typeof r.texto !== 'string') continue;
+        const colidiu = existentes.some((e) => e.id === r.id);
+        const novoDraft = {
+          ...r,
+          id: colidiu ? 'draft_imp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6) : r.id,
+          atualizadoEm: r.atualizadoEm || new Date().toISOString(),
+        };
+        existentes.unshift(novoDraft);
+        adicionados++;
+      }
+
+      salvarRascunhosColecao(existentes);
+      renderizarListaRascunhos();
+      alert(`Importação concluída com sucesso! ${adicionados} rascunho(s) adicionado(s).`);
+    } catch (err) {
+      console.error('Erro ao importar rascunhos JSON:', err);
+      alert('Erro ao processar o arquivo de rascunhos. Verifique se é um JSON válido.');
+    }
+  };
+
+  if (typeof arquivoOuTexto === 'string') {
+    processarTexto(arquivoOuTexto);
+  } else if (arquivoOuTexto instanceof File) {
+    const reader = new FileReader();
+    reader.onload = (e) => processarTexto(e.target.result);
+    reader.readAsText(arquivoOuTexto);
   }
 }
 
@@ -110,6 +404,16 @@ const btnExportPng = document.getElementById('btn-export-png');
 const btnExportSvg = document.getElementById('btn-export-svg');
 const btnCopyCard = document.getElementById('btn-copy-card');
 const btnExportTypst = document.getElementById('btn-export-typst');
+
+// Modal de Múltiplos Rascunhos (Ticket #34)
+const btnAbrirRascunhos = document.getElementById('btn-abrir-rascunhos');
+const modalRascunhos = document.getElementById('modal-rascunhos');
+const btnFecharModalRascunhos = document.getElementById('btn-fechar-modal-rascunhos');
+const btnFecharModalRascunhosBottom = document.getElementById('btn-fechar-modal-rascunhos-bottom');
+const btnNovoRascunho = document.getElementById('btn-novo-rascunho');
+const btnExportarRascunhosJson = document.getElementById('btn-exportar-rascunhos-json');
+const inputImportarRascunhosJson = document.getElementById('input-importar-rascunhos-json');
+const listaRascunhos = document.getElementById('lista-rascunhos');
 
 const selectModo = document.getElementById('select-modo');
 const chkCastilho = document.getElementById('chk-castilho');
@@ -372,6 +676,136 @@ function baixarDocumentoTypst() {
   URL.revokeObjectURL(url);
 }
 
+// ==========================================================================
+// Modal de Gerenciamento de Rascunhos Poéticos (Ticket #34)
+// ==========================================================================
+
+function abrirModalRascunhos() {
+  if (!modalRascunhos) return;
+  modalRascunhos.hidden = false;
+  renderizarListaRascunhos();
+  if (btnFecharModalRascunhos) btnFecharModalRascunhos.focus();
+}
+
+function fecharModalRascunhos() {
+  if (!modalRascunhos) return;
+  modalRascunhos.hidden = true;
+}
+
+function renderizarListaRascunhos() {
+  if (!listaRascunhos) return;
+  listaRascunhos.innerHTML = '';
+  const drafts = obterRascunhos();
+  const activeId = obterRascunhoAtivoId();
+
+  if (drafts.length === 0) {
+    const emptyNotice = document.createElement('div');
+    emptyNotice.className = 'drafts-empty-notice';
+    emptyNotice.textContent = 'Nenhum rascunho salvo ainda. Clique em "Novo Rascunho" para começar!';
+    listaRascunhos.appendChild(emptyNotice);
+    return;
+  }
+
+  drafts.forEach((draft) => {
+    const item = document.createElement('div');
+    const isActive = draft.id === activeId;
+    item.className = 'draft-item' + (isActive ? ' active' : '');
+    item.dataset.id = draft.id;
+
+    const infoCol = document.createElement('div');
+    infoCol.className = 'draft-info';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'draft-title-row';
+
+    const titleEl = document.createElement('span');
+    titleEl.className = 'draft-title';
+    titleEl.textContent = draft.titulo || 'Sem título';
+    titleRow.appendChild(titleEl);
+
+    if (isActive) {
+      const activePill = document.createElement('span');
+      activePill.className = 'draft-active-pill';
+      activePill.textContent = 'Ativo';
+      titleRow.appendChild(activePill);
+    }
+    infoCol.appendChild(titleRow);
+
+    const metaRow = document.createElement('div');
+    metaRow.className = 'draft-meta';
+
+    if (draft.autor) {
+      const authorSpan = document.createElement('span');
+      authorSpan.textContent = `✍️ ${draft.autor}`;
+      metaRow.appendChild(authorSpan);
+    }
+
+    const versosCount = (draft.texto || '')
+      .split('\n')
+      .filter((v) => v.trim() && !v.trim().startsWith('#') && !v.trim().startsWith('%%')).length;
+    const versosSpan = document.createElement('span');
+    versosSpan.textContent = `📏 ${versosCount} verso(s)`;
+    metaRow.appendChild(versosSpan);
+
+    if (draft.atualizadoEm) {
+      const dateSpan = document.createElement('span');
+      try {
+        const d = new Date(draft.atualizadoEm);
+        dateSpan.textContent = `🕒 ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+      } catch {
+        dateSpan.textContent = '🕒 data desconhecida';
+      }
+      metaRow.appendChild(dateSpan);
+    }
+    infoCol.appendChild(metaRow);
+
+    const actionsCol = document.createElement('div');
+    actionsCol.className = 'draft-actions';
+
+    if (!isActive) {
+      const btnAbrir = document.createElement('button');
+      btnAbrir.className = 'btn-draft-action';
+      btnAbrir.title = 'Carregar este rascunho no laboratório';
+      btnAbrir.textContent = 'Abrir';
+      btnAbrir.addEventListener('click', () => {
+        carregarRascunhoPorId(draft.id);
+        fecharModalRascunhos();
+      });
+      actionsCol.appendChild(btnAbrir);
+    }
+
+    const btnDuplicar = document.createElement('button');
+    btnDuplicar.className = 'btn-draft-action';
+    btnDuplicar.title = 'Criar uma cópia deste rascunho';
+    btnDuplicar.textContent = 'Duplicar';
+    btnDuplicar.addEventListener('click', () => duplicarRascunho(draft.id));
+    actionsCol.appendChild(btnDuplicar);
+
+    const btnRenomear = document.createElement('button');
+    btnRenomear.className = 'btn-draft-action';
+    btnRenomear.title = 'Renomear este rascunho';
+    btnRenomear.textContent = 'Renomear';
+    btnRenomear.addEventListener('click', () => {
+      const novoNome = prompt('Novo título para o rascunho:', draft.titulo || '');
+      if (novoNome !== null && novoNome.trim() !== '') {
+        renomearRascunho(draft.id, novoNome.trim());
+      }
+    });
+    actionsCol.appendChild(btnRenomear);
+
+    const btnExcluir = document.createElement('button');
+    btnExcluir.className = 'btn-draft-action btn-draft-delete';
+    btnExcluir.title = 'Excluir permanentemente este rascunho';
+    btnExcluir.textContent = 'Excluir';
+    btnExcluir.addEventListener('click', () => excluirRascunho(draft.id));
+    actionsCol.appendChild(btnExcluir);
+
+    item.appendChild(infoCol);
+    item.appendChild(actionsCol);
+    listaRascunhos.appendChild(item);
+  });
+}
+
 function obterExplicacaoMetroPoetico(vData) {
   const n = vData.total_metricas;
   const c = vData.classificacao || '';
@@ -632,6 +1066,34 @@ function configurarEventosModais() {
   if (btnCopyCard) btnCopyCard.addEventListener('click', copiarCardImagem);
   if (btnExportTypst) btnExportTypst.addEventListener('click', baixarDocumentoTypst);
 
+  // Event Listeners para Modal de Gerenciamento de Rascunhos (Ticket #34)
+  if (btnAbrirRascunhos) btnAbrirRascunhos.addEventListener('click', abrirModalRascunhos);
+  if (btnFecharModalRascunhos) btnFecharModalRascunhos.addEventListener('click', fecharModalRascunhos);
+  if (btnFecharModalRascunhosBottom) btnFecharModalRascunhosBottom.addEventListener('click', fecharModalRascunhos);
+  if (modalRascunhos) {
+    modalRascunhos.addEventListener('click', (e) => {
+      if (e.target === modalRascunhos) fecharModalRascunhos();
+    });
+  }
+  if (btnNovoRascunho) {
+    btnNovoRascunho.addEventListener('click', () => {
+      criarNovoRascunho();
+      fecharModalRascunhos();
+    });
+  }
+  if (btnExportarRascunhosJson) {
+    btnExportarRascunhosJson.addEventListener('click', exportarRascunhosJSON);
+  }
+  if (inputImportarRascunhosJson) {
+    inputImportarRascunhosJson.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        importarRascunhosJSON(file);
+        e.target.value = '';
+      }
+    });
+  }
+
   // Atalhos de abertura rápida no rodapé
   const btnAbrirGuiaCompleto = document.getElementById('btn-abrir-guia-completo');
   if (btnAbrirGuiaCompleto) {
@@ -823,14 +1285,16 @@ async function main() {
     console.warn('Erro ao carregar poema de sessionStorage:', e);
   }
 
-  // Configuração dos modais (Exemplos e Legendas)
+  // Configuração dos modais (Exemplos, Legendas, Exportar, Rascunhos)
   configurarEventosModais();
+  atualizarBadgeContadorRascunhos();
 
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       if (modalExemplos && !modalExemplos.hidden) fecharModal();
       if (modalLegenda && !modalLegenda.hidden) fecharModalLegenda();
       if (modalExportar && !modalExportar.hidden) fecharModalExportar();
+      if (modalRascunhos && !modalRascunhos.hidden) fecharModalRascunhos();
     }
   });
   if (inputBuscaExemplos) {
