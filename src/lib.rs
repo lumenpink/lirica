@@ -881,21 +881,30 @@ pub fn gerar_card_svg(
         current_y += 15;
     }
 
-    let obter_info_rima_verso = |verso_num: usize| -> Option<(&'static str, bool)> {
+    let eh_toante_geral = analise
+        .avaliacao_rima
+        .as_ref()
+        .map(|av| av.pureza_acustica.to_lowercase().contains("toante"))
+        .unwrap_or(false);
+
+    let obter_info_rima_verso = |verso_num: usize| -> Option<(&'static str, &'static str, bool)> {
         if let Some(rimas_morf) = &analise.rimas_morfologicas {
             for est in rimas_morf {
                 for par in &est.pares {
                     if par.versos.0 == verso_num || par.versos.1 == verso_num {
-                        let q = match par.qualidade.as_str() {
-                            "Rica" => "Rica",
-                            "Pobre" => "Pobre",
-                            "Preciosa" => "Preciosa",
-                            "Rara" => "Rara",
-                            "ProvavelRica" | "ProvavelPobre" => "Provável",
-                            "Indeterminada" => "Indeterminada",
-                            _ => "Rima",
+                        if eh_toante_geral {
+                            return Some(("⚡", "Toante", par.eh_cliche));
+                        }
+                        let (ico, tag) = match par.qualidade.as_str() {
+                            "Rica" => ("✨", "Rica"),
+                            "Pobre" => ("✦", "Pobre"),
+                            "Preciosa" => ("💎", "Preciosa"),
+                            "Rara" => ("💠", "Rara"),
+                            "ProvavelRica" | "ProvavelPobre" => ("❓", "Provável"),
+                            "Indeterminada" => ("❓", "Indeterminada"),
+                            _ => ("", ""),
                         };
-                        return Some((q, par.eh_cliche));
+                        return Some((ico, tag, par.eh_cliche));
                     }
                 }
             }
@@ -963,17 +972,21 @@ pub fn gerar_card_svg(
         let mut badge_right_x = card_width - 50;
 
         if let Some(rima_val) = &v.rima {
-            let badge_txt = if let Some((qualidade, eh_cliche)) = obter_info_rima_verso(*v_num) {
-                if eh_cliche {
-                    format!("{} · {} 🔥", rima_val, qualidade)
+            let badge_txt = if let Some((ico, _tag, eh_cliche)) = obter_info_rima_verso(*v_num) {
+                let mut s = if !ico.is_empty() {
+                    format!("{} {}", rima_val, ico)
                 } else {
-                    format!("{} · {}", rima_val, qualidade)
+                    rima_val.clone()
+                };
+                if eh_cliche {
+                    s.push_str(" 🔥");
                 }
+                s
             } else {
                 rima_val.clone()
             };
 
-            let rima_width = (badge_txt.chars().count() * 7 + 16).max(28);
+            let rima_width = (badge_txt.chars().count() * 8 + 14).max(32);
             let rx = badge_right_x - rima_width;
             let ry = y_verse - 15;
             svg.push_str(&format!(
@@ -1022,9 +1035,9 @@ pub fn gerar_card_svg(
     let mut tem_cliche_no_card = false;
     for (v_num, v) in &versos_selecionados {
         if v.rima.is_some() {
-            if let Some((q, cliche)) = obter_info_rima_verso(*v_num) {
-                if !tipos_rima_unicos.contains(&q) {
-                    tipos_rima_unicos.push(q);
+            if let Some((_ico, tag, cliche)) = obter_info_rima_verso(*v_num) {
+                if !tag.is_empty() && !tipos_rima_unicos.contains(&tag) {
+                    tipos_rima_unicos.push(tag);
                 }
                 if cliche {
                     tem_cliche_no_card = true;
@@ -1042,6 +1055,7 @@ pub fn gerar_card_svg(
         let label = match q {
             "Rica" => "✨ Rima Rica",
             "Pobre" => "✦ Rima Pobre",
+            "Toante" => "⚡ Rima Toante",
             "Preciosa" => "💎 Rima Preciosa",
             "Rara" => "💠 Rima Rara",
             "Provável" => "❓ Rima Provável",
@@ -1062,26 +1076,6 @@ pub fn gerar_card_svg(
             "<text x=\"54\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
             current_y,
             escape_xml(&legenda_txt)
-        ));
-    }
-
-    // 3. Avaliação acústica e disposição das estrofes
-    let mut laudo_acustico = Vec::new();
-    if let Some(av) = &analise.avaliacao_rima {
-        if !av.pureza_acustica.is_empty() {
-            laudo_acustico.push(av.pureza_acustica.clone());
-        }
-        if !av.tipo_disposicao.is_empty() {
-            laudo_acustico.push(av.tipo_disposicao.clone());
-        }
-    }
-    if !laudo_acustico.is_empty() {
-        current_y += 16;
-        let acustico_txt = laudo_acustico.join("  •  ");
-        svg.push_str(&format!(
-            "<text x=\"54\" y=\"{}\" class=\"legend-txt\" font-weight=\"500\">{}</text>\n",
-            current_y,
-            escape_xml(&acustico_txt)
         ));
     }
 
