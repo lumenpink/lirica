@@ -2029,4 +2029,18 @@ Alimentando a doce ilusão.";
             && !svg_sem_rima.contains("Rima Pobre"),
         "Com rima desativada, nenhum badge ou legenda de rima deve ser emitido"
     );
+
+    // 7. Anti-mutante: presunção de consonância (poema consoante não exibe ⚡)
+    assert!(
+        !svg_camoes.contains("⚡") && !svg_camoes.contains("Toante"),
+        "Poema clássico com rimas consoantes perfeitas não deve exibir ícone de toante (⚡)"
+    );
+
+    // 8. Anti-mutante: garantia de ausência de qualquer laudo acústico descritivo no rodapé
+    assert!(
+        !svg_cliche.contains("Consoante (Perfeita)")
+            && !svg_cliche.contains("Mista")
+            && !svg_cliche.contains("Livre"),
+        "Mesmo em poema com rimas emparelhadas, nenhum laudo acústico descritivo deve ser renderizado no rodapé"
+    );
 }
