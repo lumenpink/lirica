@@ -1770,4 +1770,26 @@ Amor é fogo que arde sem se ver,
         js.contains("chkCastilho") && js.contains("chkPontuacao") && js.contains("chkDierese"),
         "app.js deve repassar as opções de métrica da interface para o gerador de card"
     );
+
+    // 7. Testes de mutação: rima desativada e contagem integral sem Castilho
+    let svg_sem_rima = gerar_card_svg(
+        poema,
+        "Soneto",
+        "Camões",
+        "manuscrito",
+        -1,
+        false,
+        false,
+        false,
+        false, // castilho desativado
+        false, // rima desativada
+    );
+    assert!(
+        svg_sem_rima.contains("Contagem Integral"),
+        "Quando Castilho estiver desativado, deve indicar Contagem Integral"
+    );
+    assert!(
+        !svg_sem_rima.contains("Rimas:"),
+        "Quando rima estiver desativada, não deve exibir laudo de rimas"
+    );
 }
