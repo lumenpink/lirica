@@ -1822,4 +1822,16 @@ fn test_debounce_tolerancia_digitacao_versos_spec() {
         js.contains("clearTimeout(debounceUpdateRowTimer)"),
         "agendarUpdateSingleRowLive deve limpar temporizador pendente via clearTimeout"
     );
+
+    // 5. Reset de timer para null após execução do debounce
+    assert!(
+        js.contains("debounceUpdateRowTimer = null"),
+        "agendarUpdateSingleRowLive deve resetar debounceUpdateRowTimer para null após execução"
+    );
+
+    // 6. Cancelamento no Enter para evitar concorrência com re-render síncrono
+    assert!(
+        js.contains("if (debounceUpdateRowTimer) {") && js.contains("e.key === 'Enter'"),
+        "Pressionar Enter deve limpar timer pendente de debounce antes da quebra de linha"
+    );
 }
