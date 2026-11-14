@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Substituição de campos técnicos e jargões no box de rimas das estrofes por confronto morfológico em português e explicação didática em prosa acessível (closes #30).
 
 ### Fixed
+- Correção de ancoragem de rolagem (.export-preview-wrapper com align-items: flex-start), viabilizando navegação vertical completa no preview do modal de exportação (closes #39).
 - Correção de callback do modal de legenda em site/app.js e modularização dos ouvintes de eventos, eliminando ReferenceError e restaurando o modo texto livre e o workspace alinhado (closes #29).
 - Estabilização da esteira de CI no Forgejo (.forgejo/workflows/ci.yaml), desativando actions/cache inexistente e desabilitando RUSTC_WRAPPER para compilar diretamente sem falhas de sccache em container efêmero (closes #28).
 - Isolamento dos versos poéticos na escansão para descartar cabeçalhos Markdown (# Título e ## Autor), eliminando estrofe espúria e restaurando a avaliação de rimas no topo das estrofes (closes #25).
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Enriquecimento do card poético com transparência metodológica (critérios métricos aplicados), mini-legenda contextual dos ícones métricos utilizados e incorporação do laudo e análise de rimas (closes #39).
 - Gerador de card poético vetorial em SVG nativo e exportação em PNG de alta resolução e documento Typst editorial (.typ), com 3 temas visuais (Manuscrito, Noturno e Minimalista) e modal de compartilhamento (closes #35).
 - Incorporação de formas populares brasileiras (Pavão Misterioso em sextilhas de Redondilha Maior, Pajada Gaúcha em décimas espinelianas, Galope à Beira-Mar com refrão canônico e reconhecimento de folhetos de cordel com marco de 32 estrofes in-octavo) (closes #36).
 - Identificação determinística de cesuras clássicas em versos longos (decassílabos e alexandrinos) com proteção contra corte intraverbal e destaque com glifo canônico ‖ (closes #37).
