@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Tipagem individual de rimas no badge lateral de cada verso no card poético vetorial e eliminação de redundâncias no rodapé com legenda estritamente contextual (closes #40).
 - Gerenciador local de múltiplos rascunhos poéticos no localStorage, com alternância de obras, clonagem, renomeação, exclusão com auto-cura e backup em JSON com validação de schema (closes #34).
 - Temporizador de tolerância (debounce de 150ms) na edição de versos em tempo real no aligned workspace, eliminando engasgos e reescansões síncronas pesadas em poemas extensos (closes #38).
 - Enriquecimento do card poético com transparência metodológica (critérios métricos aplicados), mini-legenda contextual dos ícones métricos utilizados e incorporação do laudo e análise de rimas (closes #39).
