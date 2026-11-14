@@ -1835,3 +1835,66 @@ fn test_debounce_tolerancia_digitacao_versos_spec() {
         "Pressionar Enter deve limpar timer pendente de debounce antes da quebra de linha"
     );
 }
+
+#[test]
+fn test_multiplos_rascunhos_locais_spec() {
+    let html = std::fs::read_to_string("site/index.html").expect("site/index.html deve existir");
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    let css = std::fs::read_to_string("site/style.css").expect("site/style.css deve existir");
+
+    // 1. Elementos essenciais de UI no index.html
+    assert!(
+        html.contains("id=\"btn-abrir-rascunhos\""),
+        "index.html deve conter botão #btn-abrir-rascunhos no cabeçalho"
+    );
+    assert!(
+        html.contains("id=\"drafts-count-badge\""),
+        "index.html deve conter badge #drafts-count-badge com contador de rascunhos"
+    );
+    assert!(
+        html.contains("id=\"modal-rascunhos\"") && html.contains("role=\"dialog\""),
+        "index.html deve declarar o modal #modal-rascunhos com acessibilidade semântica"
+    );
+    assert!(
+        html.contains("id=\"btn-novo-rascunho\"")
+            && html.contains("id=\"btn-exportar-rascunhos-json\"")
+            && html.contains("id=\"btn-importar-rascunhos-json\"")
+            && html.contains("id=\"lista-rascunhos\""),
+        "Modal de rascunhos deve prover controles para novo rascunho, exportar/importar JSON e container de lista"
+    );
+
+    // 2. Chaves canônicas e lógica de migração no app.js
+    assert!(
+        js.contains("lirica_drafts_v1") && js.contains("lirica_active_draft_id"),
+        "app.js deve gerenciar a coleção 'lirica_drafts_v1' e ponteiro de rascunho ativo 'lirica_active_draft_id'"
+    );
+    assert!(
+        js.contains("lirica_draft_poem"),
+        "app.js deve preservar suporte e migração transparente a partir de lirica_draft_poem"
+    );
+
+    // 3. Operações CRUD de rascunhos no app.js
+    assert!(
+        js.contains("criarNovoRascunho")
+            && js.contains("carregarRascunhoPorId")
+            && js.contains("duplicarRascunho")
+            && js.contains("excluirRascunho"),
+        "app.js deve implementar operações de criar, carregar, duplicar e excluir rascunhos"
+    );
+
+    // 4. Importação e Exportação JSON com validação de schema
+    assert!(
+        js.contains("lirica-drafts-v1")
+            && js.contains("exportarRascunhosJSON")
+            && js.contains("importarRascunhosJSON"),
+        "app.js deve validar e suportar o schema 'lirica-drafts-v1' em exportarRascunhosJSON e importarRascunhosJSON"
+    );
+
+    // 5. Estilização no CSS
+    assert!(
+        css.contains(".modal-drafts-container")
+            || css.contains(".draft-item")
+            || css.contains(".drafts-badge"),
+        "style.css deve prover estilização para o modal e itens de rascunho"
+    );
+}
