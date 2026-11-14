@@ -1946,29 +1946,36 @@ Amor é fogo que arde sem se ver,
         true,
     );
 
-    // 1. Cada verso deve estampar sua letra acompanhada da tipagem individual
+    // 1. Cada verso deve estampar sua letra acompanhada do ícone correspondente (sem rótulos de texto longos)
     assert!(
-        svg_camoes.contains("A · Pobre") || svg_camoes.contains("A · Rima Pobre"),
-        "Versos 1 e 4 (ver x doer) devem portar o badge individual de rima pobre"
+        svg_camoes.contains("A ✦") || svg_camoes.contains("A &#10022;"),
+        "Versos 1 e 4 (ver x doer) devem portar o ícone de rima pobre (✦) junto à letra A"
     );
     assert!(
-        svg_camoes.contains("B · Rica") || svg_camoes.contains("B · Rima Rica"),
-        "Versos 2 e 3 (sente x descontente) devem portar o badge individual de rima rica"
+        svg_camoes.contains("B ✨"),
+        "Versos 2 e 3 (sente x descontente) devem portar o ícone de rima rica (✨) junto à letra B"
+    );
+    assert!(
+        !svg_camoes.contains("A · Pobre") && !svg_camoes.contains("B · Rica"),
+        "Badges de rima não devem conter rótulos textuais longos"
     );
 
-    // 2. Não deve haver repetição redundante do esquema (ex: Rimas: abba ou Rimas: ABBA) nem agregação genérica
+    // 2. Não deve haver repetição do esquema nem qualquer laudo/prosa de rima no rodapé
     assert!(
         !svg_camoes.contains("Rimas: abba")
             && !svg_camoes.contains("Rimas: ABBA")
             && !svg_camoes.contains("Pobres &amp; Ricas")
-            && !svg_camoes.contains("Pobres & Ricas"),
-        "Card não deve repetir o esquema alfanumérico nem exibir rótulo agregado genérico de rimas no rodapé"
+            && !svg_camoes.contains("Pobres & Ricas")
+            && !svg_camoes.contains("Consoante (Perfeita)")
+            && !svg_camoes.contains("Mista")
+            && !svg_camoes.contains("Livre"),
+        "Card não deve conter laudos textuais descritivos nem menções a disposição mista/livre"
     );
 
-    // 3. Mini-legenda dinâmica deve incluir apenas o que aparece
+    // 3. Mini-legenda dinâmica unificada deve decodificar apenas os ícones presentes
     assert!(
-        svg_camoes.contains("Rica") && svg_camoes.contains("Pobre"),
-        "Legenda deve incluir Rima Rica e Rima Pobre presentes no quarteto"
+        svg_camoes.contains("✨ Rima Rica") && svg_camoes.contains("✦ Rima Pobre"),
+        "Legenda deve decodificar os ícones de Rima Rica e Rima Pobre presentes no quarteto"
     );
 
     // 4. Detecção de clichê com ícone 🔥 no badge do par desgastado
