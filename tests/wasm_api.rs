@@ -1924,3 +1924,75 @@ fn test_multiplos_rascunhos_locais_spec() {
         "app.js deve atualizar o badge contador de rascunhos no bootstrap e nas mutações"
     );
 }
+
+#[test]
+fn test_card_rima_individual_e_legenda_dinamica_spec() {
+    let camoes = "\
+Amor é fogo que arde sem se ver,
+É ferida que dói, e não se sente;
+É um contentamento descontente,
+É dor que desatina sem doer.";
+
+    let svg_camoes = gerar_card_svg(
+        camoes,
+        "Soneto de Amor",
+        "Luís de Camões",
+        "manuscrito",
+        -1,
+        true,
+        true,
+        true,
+        true,
+        true,
+    );
+
+    // 1. Cada verso deve estampar sua letra acompanhada da tipagem individual
+    assert!(
+        svg_camoes.contains("A · Pobre") || svg_camoes.contains("A · Rima Pobre"),
+        "Versos 1 e 4 (ver x doer) devem portar o badge individual de rima pobre"
+    );
+    assert!(
+        svg_camoes.contains("B · Rica") || svg_camoes.contains("B · Rima Rica"),
+        "Versos 2 e 3 (sente x descontente) devem portar o badge individual de rima rica"
+    );
+
+    // 2. Não deve haver repetição redundante do esquema (ex: Rimas: abba ou Rimas: ABBA) nem agregação genérica
+    assert!(
+        !svg_camoes.contains("Rimas: abba")
+            && !svg_camoes.contains("Rimas: ABBA")
+            && !svg_camoes.contains("Pobres &amp; Ricas")
+            && !svg_camoes.contains("Pobres & Ricas"),
+        "Card não deve repetir o esquema alfanumérico nem exibir rótulo agregado genérico de rimas no rodapé"
+    );
+
+    // 3. Mini-legenda dinâmica deve incluir apenas o que aparece
+    assert!(
+        svg_camoes.contains("Rica") && svg_camoes.contains("Pobre"),
+        "Legenda deve incluir Rima Rica e Rima Pobre presentes no quarteto"
+    );
+
+    // 4. Detecção de clichê com ícone 🔥 no badge do par desgastado
+    let poema_cliche = "\
+O meu primeiro e desolado amor,
+Na solidão profunda desta dor,
+Lateja aflito o pobre coração,
+Alimentando a doce ilusão.";
+
+    let svg_cliche = gerar_card_svg(
+        poema_cliche,
+        "Dor e Amor",
+        "Poeta Romântico",
+        "manuscrito",
+        -1,
+        true,
+        true,
+        true,
+        true,
+        true,
+    );
+
+    assert!(
+        svg_cliche.contains("🔥"),
+        "Badge ou legenda do par clichê (amor x dor) deve estampar o marcador de clichê 🔥"
+    );
+}
