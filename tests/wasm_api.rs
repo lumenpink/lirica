@@ -1535,6 +1535,10 @@ Amor é fogo que arde sem se ver,
         "manuscrito",
         -1,
         true,
+        false,
+        false,
+        false,
+        true,
     );
     assert!(
         svg_manuscrito.contains("<svg") && svg_manuscrito.contains("</svg>"),
@@ -1558,7 +1562,18 @@ Amor é fogo que arde sem se ver,
     );
 
     // 2. Temas noturno e minimalista
-    let svg_noturno = gerar_card_svg(poema, "Soneto", "Camões", "noturno", -1, true);
+    let svg_noturno = gerar_card_svg(
+        poema,
+        "Soneto",
+        "Camões",
+        "noturno",
+        -1,
+        true,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_noturno.contains("#0d1117")
             || svg_noturno.contains("#161b22")
@@ -1566,19 +1581,52 @@ Amor é fogo que arde sem se ver,
         "Tema noturno deve conter fundo escuro"
     );
 
-    let svg_minimalista = gerar_card_svg(poema, "Soneto", "Camões", "minimalista", -1, false);
+    let svg_minimalista = gerar_card_svg(
+        poema,
+        "Soneto",
+        "Camões",
+        "minimalista",
+        -1,
+        false,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_minimalista.contains("#ffffff") || svg_minimalista.contains("#000000"),
         "Tema minimalista deve conter contraste preto/branco"
     );
 
     // 3. Exportação de estrofe isolada (estrofe_idx: 0)
-    let svg_estrofe = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, false);
+    let svg_estrofe = gerar_card_svg(
+        poema,
+        "Quarteto",
+        "Camões",
+        "manuscrito",
+        0,
+        false,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_estrofe.contains("Amor é fogo"),
         "SVG da estrofe deve conter o verso"
     );
-    let svg_estrofe_metrica = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, true);
+    let svg_estrofe_metrica = gerar_card_svg(
+        poema,
+        "Quarteto",
+        "Camões",
+        "manuscrito",
+        0,
+        true,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_estrofe_metrica.contains("mor")
             && svg_estrofe_metrica.contains("fo")
@@ -1611,19 +1659,52 @@ Amor é fogo que arde sem se ver,
     );
 
     // 6. Testes de mutação e borda (texto vazio, estrofe inexistente, tema desconhecido)
-    let svg_vazio = gerar_card_svg("", "", "", "manuscrito", -1, false);
+    let svg_vazio = gerar_card_svg(
+        "",
+        "",
+        "",
+        "manuscrito",
+        -1,
+        false,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_vazio.contains("Nenhum verso para exibir"),
         "Texto vazio deve gerar SVG com aviso informativo"
     );
 
-    let svg_out_of_bounds = gerar_card_svg(poema, "Soneto", "Camões", "manuscrito", 999, false);
+    let svg_out_of_bounds = gerar_card_svg(
+        poema,
+        "Soneto",
+        "Camões",
+        "manuscrito",
+        999,
+        false,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_out_of_bounds.contains("Amor é fogo"),
         "Índice de estrofe fora dos limites deve reverter para todos os versos"
     );
 
-    let svg_tema_desconhecido = gerar_card_svg(poema, "Soneto", "Camões", "inexistente", -1, false);
+    let svg_tema_desconhecido = gerar_card_svg(
+        poema,
+        "Soneto",
+        "Camões",
+        "inexistente",
+        -1,
+        false,
+        false,
+        false,
+        false,
+        true,
+    );
     assert!(
         svg_tema_desconhecido.contains("#fbf7ee"),
         "Tema desconhecido deve adotar fallback seguro para manuscrito"
@@ -1633,5 +1714,71 @@ Amor é fogo que arde sem se ver,
     assert!(
         typst_anonimo.contains("Sem Título") && typst_anonimo.contains("Anônimo"),
         "Typst sem título ou autor deve aplicar fallbacks amigáveis"
+    );
+}
+
+#[test]
+fn test_card_enriquecido_criterios_legenda_e_rimas_spec() {
+    let poema = "\
+Amor é fogo que arde sem se ver,
+É ferida que dói, e não se sente;
+É um contentamento descontente,
+É dor que desatina sem doer.";
+
+    // 1. Geração de SVG enriquecido com critérios ativos (Castilho, Pontuação, Diérese e Rima)
+    let svg = gerar_card_svg(
+        poema,
+        "Soneto de Amor",
+        "Luís de Camões",
+        "manuscrito",
+        -1,
+        true,
+        true, // pontuacao
+        true, // dierese
+        true, // castilho
+        true, // rima
+    );
+
+    // 2. Transparência metodológica: critérios métricos no rodapé
+    assert!(
+        svg.contains("Castilho") || svg.contains("castilho"),
+        "Card deve registrar o critério de Castilho no rodapé metodológico"
+    );
+    assert!(
+        svg.contains("Pontuação") || svg.contains("pontuação") || svg.contains("Cesura"),
+        "Card deve indicar cesura na pontuação nos critérios metodológicos"
+    );
+
+    // 3. Mini-legenda contextual dos ícones métricos utilizados
+    assert!(
+        svg.contains("Legenda:") || svg.contains("Ícones:") || svg.contains("Metros:"),
+        "Card deve conter linha de legenda contextual dos ícones"
+    );
+    assert!(
+        svg.contains("⚔️")
+            && (svg.contains("Decassílabo")
+                || svg.contains("Heroico")
+                || svg.contains("Heróico")),
+        "Mini-legenda deve decodificar o ícone do verso presente no poema"
+    );
+
+    // 4. Análise e laudo de rimas no card
+    assert!(
+        svg.contains("ABBA") || svg.contains("Rima") || svg.contains("Rimas:"),
+        "Card deve incorporar a análise do esquema de rimas"
+    );
+
+    // 5. Verificação da correção de CSS para o scroll anchoring do preview
+    let css = std::fs::read_to_string("site/style.css").expect("style.css deve existir");
+    assert!(
+        css.contains("export-preview-wrapper") && css.contains("align-items: flex-start"),
+        "style.css deve configurar align-items: flex-start no .export-preview-wrapper para permitir rolagem"
+    );
+
+    // 6. Verificação do frontend passando os checkboxes para o gerador
+    let js = std::fs::read_to_string("site/app.js").expect("app.js deve existir");
+    assert!(
+        js.contains("chkCastilho") && js.contains("chkPontuacao") && js.contains("chkDierese"),
+        "app.js deve repassar as opções de métrica da interface para o gerador de card"
     );
 }
