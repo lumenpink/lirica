@@ -1793,3 +1793,33 @@ Amor é fogo que arde sem se ver,
         "Quando rima estiver desativada, não deve exibir laudo de rimas"
     );
 }
+
+#[test]
+fn test_debounce_tolerancia_digitacao_versos_spec() {
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+
+    // 1. Função agendarUpdateSingleRowLive e timer devem existir
+    assert!(
+        js.contains("agendarUpdateSingleRowLive") && js.contains("debounceUpdateRowTimer"),
+        "site/app.js deve declarar agendarUpdateSingleRowLive e debounceUpdateRowTimer"
+    );
+
+    // 2. Intervalo de tolerância de 150ms
+    assert!(
+        js.contains("150") && js.contains("setTimeout"),
+        "site/app.js deve agendar a atualização com tolerância de 150ms"
+    );
+
+    // 3. O ouvinte de input de cada linha deve chamar o agendador com debounce
+    assert!(
+        js.contains("agendarUpdateSingleRowLive()")
+            && js.contains("input.addEventListener('input'"),
+        "Ouvinte de input de versos deve invocar agendarUpdateSingleRowLive()"
+    );
+
+    // 4. Cancelamento de temporizador pendente via clearTimeout
+    assert!(
+        js.contains("clearTimeout(debounceUpdateRowTimer)"),
+        "agendarUpdateSingleRowLive deve limpar temporizador pendente via clearTimeout"
+    );
+}
