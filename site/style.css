@@ -1843,3 +1843,90 @@ body {
   line-height: 1.4;
   margin: 0;
 }
+
+/* ==========================================================================
+   Modal de Exportação de Card Poético (#modal-exportar)
+   ========================================================================== */
+
+.modal-export-container {
+  max-width: 960px;
+}
+
+.modal-export-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+}
+
+.export-controls-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.export-control-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.export-control-item label {
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+}
+
+.export-control-check label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.export-preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  overflow-x: auto;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.card-preview-container {
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+  max-width: 100%;
+}
+
+.card-preview-container svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.modal-export-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.export-actions-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}

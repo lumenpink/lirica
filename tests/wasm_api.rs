@@ -1560,7 +1560,9 @@ Amor é fogo que arde sem se ver,
     // 2. Temas noturno e minimalista
     let svg_noturno = gerar_card_svg(poema, "Soneto", "Camões", "noturno", -1, true);
     assert!(
-        svg_noturno.contains("#0d1117") || svg_noturno.contains("#161b22") || svg_noturno.contains("#0b0f19"),
+        svg_noturno.contains("#0d1117")
+            || svg_noturno.contains("#161b22")
+            || svg_noturno.contains("#0b0f19"),
         "Tema noturno deve conter fundo escuro"
     );
 
@@ -1571,10 +1573,17 @@ Amor é fogo que arde sem se ver,
     );
 
     // 3. Exportação de estrofe isolada (estrofe_idx: 0)
-    let svg_estrofe = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, true);
+    let svg_estrofe = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, false);
     assert!(
         svg_estrofe.contains("Amor é fogo"),
         "SVG da estrofe deve conter o verso"
+    );
+    let svg_estrofe_metrica = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, true);
+    assert!(
+        svg_estrofe_metrica.contains("mor")
+            && svg_estrofe_metrica.contains("fo")
+            && svg_estrofe_metrica.contains("go"),
+        "SVG da estrofe escandida deve conter as sílabas poéticas"
     );
 
     // 4. Exportação de documento Typst

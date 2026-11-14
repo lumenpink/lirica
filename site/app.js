@@ -1,4 +1,10 @@
-import init, { escandir, carregar_exemplos, versao } from './pkg/lirica.js?v=0.1.8';
+import init, {
+  escandir,
+  carregar_exemplos,
+  versao,
+  gerar_card_svg,
+  exportar_documento_typst,
+} from './pkg/lirica.js?v=0.1.8';
 
 // Persistência em LocalStorage (Ticket #20 / #23)
 const STORAGE_KEY = 'lirica_draft_poem';
@@ -91,6 +97,20 @@ const modalLegenda = document.getElementById('modal-legenda');
 const btnFecharModalLegenda = document.getElementById('btn-fechar-modal-legenda');
 const btnFecharModalLegendaBottom = document.getElementById('btn-fechar-modal-legenda-bottom');
 
+// Modal de Exportação de Card
+const btnExportarCard = document.getElementById('btn-exportar-card');
+const modalExportar = document.getElementById('modal-exportar');
+const btnFecharModalExportar = document.getElementById('btn-fechar-modal-exportar');
+const btnFecharModalExportarBottom = document.getElementById('btn-fechar-modal-exportar-bottom');
+const selectCardTema = document.getElementById('select-card-tema');
+const selectCardEscopo = document.getElementById('select-card-escopo');
+const chkCardMetricas = document.getElementById('chk-card-metricas');
+const cardPreviewContainer = document.getElementById('card-preview-container');
+const btnExportPng = document.getElementById('btn-export-png');
+const btnExportSvg = document.getElementById('btn-export-svg');
+const btnCopyCard = document.getElementById('btn-copy-card');
+const btnExportTypst = document.getElementById('btn-export-typst');
+
 const selectModo = document.getElementById('select-modo');
 const chkCastilho = document.getElementById('chk-castilho');
 const chkPontuacao = document.getElementById('chk-pontuacao');
@@ -175,6 +195,166 @@ function abrirModalLegenda() {
 function fecharModalLegenda() {
   if (!modalLegenda) return;
   modalLegenda.hidden = true;
+}
+
+// ==========================================================================
+// Modal de Exportação de Card e Imagem Poética (Ticket #35)
+// ==========================================================================
+
+function abrirModalExportar() {
+  if (!modalExportar) return;
+  modalExportar.hidden = false;
+  popularEscoposEstrofes();
+  atualizarCardPreview();
+  if (btnFecharModalExportar) btnFecharModalExportar.focus();
+}
+
+function fecharModalExportar() {
+  if (!modalExportar) return;
+  modalExportar.hidden = true;
+}
+
+function popularEscoposEstrofes() {
+  if (!selectCardEscopo) return;
+  const poemText = getFullText();
+  let numEstrofes = 0;
+  if (poemText.trim().length > 0) {
+    try {
+      const jsonStr = escandir(poemText, 'visual', false, false, false, true);
+      const data = JSON.parse(jsonStr);
+      if (data && Array.isArray(data.estrofes)) {
+        numEstrofes = data.estrofes.length;
+      }
+    } catch (_) {}
+  }
+
+  selectCardEscopo.innerHTML = '<option value="-1" selected>Poema Completo</option>';
+  for (let i = 0; i < numEstrofes; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = `Estrofe ${i + 1}`;
+    selectCardEscopo.appendChild(opt);
+  }
+}
+
+function renderizarCardSVGAtual() {
+  const poemText = getFullText();
+  const titulo = inputTitulo ? inputTitulo.value : '';
+  const autor = inputAutor ? inputAutor.value : '';
+  const tema = selectCardTema ? selectCardTema.value : 'manuscrito';
+  const estrofeIdx = selectCardEscopo ? parseInt(selectCardEscopo.value, 10) : -1;
+  const incluirMetricas = chkCardMetricas ? chkCardMetricas.checked : true;
+
+  if (typeof gerar_card_svg === 'function') {
+    return gerar_card_svg(poemText, titulo, autor, tema, estrofeIdx, incluirMetricas);
+  }
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200"><text x="300" y="100" text-anchor="middle">Carregando motor WASM...</text></svg>';
+}
+
+function atualizarCardPreview() {
+  if (!cardPreviewContainer) return;
+  const svgMarkup = renderizarCardSVGAtual();
+  cardPreviewContainer.innerHTML = svgMarkup;
+}
+
+function baixarCardSVG() {
+  const svgMarkup = renderizarCardSVGAtual();
+  const blob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'card-poetico-lirica.svg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function converterSVGParaCanvas(svgMarkup, scale = 2) {
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = (img.naturalWidth || 800) * scale;
+      canvas.height = (img.naturalHeight || 600) * scale;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(scale, scale);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+      resolve(canvas);
+    };
+    img.onerror = (err) => {
+      URL.revokeObjectURL(url);
+      reject(err);
+    };
+    img.src = url;
+  });
+}
+
+async function baixarCardPNG() {
+  try {
+    const svgMarkup = renderizarCardSVGAtual();
+    const canvas = await converterSVGParaCanvas(svgMarkup, 2);
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'card-poetico-lirica.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+  } catch (err) {
+    console.error('Falha ao gerar PNG:', err);
+  }
+}
+
+async function copiarCardImagem() {
+  try {
+    const svgMarkup = renderizarCardSVGAtual();
+    const canvas = await converterSVGParaCanvas(svgMarkup, 2);
+    canvas.toBlob(async (blob) => {
+      if (!blob) return;
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]);
+        if (btnCopyCard) {
+          const originalText = btnCopyCard.textContent;
+          btnCopyCard.textContent = '✓ Imagem Copiada!';
+          setTimeout(() => { btnCopyCard.textContent = originalText; }, 2000);
+        }
+      } catch (clipErr) {
+        console.warn('Clipboard write falhou, usando download PNG como fallback:', clipErr);
+        baixarCardPNG();
+      }
+    }, 'image/png');
+  } catch (err) {
+    console.error('Falha ao copiar imagem:', err);
+  }
+}
+
+function baixarDocumentoTypst() {
+  const poemText = getFullText();
+  const titulo = inputTitulo ? inputTitulo.value : '';
+  const autor = inputAutor ? inputAutor.value : '';
+  const typstDoc = typeof exportar_documento_typst === 'function'
+    ? exportar_documento_typst(poemText, titulo, autor)
+    : poemText;
+
+  const blob = new Blob([typstDoc], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'poema-lirica.typ';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function obterExplicacaoMetroPoetico(vData) {
@@ -420,6 +600,23 @@ function configurarEventosModais() {
     });
   }
 
+  // Event Listeners para Modal de Exportação de Card (Ticket #35)
+  if (btnExportarCard) btnExportarCard.addEventListener('click', abrirModalExportar);
+  if (btnFecharModalExportar) btnFecharModalExportar.addEventListener('click', fecharModalExportar);
+  if (btnFecharModalExportarBottom) btnFecharModalExportarBottom.addEventListener('click', fecharModalExportar);
+  if (modalExportar) {
+    modalExportar.addEventListener('click', (e) => {
+      if (e.target === modalExportar) fecharModalExportar();
+    });
+  }
+  if (selectCardTema) selectCardTema.addEventListener('change', atualizarCardPreview);
+  if (selectCardEscopo) selectCardEscopo.addEventListener('change', atualizarCardPreview);
+  if (chkCardMetricas) chkCardMetricas.addEventListener('change', atualizarCardPreview);
+  if (btnExportPng) btnExportPng.addEventListener('click', baixarCardPNG);
+  if (btnExportSvg) btnExportSvg.addEventListener('click', baixarCardSVG);
+  if (btnCopyCard) btnCopyCard.addEventListener('click', copiarCardImagem);
+  if (btnExportTypst) btnExportTypst.addEventListener('click', baixarDocumentoTypst);
+
   // Atalhos de abertura rápida no rodapé
   const btnAbrirGuiaCompleto = document.getElementById('btn-abrir-guia-completo');
   if (btnAbrirGuiaCompleto) {
@@ -618,6 +815,7 @@ async function main() {
     if (e.key === 'Escape') {
       if (modalExemplos && !modalExemplos.hidden) fecharModal();
       if (modalLegenda && !modalLegenda.hidden) fecharModalLegenda();
+      if (modalExportar && !modalExportar.hidden) fecharModalExportar();
     }
   });
   if (inputBuscaExemplos) {

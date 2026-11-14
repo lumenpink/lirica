@@ -20,6 +20,9 @@
       </div>
 
       <div class="header-actions">
+        <button id="btn-exportar-card" class="header-btn" title="Exportar card visual do poema em alta resolução (PNG/SVG) ou Typst">
+          <span aria-hidden="true">🎨</span> Exportar Card
+        </button>
         <button id="btn-abrir-exemplos" class="header-btn" title="Escolher um exemplo clássico da literatura lusófona">
           <span aria-hidden="true">📚</span> Exemplos
         </button>
@@ -427,6 +430,58 @@
       <div class="modal-footer">
         <span class="modal-footer-hint">Toque ou clique em qualquer badge na lateral do verso para reabrir este guia a qualquer momento.</span>
         <button id="btn-fechar-modal-legenda-bottom" class="btn-ghost">Fechar Guia</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog de Exportação de Card e Imagem -->
+  <div id="modal-exportar" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="modal-exportar-titulo">
+    <div class="modal-container modal-export-container">
+      <div class="modal-header">
+        <div class="modal-header-text">
+          <h2 id="modal-exportar-titulo" class="modal-title">🎨 Exportar Card Poético</h2>
+          <p class="modal-subtitle">Gere um card elegante com tipografia clássica, notação métrica e diagnóstico para partilha:</p>
+        </div>
+        <button id="btn-fechar-modal-exportar" class="modal-close-btn" aria-label="Fechar janela de exportação">✕</button>
+      </div>
+      <div class="modal-body modal-export-body">
+        <div class="export-controls-bar">
+          <div class="export-control-item">
+            <label for="select-card-tema"><strong>Tema Visual:</strong></label>
+            <select id="select-card-tema" class="select-input">
+              <option value="manuscrito" selected>📜 Manuscrito (Pergaminho)</option>
+              <option value="noturno">🌙 Noturno (Lírica Dark)</option>
+              <option value="minimalista">✒️ Minimalista (P&B Editorial)</option>
+            </select>
+          </div>
+          <div class="export-control-item">
+            <label for="select-card-escopo"><strong>Escopo:</strong></label>
+            <select id="select-card-escopo" class="select-input">
+              <option value="-1" selected>Poema Completo</option>
+            </select>
+          </div>
+          <div class="export-control-item export-control-check">
+            <label>
+              <input type="checkbox" id="chk-card-metricas" checked />
+              <span>Exibir Métrica Silábica</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="export-preview-wrapper">
+          <div id="card-preview-container" class="card-preview-container">
+            <!-- SVG injetado via Rust WASM -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer modal-export-footer">
+        <div class="export-actions-group">
+          <button id="btn-export-png" class="btn-primary-sm" title="Baixar imagem PNG em alta resolução (2x Retina)">📥 Baixar PNG</button>
+          <button id="btn-export-svg" class="btn-ghost" title="Baixar arquivo vetorial SVG escalável">Baixar SVG</button>
+          <button id="btn-copy-card" class="btn-ghost" title="Copiar imagem para a área de transferência">📋 Copiar Imagem</button>
+          <button id="btn-export-typst" class="btn-ghost" title="Baixar documento Typst (.typ) formatado">Exportar Typst (.typ)</button>
+        </div>
+        <button id="btn-fechar-modal-exportar-bottom" class="btn-ghost">Fechar</button>
       </div>
     </div>
   </div>

@@ -634,6 +634,400 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
     serde_json::to_string(&web_out).unwrap_or_else(|_| "{}".to_string())
 }
 
+fn escape_xml(s: &str) -> String {
+    s.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
+        .replace('"', "&quot;")
+        .replace('\'', "&apos;")
+}
+
+struct CardTheme {
+    bg: &'static str,
+    border: &'static str,
+    border_inner: &'static str,
+    title_color: &'static str,
+    author_color: &'static str,
+    text_color: &'static str,
+    tonic_color: &'static str,
+    caesura_color: &'static str,
+    badge_bg: &'static str,
+    badge_text: &'static str,
+    badge_border: &'static str,
+    rhyme_bg: &'static str,
+    rhyme_text: &'static str,
+    footer_color: &'static str,
+}
+
+impl CardTheme {
+    fn from_name(name: &str) -> Self {
+        match name.to_lowercase().as_str() {
+            "noturno" | "dark" => CardTheme {
+                bg: "#0d1117",
+                border: "#30363d",
+                border_inner: "#21262d",
+                title_color: "#f0f6fc",
+                author_color: "#8b949e",
+                text_color: "#c9d1d9",
+                tonic_color: "#58a6ff",
+                caesura_color: "#79c0ff",
+                badge_bg: "#161b22",
+                badge_text: "#58a6ff",
+                badge_border: "#30363d",
+                rhyme_bg: "#1f2937",
+                rhyme_text: "#e3b341",
+                footer_color: "#6e7681",
+            },
+            "minimalista" | "mono" | "print" => CardTheme {
+                bg: "#ffffff",
+                border: "#000000",
+                border_inner: "#e5e5e5",
+                title_color: "#000000",
+                author_color: "#333333",
+                text_color: "#111111",
+                tonic_color: "#000000",
+                caesura_color: "#666666",
+                badge_bg: "#f5f5f5",
+                badge_text: "#111111",
+                badge_border: "#cccccc",
+                rhyme_bg: "#f0f0f0",
+                rhyme_text: "#000000",
+                footer_color: "#666666",
+            },
+            _ => CardTheme {
+                bg: "#fbf7ee",
+                border: "#d9caa7",
+                border_inner: "#ebdcc4",
+                title_color: "#4a2c2a",
+                author_color: "#7a5843",
+                text_color: "#2b2523",
+                tonic_color: "#9b2c2c",
+                caesura_color: "#b48a3c",
+                badge_bg: "#f2e8d5",
+                badge_text: "#5c4033",
+                badge_border: "#d8c4a0",
+                rhyme_bg: "#eeddc2",
+                rhyme_text: "#4a2c2a",
+                footer_color: "#8c7b70",
+            },
+        }
+    }
+}
+
+/// Gera um card poético vetorial em formato SVG autocontido para compartilhamento e exportação.
+#[wasm_bindgen]
+pub fn gerar_card_svg(
+    texto: &str,
+    titulo: &str,
+    autor: &str,
+    tema: &str,
+    estrofe_idx: i32,
+    incluir_metricas: bool,
+) -> String {
+    let json_visual = escandir(texto, "visual", false, false, false, true);
+    let analise: Result<AnaliseWeb, _> = serde_json::from_str(&json_visual);
+    let analise = match analise {
+        Ok(a) => a,
+        Err(_) => {
+            return "<svg xmlns=\"http://www.w3.org/2000/svg\"><text>Erro ao escandir poema</text></svg>".to_string()
+        }
+    };
+
+    let theme = CardTheme::from_name(tema);
+
+    let versos_selecionados: Vec<(usize, &VersoFormatado)> =
+        if estrofe_idx >= 0 && (estrofe_idx as usize) < analise.estrofes.len() {
+            let est = &analise.estrofes[estrofe_idx as usize];
+            est.versos_indices
+                .iter()
+                .filter_map(|&i| analise.versos.get(i).map(|v| (i + 1, v)))
+                .collect()
+        } else {
+            analise
+                .versos
+                .iter()
+                .enumerate()
+                .map(|(i, v)| (i + 1, v))
+                .collect()
+        };
+
+    if versos_selecionados.is_empty() {
+        return format!(
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 200\" width=\"600\" height=\"200\">\
+            <rect width=\"100%\" height=\"100%\" fill=\"{}\" stroke=\"{}\" stroke-width=\"2\" rx=\"12\"/>\
+            <text x=\"300\" y=\"105\" text-anchor=\"middle\" fill=\"{}\" font-family=\"Georgia, serif\" font-size=\"18\">Nenhum verso para exibir.</text>\
+            </svg>",
+            theme.bg, theme.border, theme.text_color
+        );
+    }
+
+    let card_width = 800;
+    let has_header = !titulo.trim().is_empty() || !autor.trim().is_empty();
+    let header_height = if has_header { 95 } else { 35 };
+    let verse_line_height = 36;
+    let stanza_gap = 18;
+
+    let mut num_gaps = 0;
+    for i in 1..versos_selecionados.len() {
+        let (prev_num, _) = versos_selecionados[i - 1];
+        let (curr_num, _) = versos_selecionados[i];
+        if curr_num > prev_num + 1 {
+            num_gaps += 1;
+        } else {
+            for est in &analise.estrofes {
+                if est.versos_indices.last() == Some(&(prev_num - 1))
+                    && est.versos_indices.first() != Some(&(curr_num - 1))
+                {
+                    num_gaps += 1;
+                    break;
+                }
+            }
+        }
+    }
+
+    let verses_content_height =
+        (versos_selecionados.len() * verse_line_height) + (num_gaps * stanza_gap);
+    let footer_height = 55;
+    let padding_top = 35;
+    let padding_bottom = 25;
+    let total_height =
+        padding_top + header_height + verses_content_height + footer_height + padding_bottom;
+
+    let mut svg = String::with_capacity(8192);
+    svg.push_str(&format!(
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 {} {}\" width=\"{}\" height=\"{}\">\n",
+        card_width, total_height, card_width, total_height
+    ));
+
+    svg.push_str(&format!(
+        "<defs><style>\n\
+        .title {{ font-family: 'Playfair Display', Georgia, Cambria, serif; font-size: 24px; font-weight: bold; fill: {}; text-anchor: middle; }}\n\
+        .author {{ font-family: 'Playfair Display', Georgia, Cambria, serif; font-size: 15px; font-style: italic; fill: {}; text-anchor: middle; }}\n\
+        .verse-num {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {}; text-anchor: end; opacity: 0.6; }}\n\
+        .verse-text {{ font-family: 'Playfair Display', Georgia, Cambria, serif; font-size: 16px; fill: {}; }}\n\
+        .syl-tonic {{ font-weight: bold; fill: {}; }}\n\
+        .syl-norm {{ fill: {}; }}\n\
+        .caesura {{ font-weight: bold; fill: {}; }}\n\
+        .badge-txt {{ font-family: system-ui, sans-serif; font-size: 11px; text-anchor: middle; }}\n\
+        .footer-txt {{ font-family: system-ui, sans-serif; font-size: 12px; fill: {}; }}\n\
+        </style></defs>\n",
+        theme.title_color, theme.author_color, theme.footer_color, theme.text_color,
+        theme.tonic_color, theme.text_color, theme.caesura_color, theme.footer_color
+    ));
+
+    svg.push_str(&format!(
+        "<rect width=\"{}\" height=\"{}\" rx=\"16\" fill=\"{}\" stroke=\"{}\" stroke-width=\"2\" />\n",
+        card_width, total_height, theme.bg, theme.border
+    ));
+    svg.push_str(&format!(
+        "<rect x=\"10\" y=\"10\" width=\"{}\" height=\"{}\" rx=\"10\" fill=\"none\" stroke=\"{}\" stroke-width=\"1\" opacity=\"0.7\" />\n",
+        card_width - 20, total_height - 20, theme.border_inner
+    ));
+
+    let mut current_y = padding_top;
+
+    if has_header {
+        if !titulo.trim().is_empty() {
+            current_y += 24;
+            svg.push_str(&format!(
+                "<text x=\"400\" y=\"{}\" class=\"title\">{}</text>\n",
+                current_y,
+                escape_xml(titulo.trim())
+            ));
+        }
+        if !autor.trim().is_empty() {
+            current_y += 22;
+            svg.push_str(&format!(
+                "<text x=\"400\" y=\"{}\" class=\"author\">{}</text>\n",
+                current_y,
+                escape_xml(autor.trim())
+            ));
+        }
+        current_y += 18;
+        svg.push_str(&format!(
+            "<line x1=\"340\" y1=\"{}\" x2=\"460\" y2=\"{}\" stroke=\"{}\" stroke-width=\"1\" opacity=\"0.6\" />\n",
+            current_y, current_y, theme.border_inner
+        ));
+        current_y += 26;
+    } else {
+        current_y += 15;
+    }
+
+    for (idx, (v_num, v)) in versos_selecionados.iter().enumerate() {
+        if idx > 0 {
+            let (prev_num, _) = versos_selecionados[idx - 1];
+            let is_stanza_break = *v_num > prev_num + 1
+                || analise.estrofes.iter().any(|e| {
+                    e.versos_indices.last() == Some(&(prev_num - 1))
+                        && e.versos_indices.first() != Some(&(v_num - 1))
+                });
+            if is_stanza_break {
+                current_y += stanza_gap;
+            }
+        }
+
+        let y_verse = current_y;
+
+        svg.push_str(&format!(
+            "<text x=\"54\" y=\"{}\" class=\"verse-num\">{}</text>\n",
+            y_verse, v_num
+        ));
+
+        let x_verse = 70;
+        if incluir_metricas {
+            svg.push_str(&format!(
+                "<text x=\"{}\" y=\"{}\" class=\"verse-text\">",
+                x_verse, y_verse
+            ));
+            for (s_idx, s) in v.silabas.iter().enumerate() {
+                let class_syl = if s.tonica { "syl-tonic" } else { "syl-norm" };
+                svg.push_str(&format!(
+                    "<tspan class=\"{}\">{}</tspan>",
+                    class_syl,
+                    escape_xml(&s.texto)
+                ));
+
+                if let Some(num) = s.numero_metrico {
+                    if v.cesuras.contains(&num) {
+                        svg.push_str("<tspan class=\"caesura\"> ‖ </tspan>");
+                    }
+                }
+
+                if s_idx + 1 < v.silabas.len() {
+                    let prox = &v.silabas[s_idx + 1];
+                    if !s.texto.ends_with(' ') && !prox.texto.starts_with(' ') {
+                        svg.push_str("<tspan opacity=\"0.4\">·</tspan>");
+                    }
+                }
+            }
+            svg.push_str("</text>\n");
+        } else {
+            svg.push_str(&format!(
+                "<text x=\"{}\" y=\"{}\" class=\"verse-text\">{}</text>\n",
+                x_verse,
+                y_verse,
+                escape_xml(&v.original)
+            ));
+        }
+
+        let mut badge_right_x = card_width - 50;
+
+        if let Some(rima) = &v.rima {
+            let rx = badge_right_x - 26;
+            let ry = y_verse - 15;
+            svg.push_str(&format!(
+                "<rect x=\"{}\" y=\"{}\" width=\"26\" height=\"20\" rx=\"4\" fill=\"{}\" stroke=\"{}\" stroke-width=\"1\" />\n",
+                rx, ry, theme.rhyme_bg, theme.badge_border
+            ));
+            svg.push_str(&format!(
+                "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"bold\" fill=\"{}\">{}</text>\n",
+                rx + 13, y_verse, theme.rhyme_text, escape_xml(rima)
+            ));
+            badge_right_x -= 32;
+        }
+
+        let meter_width = 54;
+        let mx = badge_right_x - meter_width;
+        let my = y_verse - 15;
+        svg.push_str(&format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"20\" rx=\"4\" fill=\"{}\" stroke=\"{}\" stroke-width=\"1\" />\n",
+            mx, my, meter_width, theme.badge_bg, theme.badge_border
+        ));
+        let meter_label = format!("{} {}", v.total_metricas, v.icone);
+        svg.push_str(&format!(
+            "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"600\" fill=\"{}\">{}</text>\n",
+            mx + (meter_width / 2),
+            y_verse,
+            theme.badge_text,
+            escape_xml(&meter_label)
+        ));
+
+        current_y += verse_line_height;
+    }
+
+    current_y += 12;
+    svg.push_str(&format!(
+        "<line x1=\"50\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"{}\" stroke-width=\"1\" opacity=\"0.4\" />\n",
+        current_y,
+        card_width - 50,
+        current_y,
+        theme.border_inner
+    ));
+    current_y += 24;
+
+    let diag_label = if let Some(f) = &analise.forma_poetica {
+        format!("{} ({}%)", f.nome, f.confianca_percentual)
+    } else if let Some((_, primeiro)) = versos_selecionados.first() {
+        primeiro.classificacao.clone()
+    } else {
+        "Forma Livre".to_string()
+    };
+
+    svg.push_str(&format!(
+        "<text x=\"54\" y=\"{}\" class=\"footer-txt\" font-weight=\"500\">{}</text>\n",
+        current_y,
+        escape_xml(&diag_label)
+    ));
+
+    svg.push_str(&format!(
+        "<text x=\"{}\" y=\"{}\" class=\"footer-txt\" text-anchor=\"end\" font-weight=\"600\">Lírica • lirica.2lp.in</text>\n",
+        card_width - 54, current_y
+    ));
+
+    svg.push_str("</svg>");
+    svg
+}
+
+/// Gera um documento Typst editorial completo e pronto para compilação.
+#[wasm_bindgen]
+pub fn exportar_documento_typst(texto: &str, titulo: &str, autor: &str) -> String {
+    let config = PoemaConfig::default();
+    let poema = escandir_poema(texto, false, false, false, true);
+    let typst_body = render_typst(&config, &poema);
+
+    let tit = if titulo.trim().is_empty() {
+        "Sem Título".to_string()
+    } else {
+        titulo.trim().to_string()
+    };
+
+    let aut = if autor.trim().is_empty() {
+        "Anônimo".to_string()
+    } else {
+        autor.trim().to_string()
+    };
+
+    format!(
+        r#"// Documento gerado pelo Lírica (https://lirica.2lp.in)
+// Laboratório de Escansão e Métrica Poética
+
+#set page(
+  paper: "a4",
+  margin: (x: 2.5cm, y: 3cm),
+  header: align(right)[#text(8pt, fill: luma(120))[Lírica • Laboratório de Métrica Poética]],
+  footer: align(center)[#text(8pt, fill: luma(120))[#counter(page).display()]],
+)
+#set text(
+  font: "Linux Libertine",
+  size: 11pt,
+  lang: "pt",
+)
+
+#align(center)[
+  #v(1cm)
+  #text(18pt, weight: "bold")[{tit}]
+  #v(0.2cm)
+  #text(12pt, style: "italic", fill: luma(80))[{aut}]
+  #v(1.2cm)
+]
+
+#align(center)[
+{typst_body}
+]
+"#
+    )
+}
+
 /// Returns a JSON list of pre-configured classical poetic examples without `%%` directives.
 #[wasm_bindgen]
 pub fn carregar_exemplos() -> String {
