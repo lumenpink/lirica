@@ -881,6 +881,28 @@ pub fn gerar_card_svg(
         current_y += 15;
     }
 
+    let obter_info_rima_verso = |verso_num: usize| -> Option<(&'static str, bool)> {
+        if let Some(rimas_morf) = &analise.rimas_morfologicas {
+            for est in rimas_morf {
+                for par in &est.pares {
+                    if par.versos.0 == verso_num || par.versos.1 == verso_num {
+                        let q = match par.qualidade.as_str() {
+                            "Rica" => "Rica",
+                            "Pobre" => "Pobre",
+                            "Preciosa" => "Preciosa",
+                            "Rara" => "Rara",
+                            "ProvavelRica" | "ProvavelPobre" => "Provável",
+                            "Indeterminada" => "Indeterminada",
+                            _ => "Rima",
+                        };
+                        return Some((q, par.eh_cliche));
+                    }
+                }
+            }
+        }
+        None
+    };
+
     for (idx, (v_num, v)) in versos_selecionados.iter().enumerate() {
         if idx > 0 {
             let (prev_num, _) = versos_selecionados[idx - 1];
@@ -941,17 +963,31 @@ pub fn gerar_card_svg(
         let mut badge_right_x = card_width - 50;
 
         if let Some(rima_val) = &v.rima {
-            let rx = badge_right_x - 26;
+            let badge_txt = if let Some((qualidade, eh_cliche)) = obter_info_rima_verso(*v_num) {
+                if eh_cliche {
+                    format!("{} · {} 🔥", rima_val, qualidade)
+                } else {
+                    format!("{} · {}", rima_val, qualidade)
+                }
+            } else {
+                rima_val.clone()
+            };
+
+            let rima_width = (badge_txt.chars().count() * 7 + 16).max(28);
+            let rx = badge_right_x - rima_width;
             let ry = y_verse - 15;
             svg.push_str(&format!(
-                "<rect x=\"{}\" y=\"{}\" width=\"26\" height=\"20\" rx=\"4\" fill=\"{}\" stroke=\"{}\" stroke-width=\"1\" />\n",
-                rx, ry, theme.rhyme_bg, theme.badge_border
+                "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"20\" rx=\"4\" fill=\"{}\" stroke=\"{}\" stroke-width=\"1\" />\n",
+                rx, ry, rima_width, theme.rhyme_bg, theme.badge_border
             ));
             svg.push_str(&format!(
                 "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"bold\" fill=\"{}\">{}</text>\n",
-                rx + 13, y_verse, theme.rhyme_text, escape_xml(rima_val)
+                rx + (rima_width / 2),
+                y_verse,
+                theme.rhyme_text,
+                escape_xml(&badge_txt)
             ));
-            badge_right_x -= 32;
+            badge_right_x -= rima_width + 6;
         }
 
         let meter_width = 54;
@@ -980,12 +1016,47 @@ pub fn gerar_card_svg(
             icones_unicos.push((v.icone.clone(), v.classificacao.clone()));
         }
     }
-    if !icones_unicos.is_empty() {
-        current_y += 14;
-        let legenda_itens: Vec<String> = icones_unicos
-            .iter()
-            .map(|(ico, nome)| format!("{} {}", ico, nome))
-            .collect();
+
+    // 2. Tipos de rima presentes nos versos selecionados
+    let mut tipos_rima_unicos: Vec<&str> = Vec::new();
+    let mut tem_cliche_no_card = false;
+    for (v_num, v) in &versos_selecionados {
+        if v.rima.is_some() {
+            if let Some((q, cliche)) = obter_info_rima_verso(*v_num) {
+                if !tipos_rima_unicos.contains(&q) {
+                    tipos_rima_unicos.push(q);
+                }
+                if cliche {
+                    tem_cliche_no_card = true;
+                }
+            }
+        }
+    }
+
+    let mut legenda_itens: Vec<String> = icones_unicos
+        .iter()
+        .map(|(ico, nome)| format!("{} {}", ico, nome))
+        .collect();
+
+    for q in tipos_rima_unicos {
+        let label = match q {
+            "Rica" => "✨ Rima Rica",
+            "Pobre" => "✦ Rima Pobre",
+            "Preciosa" => "💎 Rima Preciosa",
+            "Rara" => "💠 Rima Rara",
+            "Provável" => "❓ Rima Provável",
+            "Indeterminada" => "❓ Rima Indeterminada",
+            _ => q,
+        };
+        legenda_itens.push(label.to_string());
+    }
+
+    if tem_cliche_no_card {
+        legenda_itens.push("🔥 Clichê Histórico".to_string());
+    }
+
+    if !legenda_itens.is_empty() {
+        current_y += 16;
         let legenda_txt = format!("Legenda: {}", legenda_itens.join("  •  "));
         svg.push_str(&format!(
             "<text x=\"54\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
@@ -994,59 +1065,23 @@ pub fn gerar_card_svg(
         ));
     }
 
-    // 2. Análise e laudo de rimas
-    let esquema_rimas: String = versos_selecionados
-        .iter()
-        .filter_map(|(_, v)| v.rima.clone())
-        .collect();
-    if !esquema_rimas.is_empty() {
-        current_y += 18;
-        let mut laudo_parts = Vec::new();
-        laudo_parts.push(format!("Rimas: {}", esquema_rimas));
-
-        // Resumo de qualidade morfológica
-        if let Some(rimas_morf) = &analise.rimas_morfologicas {
-            let mut qualidades = Vec::new();
-            let mut tem_cliche = false;
-            for est_morf in rimas_morf {
-                for par in &est_morf.pares {
-                    let q = match par.qualidade.as_str() {
-                        "Rica" | "ProvavelRica" => "Ricas",
-                        "Pobre" | "ProvavelPobre" => "Pobres",
-                        "Rara" => "Raras",
-                        "Preciosa" => "Preciosas",
-                        _ => "",
-                    };
-                    if !q.is_empty() && !qualidades.contains(&q) {
-                        qualidades.push(q);
-                    }
-                    if par.eh_cliche {
-                        tem_cliche = true;
-                    }
-                }
-            }
-            if !qualidades.is_empty() {
-                laudo_parts.push(qualidades.join(" & "));
-            }
-            if tem_cliche {
-                laudo_parts.push("🔥 Clichê lírico presente".to_string());
-            }
+    // 3. Avaliação acústica e disposição das estrofes
+    let mut laudo_acustico = Vec::new();
+    if let Some(av) = &analise.avaliacao_rima {
+        if !av.pureza_acustica.is_empty() {
+            laudo_acustico.push(av.pureza_acustica.clone());
         }
-
-        if let Some(av) = &analise.avaliacao_rima {
-            if !av.pureza_acustica.is_empty() {
-                laudo_parts.push(av.pureza_acustica.clone());
-            }
-            if !av.tipo_disposicao.is_empty() {
-                laudo_parts.push(av.tipo_disposicao.clone());
-            }
+        if !av.tipo_disposicao.is_empty() {
+            laudo_acustico.push(av.tipo_disposicao.clone());
         }
-
-        let laudo_txt = laudo_parts.join("  •  ");
+    }
+    if !laudo_acustico.is_empty() {
+        current_y += 16;
+        let acustico_txt = laudo_acustico.join("  •  ");
         svg.push_str(&format!(
             "<text x=\"54\" y=\"{}\" class=\"legend-txt\" font-weight=\"500\">{}</text>\n",
             current_y,
-            escape_xml(&laudo_txt)
+            escape_xml(&acustico_txt)
         ));
     }
 
