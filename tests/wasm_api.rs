@@ -1,4 +1,7 @@
-use lirica::{carregar_exemplos, escandir, versao, AnaliseWeb, ExemploPoema};
+use lirica::{
+    carregar_exemplos, escandir, exportar_documento_typst, gerar_card_svg, versao, AnaliseWeb,
+    ExemploPoema,
+};
 
 #[test]
 fn test_versao() {
@@ -1514,4 +1517,87 @@ Como pássaro famoso\n";
         .observacoes
         .iter()
         .any(|obs| obs.contains("32 estrofes in-octavo")));
+}
+
+#[test]
+fn test_exportacao_card_svg_e_typst_spec() {
+    let poema = "\
+Amor é fogo que arde sem se ver,
+É ferida que dói, e não se sente;
+É um contentamento descontente,
+É dor que desatina sem doer.";
+
+    // 1. Geração de SVG no tema manuscrito
+    let svg_manuscrito = gerar_card_svg(
+        poema,
+        "Soneto de Amor",
+        "Luís de Camões",
+        "manuscrito",
+        -1,
+        true,
+    );
+    assert!(
+        svg_manuscrito.contains("<svg") && svg_manuscrito.contains("</svg>"),
+        "SVG deve conter tags válidas"
+    );
+    assert!(
+        svg_manuscrito.contains("Soneto de Amor"),
+        "SVG deve conter o título"
+    );
+    assert!(
+        svg_manuscrito.contains("Luís de Camões"),
+        "SVG deve conter o autor"
+    );
+    assert!(
+        svg_manuscrito.contains("Lírica • lirica.2lp.in"),
+        "SVG deve conter a marca d'água/crédito sutil"
+    );
+    assert!(
+        svg_manuscrito.contains("‖"),
+        "SVG com métricas ativadas deve exibir a cesura clássica"
+    );
+
+    // 2. Temas noturno e minimalista
+    let svg_noturno = gerar_card_svg(poema, "Soneto", "Camões", "noturno", -1, true);
+    assert!(
+        svg_noturno.contains("#0d1117") || svg_noturno.contains("#161b22") || svg_noturno.contains("#0b0f19"),
+        "Tema noturno deve conter fundo escuro"
+    );
+
+    let svg_minimalista = gerar_card_svg(poema, "Soneto", "Camões", "minimalista", -1, false);
+    assert!(
+        svg_minimalista.contains("#ffffff") || svg_minimalista.contains("#000000"),
+        "Tema minimalista deve conter contraste preto/branco"
+    );
+
+    // 3. Exportação de estrofe isolada (estrofe_idx: 0)
+    let svg_estrofe = gerar_card_svg(poema, "Quarteto", "Camões", "manuscrito", 0, true);
+    assert!(
+        svg_estrofe.contains("Amor é fogo"),
+        "SVG da estrofe deve conter o verso"
+    );
+
+    // 4. Exportação de documento Typst
+    let typst_doc = exportar_documento_typst(poema, "Soneto de Amor", "Luís de Camões");
+    assert!(
+        typst_doc.contains("#set page") && typst_doc.contains("#set text"),
+        "Documento Typst deve conter preâmbulo editorial válido"
+    );
+    assert!(
+        typst_doc.contains("Soneto de Amor"),
+        "Documento Typst deve conter o título"
+    );
+
+    // 5. Verificação da interface web (index.html e app.js)
+    let html = std::fs::read_to_string("site/index.html").expect("site/index.html deve existir");
+    assert!(
+        html.contains("modal-exportar") || html.contains("btn-exportar-card"),
+        "index.html deve conter elementos do modal de exportação"
+    );
+
+    let js = std::fs::read_to_string("site/app.js").expect("site/app.js deve existir");
+    assert!(
+        js.contains("gerar_card_svg") || js.contains("exportarCard"),
+        "app.js deve integrar a geração e exportação de cards"
+    );
 }
