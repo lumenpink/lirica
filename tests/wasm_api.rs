@@ -1609,4 +1609,29 @@ Amor é fogo que arde sem se ver,
         js.contains("gerar_card_svg") || js.contains("exportarCard"),
         "app.js deve integrar a geração e exportação de cards"
     );
+
+    // 6. Testes de mutação e borda (texto vazio, estrofe inexistente, tema desconhecido)
+    let svg_vazio = gerar_card_svg("", "", "", "manuscrito", -1, false);
+    assert!(
+        svg_vazio.contains("Nenhum verso para exibir"),
+        "Texto vazio deve gerar SVG com aviso informativo"
+    );
+
+    let svg_out_of_bounds = gerar_card_svg(poema, "Soneto", "Camões", "manuscrito", 999, false);
+    assert!(
+        svg_out_of_bounds.contains("Amor é fogo"),
+        "Índice de estrofe fora dos limites deve reverter para todos os versos"
+    );
+
+    let svg_tema_desconhecido = gerar_card_svg(poema, "Soneto", "Camões", "inexistente", -1, false);
+    assert!(
+        svg_tema_desconhecido.contains("#fbf7ee"),
+        "Tema desconhecido deve adotar fallback seguro para manuscrito"
+    );
+
+    let typst_anonimo = exportar_documento_typst(poema, "", "");
+    assert!(
+        typst_anonimo.contains("Sem Título") && typst_anonimo.contains("Anônimo"),
+        "Typst sem título ou autor deve aplicar fallbacks amigáveis"
+    );
 }

@@ -724,6 +724,18 @@ pub fn gerar_card_svg(
     estrofe_idx: i32,
     incluir_metricas: bool,
 ) -> String {
+    let theme = CardTheme::from_name(tema);
+
+    if texto.trim().is_empty() {
+        return format!(
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 200\" width=\"600\" height=\"200\">\
+            <rect width=\"100%\" height=\"100%\" fill=\"{}\" stroke=\"{}\" stroke-width=\"2\" rx=\"12\"/>\
+            <text x=\"300\" y=\"105\" text-anchor=\"middle\" fill=\"{}\" font-family=\"Georgia, serif\" font-size=\"18\">Nenhum verso para exibir.</text>\
+            </svg>",
+            theme.bg, theme.border, theme.text_color
+        );
+    }
+
     let json_visual = escandir(texto, "visual", false, false, false, true);
     let analise: Result<AnaliseWeb, _> = serde_json::from_str(&json_visual);
     let analise = match analise {
@@ -732,8 +744,6 @@ pub fn gerar_card_svg(
             return "<svg xmlns=\"http://www.w3.org/2000/svg\"><text>Erro ao escandir poema</text></svg>".to_string()
         }
     };
-
-    let theme = CardTheme::from_name(tema);
 
     let versos_selecionados: Vec<(usize, &VersoFormatado)> =
         if estrofe_idx >= 0 && (estrofe_idx as usize) < analise.estrofes.len() {
@@ -751,7 +761,12 @@ pub fn gerar_card_svg(
                 .collect()
         };
 
-    if versos_selecionados.is_empty() {
+    let eh_vazio = versos_selecionados.is_empty()
+        || versos_selecionados
+            .iter()
+            .all(|(_, v)| v.original.trim().is_empty());
+
+    if eh_vazio {
         return format!(
             "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 600 200\" width=\"600\" height=\"200\">\
             <rect width=\"100%\" height=\"100%\" fill=\"{}\" stroke=\"{}\" stroke-width=\"2\" rx=\"12\"/>\
