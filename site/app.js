@@ -244,9 +244,24 @@ function renderizarCardSVGAtual() {
   const tema = selectCardTema ? selectCardTema.value : 'manuscrito';
   const estrofeIdx = selectCardEscopo ? parseInt(selectCardEscopo.value, 10) : -1;
   const incluirMetricas = chkCardMetricas ? chkCardMetricas.checked : true;
+  const pontuacao = chkPontuacao ? chkPontuacao.checked : false;
+  const dierese = chkDierese ? chkDierese.checked : false;
+  const castilho = chkCastilho ? chkCastilho.checked : false;
+  const rima = chkRima ? chkRima.checked : true;
 
   if (typeof gerar_card_svg === 'function') {
-    return gerar_card_svg(poemText, titulo, autor, tema, estrofeIdx, incluirMetricas);
+    return gerar_card_svg(
+      poemText,
+      titulo,
+      autor,
+      tema,
+      estrofeIdx,
+      incluirMetricas,
+      pontuacao,
+      dierese,
+      castilho,
+      rima
+    );
   }
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200"><text x="300" y="100" text-anchor="middle">Carregando motor WASM...</text></svg>';
 }

@@ -1563,16 +1563,7 @@ Amor é fogo que arde sem se ver,
 
     // 2. Temas noturno e minimalista
     let svg_noturno = gerar_card_svg(
-        poema,
-        "Soneto",
-        "Camões",
-        "noturno",
-        -1,
-        true,
-        false,
-        false,
-        false,
-        true,
+        poema, "Soneto", "Camões", "noturno", -1, true, false, false, false, true,
     );
     assert!(
         svg_noturno.contains("#0d1117")
@@ -1756,9 +1747,7 @@ Amor é fogo que arde sem se ver,
     );
     assert!(
         svg.contains("⚔️")
-            && (svg.contains("Decassílabo")
-                || svg.contains("Heroico")
-                || svg.contains("Heróico")),
+            && (svg.contains("Decassílabo") || svg.contains("Heroico") || svg.contains("Heróico")),
         "Mini-legenda deve decodificar o ícone do verso presente no poema"
     );
 

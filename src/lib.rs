@@ -716,6 +716,7 @@ impl CardTheme {
 
 /// Gera um card poético vetorial em formato SVG autocontido para compartilhamento e exportação.
 #[wasm_bindgen]
+#[allow(clippy::too_many_arguments)]
 pub fn gerar_card_svg(
     texto: &str,
     titulo: &str,
@@ -723,6 +724,10 @@ pub fn gerar_card_svg(
     tema: &str,
     estrofe_idx: i32,
     incluir_metricas: bool,
+    pontuacao: bool,
+    dierese: bool,
+    castilho: bool,
+    rima: bool,
 ) -> String {
     let theme = CardTheme::from_name(tema);
 
@@ -736,7 +741,7 @@ pub fn gerar_card_svg(
         );
     }
 
-    let json_visual = escandir(texto, "visual", false, false, false, true);
+    let json_visual = escandir(texto, "visual", pontuacao, dierese, castilho, rima);
     let analise: Result<AnaliseWeb, _> = serde_json::from_str(&json_visual);
     let analise = match analise {
         Ok(a) => a,
@@ -802,11 +807,16 @@ pub fn gerar_card_svg(
 
     let verses_content_height =
         (versos_selecionados.len() * verse_line_height) + (num_gaps * stanza_gap);
+    let extra_bottom_height = 80;
     let footer_height = 55;
     let padding_top = 35;
     let padding_bottom = 25;
-    let total_height =
-        padding_top + header_height + verses_content_height + footer_height + padding_bottom;
+    let total_height = padding_top
+        + header_height
+        + verses_content_height
+        + extra_bottom_height
+        + footer_height
+        + padding_bottom;
 
     let mut svg = String::with_capacity(8192);
     svg.push_str(&format!(
@@ -824,10 +834,13 @@ pub fn gerar_card_svg(
         .syl-norm {{ fill: {}; }}\n\
         .caesura {{ font-weight: bold; fill: {}; }}\n\
         .badge-txt {{ font-family: system-ui, sans-serif; font-size: 11px; text-anchor: middle; }}\n\
+        .legend-txt {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {}; opacity: 0.85; }}\n\
+        .criteria-txt {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {}; opacity: 0.75; font-style: italic; }}\n\
         .footer-txt {{ font-family: system-ui, sans-serif; font-size: 12px; fill: {}; }}\n\
         </style></defs>\n",
         theme.title_color, theme.author_color, theme.footer_color, theme.text_color,
-        theme.tonic_color, theme.text_color, theme.caesura_color, theme.footer_color
+        theme.tonic_color, theme.text_color, theme.caesura_color, theme.footer_color,
+        theme.footer_color, theme.footer_color
     ));
 
     svg.push_str(&format!(
@@ -927,7 +940,7 @@ pub fn gerar_card_svg(
 
         let mut badge_right_x = card_width - 50;
 
-        if let Some(rima) = &v.rima {
+        if let Some(rima_val) = &v.rima {
             let rx = badge_right_x - 26;
             let ry = y_verse - 15;
             svg.push_str(&format!(
@@ -936,7 +949,7 @@ pub fn gerar_card_svg(
             ));
             svg.push_str(&format!(
                 "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"bold\" fill=\"{}\">{}</text>\n",
-                rx + 13, y_verse, theme.rhyme_text, escape_xml(rima)
+                rx + 13, y_verse, theme.rhyme_text, escape_xml(rima_val)
             ));
             badge_right_x -= 32;
         }
@@ -960,6 +973,84 @@ pub fn gerar_card_svg(
         current_y += verse_line_height;
     }
 
+    // 1. Mini-legenda contextual dos ícones métricos utilizados
+    let mut icones_unicos: Vec<(String, String)> = Vec::new();
+    for (_, v) in &versos_selecionados {
+        if !icones_unicos.iter().any(|(ico, _)| ico == &v.icone) {
+            icones_unicos.push((v.icone.clone(), v.classificacao.clone()));
+        }
+    }
+    if !icones_unicos.is_empty() {
+        current_y += 14;
+        let legenda_itens: Vec<String> = icones_unicos
+            .iter()
+            .map(|(ico, nome)| format!("{} {}", ico, nome))
+            .collect();
+        let legenda_txt = format!("Legenda: {}", legenda_itens.join("  •  "));
+        svg.push_str(&format!(
+            "<text x=\"54\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
+            current_y,
+            escape_xml(&legenda_txt)
+        ));
+    }
+
+    // 2. Análise e laudo de rimas
+    let esquema_rimas: String = versos_selecionados
+        .iter()
+        .filter_map(|(_, v)| v.rima.clone())
+        .collect();
+    if !esquema_rimas.is_empty() {
+        current_y += 18;
+        let mut laudo_parts = Vec::new();
+        laudo_parts.push(format!("Rimas: {}", esquema_rimas));
+
+        // Resumo de qualidade morfológica
+        if let Some(rimas_morf) = &analise.rimas_morfologicas {
+            let mut qualidades = Vec::new();
+            let mut tem_cliche = false;
+            for est_morf in rimas_morf {
+                for par in &est_morf.pares {
+                    let q = match par.qualidade.as_str() {
+                        "Rica" | "ProvavelRica" => "Ricas",
+                        "Pobre" | "ProvavelPobre" => "Pobres",
+                        "Rara" => "Raras",
+                        "Preciosa" => "Preciosas",
+                        _ => "",
+                    };
+                    if !q.is_empty() && !qualidades.contains(&q) {
+                        qualidades.push(q);
+                    }
+                    if par.eh_cliche {
+                        tem_cliche = true;
+                    }
+                }
+            }
+            if !qualidades.is_empty() {
+                laudo_parts.push(qualidades.join(" & "));
+            }
+            if tem_cliche {
+                laudo_parts.push("🔥 Clichê lírico presente".to_string());
+            }
+        }
+
+        if let Some(av) = &analise.avaliacao_rima {
+            if !av.pureza_acustica.is_empty() {
+                laudo_parts.push(av.pureza_acustica.clone());
+            }
+            if !av.tipo_disposicao.is_empty() {
+                laudo_parts.push(av.tipo_disposicao.clone());
+            }
+        }
+
+        let laudo_txt = laudo_parts.join("  •  ");
+        svg.push_str(&format!(
+            "<text x=\"54\" y=\"{}\" class=\"legend-txt\" font-weight=\"500\">{}</text>\n",
+            current_y,
+            escape_xml(&laudo_txt)
+        ));
+    }
+
+    // Linha divisória antes do rodapé
     current_y += 12;
     svg.push_str(&format!(
         "<line x1=\"50\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"{}\" stroke-width=\"1\" opacity=\"0.4\" />\n",
@@ -968,8 +1059,30 @@ pub fn gerar_card_svg(
         current_y,
         theme.border_inner
     ));
-    current_y += 24;
 
+    // 3. Critérios métricos aplicados
+    current_y += 18;
+    let mut criterios = Vec::new();
+    if castilho {
+        criterios.push("Regra de Castilho (átonas finais descartadas)");
+    } else {
+        criterios.push("Contagem Integral");
+    }
+    if pontuacao {
+        criterios.push("Cesura na Pontuação");
+    }
+    if dierese {
+        criterios.push("Diérese Crescente");
+    }
+    let criterios_txt = format!("Critérios: {}", criterios.join("  •  "));
+    svg.push_str(&format!(
+        "<text x=\"54\" y=\"{}\" class=\"criteria-txt\">{}</text>\n",
+        current_y,
+        escape_xml(&criterios_txt)
+    ));
+
+    // 4. Rodapé final
+    current_y += 20;
     let diag_label = if let Some(f) = &analise.forma_poetica {
         format!("{} ({}%)", f.nome, f.confianca_percentual)
     } else if let Some((_, primeiro)) = versos_selecionados.first() {
@@ -979,7 +1092,7 @@ pub fn gerar_card_svg(
     };
 
     svg.push_str(&format!(
-        "<text x=\"54\" y=\"{}\" class=\"footer-txt\" font-weight=\"500\">{}</text>\n",
+        "<text x=\"54\" y=\"{}\" class=\"footer-txt\" font-weight=\"600\">{}</text>\n",
         current_y,
         escape_xml(&diag_label)
     ));
