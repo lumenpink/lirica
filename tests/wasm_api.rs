@@ -1893,8 +1893,34 @@ fn test_multiplos_rascunhos_locais_spec() {
     // 5. Estilização no CSS
     assert!(
         css.contains(".modal-drafts-container")
-            || css.contains(".draft-item")
-            || css.contains(".drafts-badge"),
-        "style.css deve prover estilização para o modal e itens de rascunho"
+            && css.contains(".draft-item")
+            && css.contains(".drafts-badge")
+            && css.contains(".btn-draft-action"),
+        "style.css deve prover estilização para o modal, itens de rascunho, badge e botões de ação"
+    );
+
+    // 6. Anti-mutante: auto-cura de exclusão total (cria novo rascunho ao esvaziar)
+    assert!(
+        js.contains("drafts.length === 0") && js.contains("titulo: 'Novo Poema'"),
+        "excluirRascunho deve inicializar automaticamente um novo rascunho ao excluir o último"
+    );
+
+    // 7. Anti-mutante: mitigação de colisão de ID na importação
+    assert!(
+        js.contains("colidiu") && js.contains("draft_imp_"),
+        "importarRascunhosJSON deve detectar colisões de ID e gerar novos identificadores únicos"
+    );
+
+    // 8. Anti-mutante: fechamento semântico no Escape
+    assert!(
+        js.contains("modalRascunhos && !modalRascunhos.hidden")
+            && js.contains("fecharModalRascunhos()"),
+        "Listener global de Escape deve fechar o modal de rascunhos quando ativo"
+    );
+
+    // 9. Anti-mutante: sincronização do badge numérico no bootstrap
+    assert!(
+        js.contains("atualizarBadgeContadorRascunhos()"),
+        "app.js deve atualizar o badge contador de rascunhos no bootstrap e nas mutações"
     );
 }
