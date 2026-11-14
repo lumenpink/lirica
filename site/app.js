@@ -1295,12 +1295,16 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
 
     input.addEventListener('input', (e) => {
       verses[idx] = e.target.value;
-      updateSingleRowLive();
+      agendarUpdateSingleRowLive();
       agendarSalvamentoRascunho();
     });
 
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
+        if (debounceUpdateRowTimer) {
+          clearTimeout(debounceUpdateRowTimer);
+          debounceUpdateRowTimer = null;
+        }
         e.preventDefault();
         if (e.shiftKey) {
           // Shift+Enter insere quebra de estrofe
@@ -1442,6 +1446,17 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
     row.appendChild(colRight);
     versesContainer.appendChild(row);
   });
+}
+
+let debounceUpdateRowTimer = null;
+function agendarUpdateSingleRowLive() {
+  if (debounceUpdateRowTimer) {
+    clearTimeout(debounceUpdateRowTimer);
+  }
+  debounceUpdateRowTimer = setTimeout(() => {
+    updateSingleRowLive();
+    debounceUpdateRowTimer = null;
+  }, 150);
 }
 
 function updateSingleRowLive() {
