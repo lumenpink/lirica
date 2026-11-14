@@ -1995,4 +1995,31 @@ Alimentando a doce ilusão.";
         svg_cliche.contains("🔥"),
         "Badge ou legenda do par clichê (amor x dor) deve estampar o marcador de clichê 🔥"
     );
+
+    // 5. Anti-mutante: poema sem clichê não deve exibir glifo 🔥
+    assert!(
+        !svg_camoes.contains("🔥"),
+        "Poema clássico sem clichê saturado não deve conter marcador 🔥"
+    );
+
+    // 6. Anti-mutante: desativação do flag rima não deve gerar badges nem legenda rímica
+    let svg_sem_rima = gerar_card_svg(
+        camoes,
+        "Soneto",
+        "Camões",
+        "manuscrito",
+        -1,
+        true,
+        true,
+        true,
+        true,
+        false, // rima desativada
+    );
+    assert!(
+        !svg_sem_rima.contains("A · Pobre")
+            && !svg_sem_rima.contains("B · Rica")
+            && !svg_sem_rima.contains("Rima Rica")
+            && !svg_sem_rima.contains("Rima Pobre"),
+        "Com rima desativada, nenhum badge ou legenda de rima deve ser emitido"
+    );
 }
