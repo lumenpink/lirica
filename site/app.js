@@ -861,7 +861,7 @@ function obterExplicacaoMetroPoetico(vData) {
 
   return {
     nome: c || `${n} sílabas poéticas`,
-    icone: vData.icone || '🪶',
+    icone: vData.icone || '#ico-metro-livre',
     totalMetricas: n,
     descricao: descricaoMetro,
     tonicas,
@@ -883,7 +883,7 @@ function abrirModalMetroContextual(vData, verseIndex) {
   const modalSub = modalLegenda.querySelector('.modal-subtitle');
 
   if (modalTitulo) {
-    modalTitulo.innerHTML = `${info.icone} ${info.nome}`;
+    modalTitulo.innerHTML = `<svg class="ico-svg"><use href="${info.icone}"></use></svg> ${info.nome}`;
   }
   if (modalSub) {
     modalSub.textContent = `Diagnóstico métrico do verso ${verseIndex + 1} (${info.totalMetricas} sílabas poéticas):`;
@@ -1455,7 +1455,7 @@ function updateStats(webData) {
     formStructureTag.textContent = `Estrutura: ${count} versos`;
     formPatternTag.textContent = 'Ritmo e métrica livres';
     formAlerts.style.display = 'none';
-    formIcon.textContent = '🪶';
+    formIcon.textContent = '❦';
   }
 
   // Top Dashboard: Rhyme Card
@@ -1855,7 +1855,7 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
       meterBadge.setAttribute('role', 'button');
       meterBadge.setAttribute('tabindex', '0');
       meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver detalhes do metro`;
-      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
+      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico"><svg class="ico-svg"><use href="${vData.icone || '#ico-metro-livre'}"></use></svg></span>`;
       vincularBadgeMetro(meterBadge, vData, currentLineNum);
       colRight.appendChild(meterBadge);
 
@@ -2007,7 +2007,7 @@ function updateSingleRowLive() {
       meterBadge.setAttribute('role', 'button');
       meterBadge.setAttribute('tabindex', '0');
       meterBadge.title = `${vData.classificacao} (${vData.total_metricas} sílabas métricas) • Clique/toque para ver detalhes do metro`;
-      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico">${vData.icone || '🪶'}</span>`;
+      meterBadge.innerHTML = `${vData.total_metricas} <span class="ico"><svg class="ico-svg"><use href="${vData.icone || '#ico-metro-livre'}"></use></svg></span>`;
       vincularBadgeMetro(meterBadge, vData, currentVerseRowIdx);
       colRight.appendChild(meterBadge);
 

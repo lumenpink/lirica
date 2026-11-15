@@ -109,7 +109,7 @@ fn test_camoes_quatro_versos_decassilabos_e_rimas() {
             "Verso {} deve ser Decassílabo",
             i + 1
         );
-        assert_eq!(v.icone, "⚔️");
+        assert_eq!(v.icone, "#ico-metro-heroico");
     }
 
     // Verify ABBA rhyme scheme
@@ -142,7 +142,7 @@ fn test_escandir_visual() {
         serde_json::from_str(&saida).expect("Modo visual deve retornar JSON de AnaliseWeb");
     assert_eq!(web.versos.len(), 1);
     assert_eq!(web.versos[0].total_metricas, 7);
-    assert_eq!(web.versos[0].icone, "🌿");
+    assert_eq!(web.versos[0].icone, "#ico-metro-redondilha-maior");
     assert!(
         web.versos[0].classificacao.contains("Heptassílabo")
             || web.versos[0].classificacao.contains("Redondilha")
@@ -913,12 +913,23 @@ fn test_modal_interativo_legenda_spec() {
 
     // 2. Cobertura de todos os ícones fundamentais no conteúdo do modal
     let metros_obrigatorios = [
-        "⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶", // Metros
+        "#ico-metro-heroico",
+        "#ico-metro-safico",
+        "#ico-metro-martelo",
+        "#ico-metro-decassilabo",
+        "#ico-metro-redondilha-maior",
+        "#ico-metro-redondilha-menor",
+        "#ico-metro-alexandrino",
+        "#ico-metro-dodecassilabo",
+        "#ico-metro-octossilabo",
+        "#ico-metro-eneassilabo",
+        "#ico-metro-hendecassilabo",
+        "#ico-metro-livre",
     ];
     for icone in &metros_obrigatorios {
         assert!(
             html.contains(icone),
-            "Modal de legenda em index.html deve conter o ícone '{}'",
+            "Modal de legenda em index.html deve conter o glifo SVG '{}'",
             icone
         );
     }
@@ -977,18 +988,18 @@ fn test_legenda_estatica_rodape_spec() {
         .expect("Deve fechar a section da legenda");
     let bloco_legenda = &html[inicio_legenda..inicio_legenda + fim_legenda];
 
-    // 1. Metros que estavam ausentes na legenda estática
+    // 1. Metros na legenda estática com glifos SVG
     let metros_obrigatorios = [
-        ("📜", "Decassílabo"),
-        ("🎵", "Octossílabo"),
-        ("🌊", "Eneassílabo"),
-        ("🕊️", "Hendecassílabo"),
-        ("⚜️", "Dodecassílabo"),
+        ("#ico-metro-decassilabo", "Decassílabo"),
+        ("#ico-metro-octossilabo", "Octossílabo"),
+        ("#ico-metro-eneassilabo", "Eneassílabo"),
+        ("#ico-metro-hendecassilabo", "Hendecassílabo"),
+        ("#ico-metro-dodecassilabo", "Dodecassílabo"),
     ];
     for (ico, nome) in &metros_obrigatorios {
         assert!(
             bloco_legenda.contains(ico),
-            "Legenda estática do rodapé deve conter o ícone '{}' ({})",
+            "Legenda estática do rodapé deve conter o glifo SVG '{}' ({})",
             ico,
             nome
         );
@@ -1761,9 +1772,9 @@ Amor é fogo que arde sem se ver,
         "Card deve conter linha de legenda contextual dos ícones"
     );
     assert!(
-        svg.contains("⚔️")
+        (svg.contains("#ico-metro-heroico") || svg.contains("Decassílabo"))
             && (svg.contains("Decassílabo") || svg.contains("Heroico") || svg.contains("Heróico")),
-        "Mini-legenda deve decodificar o ícone do verso presente no poema"
+        "Mini-legenda deve decodificar o glifo vetorial do verso presente no poema"
     );
 
     // 4. Análise e laudo de rimas no card
@@ -2145,7 +2156,9 @@ Buscando a paz e a ternura.";
         svg_camoes.contains("id=\"ico-metro-heroico\""),
         "SVG deve conter defs dos glifos métricos utilizados"
     );
-    let emojis_metricos = ["⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶"];
+    let emojis_metricos = [
+        "⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶",
+    ];
     for emo in &emojis_metricos {
         assert!(
             !svg_camoes.contains(emo),

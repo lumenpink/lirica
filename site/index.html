@@ -6,7 +6,7 @@
   <title>Lírica — Laboratório Métrico e Escansão Poética</title>
   <meta name="description" content="Laboratório métrico, escansão poética e análise rítmica em português executado deterministicamente no navegador via WebAssembly.">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.85em%22 font-size=%2280%22 fill=%22%234a2c2a%22>❦</text></svg>">
 </head>
 <body>
   <!-- Catálogo de Símbolos Vetoriais SVG Compartilhados -->
@@ -32,6 +32,42 @@
       </symbol>
       <symbol id="ico-cliche" viewBox="0 0 16 16">
         <path d="M8,1.5 C7.2,4.2 4.5,6 4.5,9.5 C4.5,12.2 6.2,14.5 8.5,14.5 C10.8,14.5 12.5,12.2 12.5,9.5 C12.5,7.2 10.8,5.2 10,3.8 C10,5.8 8.6,6.6 8,7.2 C7.5,5.8 8,3.5 8,1.5 Z" />
+      </symbol>
+      <symbol id="ico-metro-alexandrino" viewBox="0 0 16 16">
+        <path d="M2,2 L14,2 L14,4 L11,4 L11,14 L9,14 L9,4 L7,4 L7,14 L5,14 L5,4 L2,4 Z" />
+      </symbol>
+      <symbol id="ico-metro-heroico" viewBox="0 0 16 16">
+        <path d="M7.5,1.5 L8.5,1.5 L9.5,8 L12.5,8 L12.5,9.5 L9,9.5 L9,13 L10,13 L10,14.5 L6,14.5 L6,13 L7,13 L7,9.5 L3.5,9.5 L3.5,8 L6.5,8 Z" />
+      </symbol>
+      <symbol id="ico-metro-safico" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M3,2 L5,2 C5.5,5 5.5,9 7,11 L7,3 L9,3 L9,11 C10.5,9 10.5,5 11,2 L13,2 C12,6 12,11 9,13 L9,14.5 L7,14.5 L7,13 C4,11 4,6 3,2 Z M7.5,3.5 L8.5,3.5 L8.5,10.5 L7.5,10.5 Z" />
+      </symbol>
+      <symbol id="ico-metro-martelo" viewBox="0 0 16 16">
+        <path d="M2.5,3 L13.5,3 L13.5,6.5 L9,6.5 L9,14.5 L7,14.5 L7,6.5 L2.5,6.5 Z" />
+      </symbol>
+      <symbol id="ico-metro-decassilabo" viewBox="0 0 16 16">
+        <polygon points="8,1.5 14.5,8 8,14.5 1.5,8" />
+      </symbol>
+      <symbol id="ico-metro-redondilha-maior" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="6" />
+      </symbol>
+      <symbol id="ico-metro-redondilha-menor" viewBox="0 0 16 16">
+        <polygon points="8,2 14,13.5 2,13.5" />
+      </symbol>
+      <symbol id="ico-metro-dodecassilabo" viewBox="0 0 16 16">
+        <polygon points="8,1.5 13.5,4.7 13.5,11.3 8,14.5 2.5,11.3 2.5,4.7" />
+      </symbol>
+      <symbol id="ico-metro-octossilabo" viewBox="0 0 16 16">
+        <rect x="2.5" y="2.5" width="11" height="11" rx="1.5" />
+      </symbol>
+      <symbol id="ico-metro-eneassilabo" viewBox="0 0 16 16">
+        <polygon points="2,2.5 14,2.5 8,14" />
+      </symbol>
+      <symbol id="ico-metro-hendecassilabo" viewBox="0 0 16 16">
+        <polygon points="8,1.5 14,7 8,14.5 2,7" />
+      </symbol>
+      <symbol id="ico-metro-livre" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8,2 C4.69,2 2,4.69 2,8 C2,11.31 4.69,14 8,14 C11.31,14 14,11.31 14,8 C14,4.69 11.31,2 8,2 Z M8,4.5 C6.07,4.5 4.5,6.07 4.5,8 C4.5,9.93 6.07,11.5 8,11.5 C9.93,11.5 11.5,9.93 11.5,8 C11.5,6.07 9.93,4.5 8,4.5 Z" />
       </symbol>
     </defs>
   </svg>
@@ -239,18 +275,18 @@
       <!-- Linha 2: Legenda de Ícones de Ritmo e Metros -->
       <div class="guide-icons-row" aria-label="Legenda de Ícones de Metrificação">
         <span class="guide-icons-title">Metros & Ritmo:</span>
-        <span class="icon-tag" title="Decassílabo Heroico (acento na 6ª e 10ª sílabas)">⚔️ Heroico (6, 10)</span>
-        <span class="icon-tag" title="Decassílabo Sáfico (acento na 4ª, 8ª e 10ª sílabas)">🏛️ Sáfico (4, 8, 10)</span>
-        <span class="icon-tag" title="Decassílabo Martelo (acento na 3ª, 6ª e 10ª sílabas)">🔨 Martelo (3, 6, 10)</span>
-        <span class="icon-tag" title="Decassílabo Geral (10 sílabas poéticas)">📜 Decassílabo (10s)</span>
-        <span class="icon-tag" title="Redondilha Maior / Heptassílabo (7 sílabas)">🌿 Redondilha Maior (7s)</span>
-        <span class="icon-tag" title="Redondilha Menor / Pentassílabo (5 sílabas)">🍃 Redondilha Menor (5s)</span>
-        <span class="icon-tag" title="Alexandrino Clássico (12 sílabas com cesura hemistíquia 6+6)">👑 Alexandrino (12s)</span>
-        <span class="icon-tag" title="Dodecassílabo Geral (12 sílabas métricas)">⚜️ Dodecassílabo (12s)</span>
-        <span class="icon-tag" title="Octossílabo (8 sílabas métricas)">🎵 Octossílabo (8s)</span>
-        <span class="icon-tag" title="Eneassílabo (9 sílabas métricas)">🌊 Eneassílabo (9s)</span>
-        <span class="icon-tag" title="Hendecassílabo (11 sílabas métricas)">🕊️ Hendecassílabo (11s)</span>
-        <span class="icon-tag" title="Forma Livre ou Verso Bárbaro">🪶 Forma Livre</span>
+        <span class="icon-tag" title="Decassílabo Heroico (acento na 6ª e 10ª sílabas)"><svg class="ico-svg"><use href="#ico-metro-heroico"></use></svg> Heroico (6, 10)</span>
+        <span class="icon-tag" title="Decassílabo Sáfico (acento na 4ª, 8ª e 10ª sílabas)"><svg class="ico-svg"><use href="#ico-metro-safico"></use></svg> Sáfico (4, 8, 10)</span>
+        <span class="icon-tag" title="Decassílabo Martelo (acento na 3ª, 6ª e 10ª sílabas)"><svg class="ico-svg"><use href="#ico-metro-martelo"></use></svg> Martelo (3, 6, 10)</span>
+        <span class="icon-tag" title="Decassílabo Geral (10 sílabas poéticas)"><svg class="ico-svg"><use href="#ico-metro-decassilabo"></use></svg> Decassílabo (10s)</span>
+        <span class="icon-tag" title="Redondilha Maior / Heptassílabo (7 sílabas)"><svg class="ico-svg"><use href="#ico-metro-redondilha-maior"></use></svg> Redondilha Maior (7s)</span>
+        <span class="icon-tag" title="Redondilha Menor / Pentassílabo (5 sílabas)"><svg class="ico-svg"><use href="#ico-metro-redondilha-menor"></use></svg> Redondilha Menor (5s)</span>
+        <span class="icon-tag" title="Alexandrino Clássico (12 sílabas com cesura hemistíquia 6+6)"><svg class="ico-svg"><use href="#ico-metro-alexandrino"></use></svg> Alexandrino (12s)</span>
+        <span class="icon-tag" title="Dodecassílabo Geral (12 sílabas métricas)"><svg class="ico-svg"><use href="#ico-metro-dodecassilabo"></use></svg> Dodecassílabo (12s)</span>
+        <span class="icon-tag" title="Octossílabo (8 sílabas métricas)"><svg class="ico-svg"><use href="#ico-metro-octossilabo"></use></svg> Octossílabo (8s)</span>
+        <span class="icon-tag" title="Eneassílabo (9 sílabas métricas)"><svg class="ico-svg"><use href="#ico-metro-eneassilabo"></use></svg> Eneassílabo (9s)</span>
+        <span class="icon-tag" title="Hendecassílabo (11 sílabas métricas)"><svg class="ico-svg"><use href="#ico-metro-hendecassilabo"></use></svg> Hendecassílabo (11s)</span>
+        <span class="icon-tag" title="Forma Livre ou Verso Bárbaro"><svg class="ico-svg"><use href="#ico-metro-livre"></use></svg> Forma Livre</span>
       </div>
 
       <!-- Linha 3: Legenda de Ícones de Auditoria de Rimas -->
@@ -308,84 +344,84 @@
           <h3 class="legenda-secao-titulo">Metrificação e Formas Rítmicas</h3>
           <div class="legenda-grid">
             <div class="legenda-card">
-              <span class="legenda-card-icone">⚔️</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-heroico"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Decassílabo Heroico (6, 10)</strong>
                 <p>10 sílabas poéticas com acentuação rigorosa na 6ª e na 10ª sílaba. O metro mais nobre da epopeia camoniana.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🏛️</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-safico"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Decassílabo Sáfico (4, 8, 10)</strong>
                 <p>10 sílabas poéticas com ênfase na 4ª, 8ª e 10ª sílaba. Tom melódico, clássico e grave.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🔨</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-martelo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Decassílabo Martelo (3, 6, 10)</strong>
                 <p>10 sílabas poéticas com acentos na 3ª, 6ª e 10ª sílaba. Ritmo percussivo e incisivo, célebre no repente e cordel.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">📜</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-decassilabo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Decassílabo Geral (10s)</strong>
                 <p>Verso decassílabo de cadência mista ou variação rítmica não restrita aos esquemas fixos clássicos.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🌿</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-redondilha-maior"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Redondilha Maior / Heptassílabo (7s)</strong>
                 <p>7 sílabas poéticas com acento na 7ª. O metro tradicional mais espontâneo e popular da lírica ibérica.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🍃</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-redondilha-menor"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Redondilha Menor / Pentassílabo (5s)</strong>
                 <p>5 sílabas poéticas. Metro ágil e gracioso, típico de cantigas, trovas e estribilhos breves.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">👑</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-alexandrino"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Alexandrino Clássico (12s)</strong>
                 <p>Dodecassílabo clássico com cesura hemistíquia perfeita após a 6ª sílaba (divisão simétrica 6 + 6).</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">⚜️</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-dodecassilabo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Dodecassílabo Geral (12s)</strong>
                 <p>Verso de 12 sílabas métricas sem divisão hemistíquia rigorosa (ex.: alexandrino romântico ou ternário 4+4+4).</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🎵</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-octossilabo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Octossílabo (8s)</strong>
                 <p>8 sílabas poéticas com acento final na 8ª. Muito presente em romances narrativos e poesia cantada.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🌊</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-eneassilabo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Eneassílabo (9s)</strong>
                 <p>9 sílabas poéticas. Cadência ondulante e fluida, marcante na poética romântica e simbolista.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🕊️</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-hendecassilabo"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Hendecassílabo (11s)</strong>
                 <p>11 sílabas poéticas. Metro extenso de cadência solene, intermediário entre o decassílabo e o alexandrino.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">🪶</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-metro-livre"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Forma Livre / Verso Bárbaro</strong>
                 <p>Metros de extensão irregular, versos livres modernos ou combinações fora da grade silábica pré-fixada.</p>

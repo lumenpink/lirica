@@ -6,9 +6,8 @@ pub mod morphology_resolver;
 
 use joaju_lirica::morphology::{classificar_rimas_poema, QualidadeRima};
 use joaju_lirica::{
-    avaliar_forma_poetica, avaliar_qualidade_rimas, escandir_poema, icone_metro,
-    parse_lirica_block, render_painel, render_typst, DiagnosticoForma, InfoAvaliacaoRima, Poema,
-    PoemaConfig,
+    avaliar_forma_poetica, avaliar_qualidade_rimas, escandir_poema, parse_lirica_block,
+    render_painel, render_typst, DiagnosticoForma, InfoAvaliacaoRima, Poema, PoemaConfig,
 };
 use morphology_resolver::{avaliar_par_conservador, refinar_token_terminal};
 use serde::{Deserialize, Serialize};
@@ -449,6 +448,42 @@ fn avaliar_forma_poetica_expandida(poema: &Poema) -> Option<DiagnosticoForma> {
     avaliar_forma_poetica(poema)
 }
 
+/// Mapeia o nome descritivo de uma classificação métrica para seu ID de glifo SVG canônico.
+pub fn mapear_id_glifo_metro(classificacao: &str) -> &'static str {
+    if classificacao.contains("Alexandrino") {
+        "#ico-metro-alexandrino"
+    } else if classificacao.contains("Heroico") || classificacao.contains("Heróico") {
+        "#ico-metro-heroico"
+    } else if classificacao.contains("Sáfico") || classificacao.contains("Safico") {
+        "#ico-metro-safico"
+    } else if classificacao.contains("Martelo") {
+        "#ico-metro-martelo"
+    } else if classificacao.contains("Decassílabo") || classificacao.contains("Decassilabo") {
+        "#ico-metro-decassilabo"
+    } else if classificacao.contains("Redondilha Maior")
+        || classificacao.contains("Heptassílabo")
+        || classificacao.contains("Heptassilabo")
+    {
+        "#ico-metro-redondilha-maior"
+    } else if classificacao.contains("Redondilha Menor")
+        || classificacao.contains("Pentassílabo")
+        || classificacao.contains("Pentassilabo")
+    {
+        "#ico-metro-redondilha-menor"
+    } else if classificacao.contains("Dodecassílabo") || classificacao.contains("Dodecassilabo") {
+        "#ico-metro-dodecassilabo"
+    } else if classificacao.contains("Octossílabo") || classificacao.contains("Octossilabo") {
+        "#ico-metro-octossilabo"
+    } else if classificacao.contains("Eneassílabo") || classificacao.contains("Eneassilabo") {
+        "#ico-metro-eneassilabo"
+    } else if classificacao.contains("Hendecassílabo") || classificacao.contains("Hendecassilabo")
+    {
+        "#ico-metro-hendecassilabo"
+    } else {
+        "#ico-metro-livre"
+    }
+}
+
 fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
     let mut resultado = Vec::new();
 
@@ -485,7 +520,7 @@ fn render_visual_json(poema: &Poema, raw_text: &str) -> String {
             .classificacao
             .clone()
             .unwrap_or_else(|| "Forma Livre".to_string());
-        let icone = icone_metro(&class_name).to_string();
+        let icone = mapear_id_glifo_metro(&class_name).to_string();
 
         let cesuras = detectar_cesuras(
             orig,
@@ -859,6 +894,42 @@ pub fn gerar_card_svg(
         <g id=\"ico-cliche\">\n\
             <path d=\"M8,1.5 C7.2,4.2 4.5,6 4.5,9.5 C4.5,12.2 6.2,14.5 8.5,14.5 C10.8,14.5 12.5,12.2 12.5,9.5 C12.5,7.2 10.8,5.2 10,3.8 C10,5.8 8.6,6.6 8,7.2 C7.5,5.8 8,3.5 8,1.5 Z\" />\n\
         </g>\n\
+        <g id=\"ico-metro-alexandrino\">\n\
+            <path d=\"M2,2 L14,2 L14,4 L11,4 L11,14 L9,14 L9,4 L7,4 L7,14 L5,14 L5,4 L2,4 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-heroico\">\n\
+            <path d=\"M7.5,1.5 L8.5,1.5 L9.5,8 L12.5,8 L12.5,9.5 L9,9.5 L9,13 L10,13 L10,14.5 L6,14.5 L6,13 L7,13 L7,9.5 L3.5,9.5 L3.5,8 L6.5,8 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-safico\">\n\
+            <path fill-rule=\"evenodd\" d=\"M3,2 L5,2 C5.5,5 5.5,9 7,11 L7,3 L9,3 L9,11 C10.5,9 10.5,5 11,2 L13,2 C12,6 12,11 9,13 L9,14.5 L7,14.5 L7,13 C4,11 4,6 3,2 Z M7.5,3.5 L8.5,3.5 L8.5,10.5 L7.5,10.5 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-martelo\">\n\
+            <path d=\"M2.5,3 L13.5,3 L13.5,6.5 L9,6.5 L9,14.5 L7,14.5 L7,6.5 L2.5,6.5 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-decassilabo\">\n\
+            <polygon points=\"8,1.5 14.5,8 8,14.5 1.5,8\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-redondilha-maior\">\n\
+            <circle cx=\"8\" cy=\"8\" r=\"6\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-redondilha-menor\">\n\
+            <polygon points=\"8,2 14,13.5 2,13.5\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-dodecassilabo\">\n\
+            <polygon points=\"8,1.5 13.5,4.7 13.5,11.3 8,14.5 2.5,11.3 2.5,4.7\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-octossilabo\">\n\
+            <rect x=\"2.5\" y=\"2.5\" width=\"11\" height=\"11\" rx=\"1.5\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-eneassilabo\">\n\
+            <polygon points=\"2,2.5 14,2.5 8,14\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-hendecassilabo\">\n\
+            <polygon points=\"8,1.5 14,7 8,14.5 2,7\" />\n\
+        </g>\n\
+        <g id=\"ico-metro-livre\">\n\
+            <path fill-rule=\"evenodd\" d=\"M8,2 C4.69,2 2,4.69 2,8 C2,11.31 4.69,14 8,14 C11.31,14 14,11.31 14,8 C14,4.69 11.31,2 8,2 Z M8,4.5 C6.07,4.5 4.5,6.07 4.5,8 C4.5,9.93 6.07,11.5 8,11.5 C9.93,11.5 11.5,9.93 11.5,8 C11.5,6.07 9.93,4.5 8,4.5 Z\" />\n\
+        </g>\n\
         </defs>\n",
         theme.title_color, theme.author_color, theme.footer_color, theme.text_color,
         theme.tonic_color, theme.text_color, theme.caesura_color, theme.footer_color,
@@ -1048,13 +1119,21 @@ pub fn gerar_card_svg(
             "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"20\" rx=\"4\" fill=\"{}\" stroke=\"{}\" stroke-width=\"1\" />\n",
             mx, my, meter_width, theme.badge_bg, theme.badge_border
         ));
-        let meter_label = format!("{} {}", v.total_metricas, v.icone);
+        let num_txt = format!("{}", v.total_metricas);
+        let metro_ico_id = mapear_id_glifo_metro(&v.classificacao);
         svg.push_str(&format!(
-            "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"600\" fill=\"{}\">{}</text>\n",
-            mx + (meter_width / 2),
+            "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"600\" fill=\"{}\" text-anchor=\"start\">{}</text>\n",
+            mx + 10,
             y_verse,
             theme.badge_text,
-            escape_xml(&meter_label)
+            escape_xml(&num_txt)
+        ));
+        svg.push_str(&format!(
+            "<use href=\"{}\" x=\"{}\" y=\"{}\" width=\"13\" height=\"13\" fill=\"{}\" />\n",
+            metro_ico_id,
+            mx + 30,
+            my + 3,
+            theme.badge_text
         ));
 
         current_y += verse_line_height;
@@ -1063,8 +1142,12 @@ pub fn gerar_card_svg(
     // 1. Mini-legenda contextual dos ícones métricos utilizados
     let mut icones_unicos: Vec<(String, String)> = Vec::new();
     for (_, v) in &versos_selecionados {
-        if !icones_unicos.iter().any(|(ico, _)| ico == &v.icone) {
-            icones_unicos.push((v.icone.clone(), v.classificacao.clone()));
+        if !icones_unicos
+            .iter()
+            .any(|(_, nome)| nome == &v.classificacao)
+        {
+            let ico_id = mapear_id_glifo_metro(&v.classificacao).to_string();
+            icones_unicos.push((ico_id, v.classificacao.clone()));
         }
     }
 
@@ -1119,7 +1202,7 @@ pub fn gerar_card_svg(
 
         let mut primeiro_item = true;
 
-        for (ico, nome) in &icones_unicos {
+        for (ico_id, nome) in &icones_unicos {
             if !primeiro_item {
                 svg.push_str(&format!(
                     "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\" opacity=\"0.5\">  •  </text>\n",
@@ -1128,13 +1211,20 @@ pub fn gerar_card_svg(
                 cur_x += 20.0;
             }
             primeiro_item = false;
-            let rotulo = format!("{} {}", ico, nome);
-            let w = (rotulo.chars().count() as f32) * 6.8;
+            svg.push_str(&format!(
+                "<use href=\"{}\" x=\"{:.1}\" y=\"{}\" width=\"13\" height=\"13\" fill=\"{}\" />\n",
+                ico_id,
+                cur_x,
+                current_y - 11,
+                theme.footer_color
+            ));
+            cur_x += 16.0;
+            let w = (nome.chars().count() as f32) * 6.5;
             svg.push_str(&format!(
                 "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
                 cur_x,
                 current_y,
-                escape_xml(&rotulo)
+                escape_xml(nome)
             ));
             cur_x += w;
         }
