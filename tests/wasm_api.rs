@@ -2053,7 +2053,9 @@ Buscando a paz e a ternura.";
         true,
     );
     assert!(
-        !svg_indet.contains("Rima Provável") && !svg_indet.contains("ProvavelRica") && !svg_indet.contains("ProvavelPobre"),
+        !svg_indet.contains("Rima Provável")
+            && !svg_indet.contains("ProvavelRica")
+            && !svg_indet.contains("ProvavelPobre"),
         "Card nao deve conter o rotulo antigo Rima Provavel"
     );
     if svg_indet.contains("Indeterminada") {
@@ -2119,12 +2121,16 @@ Buscando a paz e a ternura.";
             true,
         );
         assert!(
-            svg_tema.contains("id=\"ico-rima-pobre\"") && svg_tema.contains("href=\"#ico-rima-pobre\""),
+            svg_tema.contains("id=\"ico-rima-pobre\"")
+                && svg_tema.contains("href=\"#ico-rima-pobre\""),
             "Tema '{}' deve conter defs e use dos icones vetoriais",
             tema
         );
         assert!(
-            !svg_tema.contains("✨") && !svg_tema.contains("⚡") && !svg_tema.contains("🔥") && !svg_tema.contains("💎"),
+            !svg_tema.contains("✨")
+                && !svg_tema.contains("⚡")
+                && !svg_tema.contains("🔥")
+                && !svg_tema.contains("💎"),
             "Tema '{}' nao deve estampar emojis de rima",
             tema
         );
