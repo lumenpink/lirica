@@ -2135,4 +2135,22 @@ Buscando a paz e a ternura.";
             tema
         );
     }
+
+    // 10. Erradicação total de emojis métricos e adoção de glifos SVG (#ico-metro-...)
+    assert!(
+        svg_camoes.contains("href=\"#ico-metro-"),
+        "Badge métrico deve conter use de glifo vetorial #ico-metro-..."
+    );
+    assert!(
+        svg_camoes.contains("id=\"ico-metro-heroico\""),
+        "SVG deve conter defs dos glifos métricos utilizados"
+    );
+    let emojis_metricos = ["⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶"];
+    for emo in &emojis_metricos {
+        assert!(
+            !svg_camoes.contains(emo),
+            "Card poético não deve conter o emoji métrico '{}'",
+            emo
+        );
+    }
 }
