@@ -3,7 +3,7 @@
 **Ticket:** #44  
 **Branch:** `feat/44-joaju-lirica-0-6-0-dev-68-com-sinalefa-terciaria`  
 **Escopo:** `lirica` (`Cargo.toml`, `tests/wasm_api.rs`, WebAssembly)  
-**Status:** Em Especificação (Fase 3: Spec)
+**Status:** Concluído e Validado (Fases 1 a 8)
 
 ---
 

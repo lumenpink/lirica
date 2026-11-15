@@ -2242,11 +2242,8 @@ fn test_escansao_sinalefa_terciaria_com_clitico_ponte() {
     );
 
     // 3. Mutação e exportação Typst
-    let typst_doc = exportar_documento_typst(
-        "O horizonte da serra a alvorecer",
-        "Aurora",
-        "Anônimo",
-    );
+    let typst_doc =
+        exportar_documento_typst("O horizonte da serra a alvorecer", "Aurora", "Anônimo");
     assert!(
         typst_doc.contains("Decassílabo"),
         "Documento Typst deve registrar classificação de Decassílabo"
