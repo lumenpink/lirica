@@ -1946,14 +1946,22 @@ Amor é fogo que arde sem se ver,
         true,
     );
 
-    // 1. Cada verso deve estampar sua letra acompanhada do ícone correspondente (sem rótulos de texto longos)
+    // 1. Cada verso deve estampar sua letra acompanhada do glifo SVG correspondente (sem emojis de sistema)
     assert!(
-        svg_camoes.contains("A ✦") || svg_camoes.contains("A &#10022;"),
-        "Versos 1 e 4 (ver x doer) devem portar o ícone de rima pobre (✦) junto à letra A"
+        svg_camoes.contains("href=\"#ico-rima-pobre\""),
+        "Versos 1 e 4 (ver x doer) devem portar o glifo SVG de rima pobre (#ico-rima-pobre)"
     );
     assert!(
-        svg_camoes.contains("B ✨"),
-        "Versos 2 e 3 (sente x descontente) devem portar o ícone de rima rica (✨) junto à letra B"
+        svg_camoes.contains("href=\"#ico-rima-rica\""),
+        "Versos 2 e 3 (sente x descontente) devem portar o glifo SVG de rima rica (#ico-rima-rica)"
+    );
+    assert!(
+        svg_camoes.contains("id=\"ico-rima-pobre\"") && svg_camoes.contains("id=\"ico-rima-rica\""),
+        "SVG deve conter defs dos icones de rima"
+    );
+    assert!(
+        !svg_camoes.contains("✨") && !svg_camoes.contains("🔥") && !svg_camoes.contains("💎"),
+        "SVG nao deve conter emojis de sistema de rima"
     );
     assert!(
         !svg_camoes.contains("A · Pobre") && !svg_camoes.contains("B · Rica"),
@@ -1974,11 +1982,11 @@ Amor é fogo que arde sem se ver,
 
     // 3. Mini-legenda dinâmica unificada deve decodificar apenas os ícones presentes
     assert!(
-        svg_camoes.contains("✨ Rima Rica") && svg_camoes.contains("✦ Rima Pobre"),
-        "Legenda deve decodificar os ícones de Rima Rica e Rima Pobre presentes no quarteto"
+        svg_camoes.contains("Rima Rica") && svg_camoes.contains("Rima Pobre"),
+        "Legenda deve decodificar os tipos de Rima Rica e Rima Pobre presentes no quarteto"
     );
 
-    // 4. Detecção de clichê com ícone 🔥 no badge do par desgastado
+    // 4. Detecção de clichê com glifo #ico-cliche no badge do par desgastado
     let poema_cliche = "\
 O meu primeiro e desolado amor,
 Na solidão profunda desta dor,
@@ -1999,15 +2007,50 @@ Alimentando a doce ilusão.";
     );
 
     assert!(
-        svg_cliche.contains("🔥"),
-        "Badge ou legenda do par clichê (amor x dor) deve estampar o marcador de clichê 🔥"
+        svg_cliche.contains("href=\"#ico-cliche\""),
+        "Badge do par clichê (amor x dor) deve estampar o marcador vetorial #ico-cliche"
+    );
+    assert!(
+        !svg_cliche.contains("🔥"),
+        "Card com clichê não deve conter emoji 🔥"
     );
 
-    // 5. Anti-mutante: poema sem clichê não deve exibir glifo 🔥
+    // 5. Anti-mutante: poema sem clichê não deve exibir glifo #ico-cliche
     assert!(
-        !svg_camoes.contains("🔥"),
-        "Poema clássico sem clichê saturado não deve conter marcador 🔥"
+        !svg_camoes.contains("href=\"#ico-cliche\""),
+        "Poema clássico sem clichê saturado não deve conter marcador #ico-cliche"
     );
+
+    // 6. Teste de unificação: rima indeterminada/provável deve renderizar texto unificado
+    let poema_indeterminado = "\
+Caminho só pela estrada escura,
+Buscando a paz e a ternura.";
+    let svg_indet = gerar_card_svg(
+        poema_indeterminado,
+        "Indeterminada",
+        "Poeta",
+        "manuscrito",
+        -1,
+        true,
+        true,
+        true,
+        true,
+        true,
+    );
+    assert!(
+        !svg_indet.contains("Rima Provável") && !svg_indet.contains("ProvavelRica") && !svg_indet.contains("ProvavelPobre"),
+        "Card nao deve conter o rotulo antigo Rima Provavel"
+    );
+    if svg_indet.contains("Indeterminada") {
+        assert!(
+            svg_indet.contains("Rima Indeterminada (pelo motor automático)"),
+            "Legenda de rima indeterminada deve estampar a explicacao do motor automatico"
+        );
+        assert!(
+            svg_indet.contains("href=\"#ico-rima-indeterminada\""),
+            "Badge ou legenda indeterminada deve usar o glifo #ico-rima-indeterminada"
+        );
+    }
 
     // 6. Anti-mutante: desativação do flag rima não deve gerar badges nem legenda rímica
     let svg_sem_rima = gerar_card_svg(
