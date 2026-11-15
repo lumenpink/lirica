@@ -2084,7 +2084,9 @@ Buscando a paz e a ternura.";
         !svg_sem_rima.contains("A · Pobre")
             && !svg_sem_rima.contains("B · Rica")
             && !svg_sem_rima.contains("Rima Rica")
-            && !svg_sem_rima.contains("Rima Pobre"),
+            && !svg_sem_rima.contains("Rima Pobre")
+            && !svg_sem_rima.contains("href=\"#ico-rima-")
+            && !svg_sem_rima.contains("href=\"#ico-cliche\""),
         "Com rima desativada, nenhum badge ou legenda de rima deve ser emitido"
     );
 
@@ -2101,4 +2103,30 @@ Buscando a paz e a ternura.";
             && !svg_cliche.contains("Livre"),
         "Mesmo em poema com rimas emparelhadas, nenhum laudo acústico descritivo deve ser renderizado no rodapé"
     );
+
+    // 9. Mutação de temas: manuscrito, noturno e minimalista
+    for tema in &["manuscrito", "noturno", "minimalista"] {
+        let svg_tema = gerar_card_svg(
+            camoes,
+            "Soneto de Amor",
+            "Camões",
+            tema,
+            -1,
+            true,
+            true,
+            true,
+            true,
+            true,
+        );
+        assert!(
+            svg_tema.contains("id=\"ico-rima-pobre\"") && svg_tema.contains("href=\"#ico-rima-pobre\""),
+            "Tema '{}' deve conter defs e use dos icones vetoriais",
+            tema
+        );
+        assert!(
+            !svg_tema.contains("✨") && !svg_tema.contains("⚡") && !svg_tema.contains("🔥") && !svg_tema.contains("💎"),
+            "Tema '{}' nao deve estampar emojis de rima",
+            tema
+        );
+    }
 }
