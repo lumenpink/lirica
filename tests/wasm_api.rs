@@ -2211,15 +2211,44 @@ fn test_escansao_sinalefa_terciaria_com_clitico_ponte() {
         "Verso 'O horizonte da serra a alvorecer' deve ter 10 sílabas, teve {}",
         v.total_metricas
     );
-    assert!(
-        v.classificacao.contains("Decassílabo"),
-        "Classificação deve ser Decassílabo, foi '{}'",
-        v.classificacao
-    );
+    assert_eq!(v.classificacao, "Decassílabo Heroico");
     assert_eq!(v.tonicas, vec![3, 6, 10]);
     assert!(
         v.silabas.iter().any(|s| s.texto == "ra_a_al"),
         "Deve conter a sílaba fundida 'ra_a_al', sílabas foram: {:?}",
         v.silabas.iter().map(|s| &s.texto).collect::<Vec<_>>()
+    );
+
+    // 2. Mutação e integração: Card SVG deve estampar badge 10 e glifo #ico-metro-heroico
+    let card_svg = gerar_card_svg(
+        "O horizonte da serra a alvorecer",
+        "Aurora",
+        "Anônimo",
+        "manuscrito",
+        -1,
+        true,
+        false,
+        false,
+        false,
+        true,
+    );
+    assert!(
+        card_svg.contains("#ico-metro-heroico"),
+        "Card SVG deve conter glifo vetorial de Decassílabo Heroico"
+    );
+    assert!(
+        card_svg.contains(">10</text>"),
+        "Card SVG deve estampar badge com 10 sílabas"
+    );
+
+    // 3. Mutação e exportação Typst
+    let typst_doc = exportar_documento_typst(
+        "O horizonte da serra a alvorecer",
+        "Aurora",
+        "Anônimo",
+    );
+    assert!(
+        typst_doc.contains("Decassílabo"),
+        "Documento Typst deve registrar classificação de Decassílabo"
     );
 }
