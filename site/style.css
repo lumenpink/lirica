@@ -2094,3 +2094,41 @@ body {
   color: var(--text-muted);
   font-style: italic;
 }
+
+/* ==========================================================================
+   Glifos Vetoriais SVG de Alto Contraste (Ticket #42)
+   ========================================================================== */
+
+.ico-svg {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: -2px;
+  fill: currentColor;
+}
+
+.ico-svg-lg {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+.rhyme-pair-badge .ico-svg {
+  margin-right: 4px;
+}
+
+.cliche-tag .ico-svg {
+  width: 12px;
+  height: 12px;
+  margin-right: 3px;
+  vertical-align: -1px;
+}
+
+.ico-cliche .ico-svg {
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+}
+

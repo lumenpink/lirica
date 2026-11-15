@@ -9,6 +9,33 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📜</text></svg>">
 </head>
 <body>
+  <!-- Catálogo de Símbolos Vetoriais SVG Compartilhados -->
+  <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="ico-rima-rica" viewBox="0 0 16 16">
+        <path d="M8,1.5 L10.1,5.8 L14.8,6.5 L11.4,9.8 L12.2,14.5 L8,12.3 L3.8,14.5 L4.6,9.8 L1.2,6.5 L5.9,5.8 Z" />
+      </symbol>
+      <symbol id="ico-rima-pobre" viewBox="0 0 16 16">
+        <path d="M8,1.5 C8,5.2 10.8,8 14.5,8 C10.8,8 8,10.8 8,14.5 C8,10.8 5.2,8 1.5,8 C5.2,8 8,5.2 8,1.5 Z" />
+      </symbol>
+      <symbol id="ico-rima-toante" viewBox="0 0 16 16">
+        <path d="M9.5,1.5 L3.5,8.5 L8,8.5 L6.5,14.5 L12.5,7.5 L8.5,7.5 Z" />
+      </symbol>
+      <symbol id="ico-rima-preciosa" viewBox="0 0 16 16">
+        <path d="M4.5,2 L11.5,2 L15,6 L8,14.5 L1,6 Z M3.5,5.5 L5.8,5.5 L7.2,3 L4.8,3 Z M7.2,5.5 L8.8,5.5 L8,3 Z M10.2,5.5 L12.5,5.5 L11.2,3 L8.8,3 Z M3.2,6.8 L7.2,6.8 L8,12.2 Z M8.8,6.8 L12.8,6.8 L8,12.2 Z" />
+      </symbol>
+      <symbol id="ico-rima-rara" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8,2 C4.69,2 2,4.69 2,8 C2,11.31 4.69,14 8,14 C11.31,14 14,11.31 14,8 C14,4.69 11.31,2 8,2 Z M8,4.5 C6.07,4.5 4.5,6.07 4.5,8 C4.5,9.93 6.07,11.5 8,11.5 C9.93,11.5 11.5,9.93 11.5,8 C11.5,6.07 9.93,4.5 8,4.5 Z M8,6 C6.9,6 6,6.9 6,8 C6,9.1 6.9,10 8,10 C9.1,10 10,9.1 10,8 C10,6.9 9.1,6 8,6 Z" />
+      </symbol>
+      <symbol id="ico-rima-indeterminada" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8,1.5 L14.5,8 L8,14.5 L1.5,8 Z M8,4.5 L11.5,8 L8,11.5 L4.5,8 Z M8,6.5 C7.17,6.5 6.5,7.17 6.5,8 C6.5,8.83 7.17,9.5 8,9.5 C8.83,9.5 9.5,8.83 9.5,8 C9.5,7.17 8.83,6.5 8,6.5 Z" />
+      </symbol>
+      <symbol id="ico-cliche" viewBox="0 0 16 16">
+        <path d="M8,1.5 C7.2,4.2 4.5,6 4.5,9.5 C4.5,12.2 6.2,14.5 8.5,14.5 C10.8,14.5 12.5,12.2 12.5,9.5 C12.5,7.2 10.8,5.2 10,3.8 C10,5.8 8.6,6.6 8,7.2 C7.5,5.8 8,3.5 8,1.5 Z" />
+      </symbol>
+    </defs>
+  </svg>
+
   <header class="app-header">
     <div class="header-brand">
       <div class="header-brand-left">
@@ -21,22 +48,22 @@
 
       <div class="header-actions">
         <button id="btn-abrir-rascunhos" class="header-btn" title="Gerenciar múltiplos rascunhos poéticos salvos, alternar e exportar">
-          <span aria-hidden="true">📂</span> Rascunhos <span id="drafts-count-badge" class="drafts-badge">1</span>
+          Rascunhos <span id="drafts-count-badge" class="drafts-badge">1</span>
         </button>
         <button id="btn-exportar-card" class="header-btn" title="Exportar card visual do poema em alta resolução (PNG/SVG) ou Typst">
-          <span aria-hidden="true">🎨</span> Exportar Card
+          Exportar Card
         </button>
         <button id="btn-abrir-exemplos" class="header-btn" title="Escolher um exemplo clássico da literatura lusófona">
-          <span aria-hidden="true">📚</span> Exemplos
+          Exemplos
         </button>
         <button id="btn-header-limpar" class="header-btn header-btn-clear" title="Limpar todo o texto e recomeçar">
-          <span aria-hidden="true">🧹</span> Limpar
+          Limpar
         </button>
         <a href="docs/index.html" class="header-btn header-btn-docs" title="Documentação completa do motor, regras, formas e gabarito">
-          <span aria-hidden="true">📖</span> Documentação
+          Documentação
         </a>
         <a href="ajuda.html" class="header-btn" title="Guia métrico e glossário poético de A a Z">
-          <span aria-hidden="true">❓</span> Ajuda
+          Ajuda
         </a>
       </div>
     </div>
@@ -83,7 +110,7 @@
           <div class="card-title-group">
             <span class="card-kicker">Peça / Forma Poética</span>
             <div class="card-title-row">
-              <span class="card-icon" id="form-icon">🏆</span>
+              <span class="card-icon" id="form-icon">❦</span>
               <h2 class="card-title" id="form-name">Analisando peça...</h2>
             </div>
           </div>
@@ -107,7 +134,7 @@
           <div class="card-title-group">
             <span class="card-kicker">Avaliação de Rimas</span>
             <div class="card-title-row">
-              <span class="card-icon">🎯</span>
+              <span class="card-icon">❦</span>
               <h2 class="card-title" id="rhyme-scheme-title">Rima: --</h2>
             </div>
           </div>
@@ -175,7 +202,7 @@
     <section class="notation-guide" aria-label="Guia de Notação e Ícones Métricos">
       <div class="guide-title">
         <div class="guide-title-left">
-          <span class="guide-icon">📖</span>
+          <span class="guide-icon">❦</span>
           <strong>Símbolos, Operadores & Ícones Métricos:</strong>
         </div>
         <button type="button" id="btn-abrir-guia-completo" class="btn-guia-atalho" title="Abrir glossário didático completo em janela modal">Ver Guia Detalhado ↗</button>
@@ -229,11 +256,12 @@
       <!-- Linha 3: Legenda de Ícones de Auditoria de Rimas -->
       <div class="guide-icons-row" aria-label="Legenda de Ícones de Auditoria de Rimas">
         <span class="guide-icons-title">Auditoria de Rimas:</span>
-        <span class="icon-tag" title="Clichê Histórico de Rima (par desgastado na tradição clássica)">🔥 Clichê Histórico</span>
-        <span class="icon-tag" title="Rima Rica (classes gramaticais distintas)">✨ Rima Rica</span>
-        <span class="icon-tag" title="Rima Preciosa ou Rara (proparoxítonas ou termos raros)">💎 Rima Preciosa</span>
-        <span class="icon-tag" title="Rima Consoante ou Pobre (mesma classe gramatical)">✦ Rima Consoante</span>
-        <span class="icon-tag" title="Rima Toante ou Imperfeita (apenas vogal tônica idêntica)">⚡ Rima Toante</span>
+        <span class="icon-tag" title="Clichê Histórico de Rima (par desgastado na tradição clássica)"><svg class="ico-svg"><use href="#ico-cliche"></use></svg> Clichê Histórico</span>
+        <span class="icon-tag" title="Rima Rica (classes gramaticais distintas)"><svg class="ico-svg"><use href="#ico-rima-rica"></use></svg> Rima Rica</span>
+        <span class="icon-tag" title="Rima Preciosa ou Rara (proparoxítonas ou termos raros)"><svg class="ico-svg"><use href="#ico-rima-preciosa"></use></svg> Rima Preciosa</span>
+        <span class="icon-tag" title="Rima Consoante ou Pobre (mesma classe gramatical)"><svg class="ico-svg"><use href="#ico-rima-pobre"></use></svg> Rima Consoante</span>
+        <span class="icon-tag" title="Rima Toante ou Imperfeita (apenas vogal tônica idêntica)"><svg class="ico-svg"><use href="#ico-rima-toante"></use></svg> Rima Toante</span>
+        <span class="icon-tag" title="Rima Indeterminada (pelo motor automático)"><svg class="ico-svg"><use href="#ico-rima-indeterminada"></use></svg> Rima Indeterminada</span>
       </div>
     </section>
   </main>
@@ -243,7 +271,7 @@
     <div class="modal-container">
       <div class="modal-header">
         <div class="modal-header-text">
-          <h2 id="modal-exemplos-titulo" class="modal-title">📚 Galeria de Exemplos Clássicos</h2>
+          <h2 id="modal-exemplos-titulo" class="modal-title">Galeria de Exemplos Clássicos</h2>
           <p class="modal-subtitle">Selecione uma peça poética da literatura lusófona para carregar e analisar no laboratório:</p>
         </div>
         <button id="btn-fechar-modal" class="modal-close-btn" aria-label="Fechar janela de exemplos">✕</button>
@@ -268,7 +296,7 @@
     <div class="modal-container modal-legenda-container">
       <div class="modal-header">
         <div class="modal-header-text">
-          <h2 id="modal-legenda-titulo" class="modal-title">📖 Guia Completo de Notação & Legenda Lírica</h2>
+          <h2 id="modal-legenda-titulo" class="modal-title">Guia Completo de Notação & Legenda Lírica</h2>
           <p class="modal-subtitle">Conceitos fundamentais de escansão clássica, metros lusófonos e auditoria de rimas:</p>
         </div>
         <button id="btn-fechar-modal-legenda" class="modal-close-btn" aria-label="Fechar janela de legenda">✕</button>
@@ -277,7 +305,7 @@
         
         <!-- Bloco 1: Metrificação & Ritmo -->
         <div class="legenda-secao">
-          <h3 class="legenda-secao-titulo">📐 Metrificação e Formas Rítmicas</h3>
+          <h3 class="legenda-secao-titulo">Metrificação e Formas Rítmicas</h3>
           <div class="legenda-grid">
             <div class="legenda-card">
               <span class="legenda-card-icone">⚔️</span>
@@ -368,41 +396,48 @@
 
         <!-- Bloco 2: Auditoria de Rimas & Fonologia -->
         <div class="legenda-secao">
-          <h3 class="legenda-secao-titulo">🎯 Auditoria de Rimas & Morfologia</h3>
+          <h3 class="legenda-secao-titulo">Auditoria de Rimas & Morfologia</h3>
           <div class="legenda-grid">
             <div class="legenda-card">
-              <span class="legenda-card-icone">🔥</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-cliche"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Clichê Histórico de Rima</strong>
                 <p>Par rímico hiper-saturado na tradição clássica (ex.: <em>amor × dor</em>, <em>coração × ilusão</em>, <em>peito × leito</em>).</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">✨</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-rima-rica"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Rima Rica</strong>
                 <p>Convergência fonética entre palavras de <strong>classes gramaticais distintas</strong> (ex.: verbo × substantivo).</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">💎</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-rima-preciosa"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Rima Preciosa / Rara</strong>
                 <p>Combinações acústicas raras, rimas proparoxítonas (esdrúxulas) ou palavras de morfologia complexa.</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">✦</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-rima-pobre"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Rima Consoante / Pobre</strong>
                 <p>Rima foneticamente perfeita entre termos da <strong>mesma classe gramatical</strong> (ex.: verbo × verbo, sufixo × sufixo).</p>
               </div>
             </div>
             <div class="legenda-card">
-              <span class="legenda-card-icone">⚡</span>
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-rima-toante"></use></svg></span>
               <div class="legenda-card-conteudo">
                 <strong>Rima Toante / Imperfeita</strong>
                 <p>Identidade restrita à vogal tônica (assonância), divergindo nas consoantes subsequentes (ex.: <em>festa × terra</em>).</p>
+              </div>
+            </div>
+            <div class="legenda-card">
+              <span class="legenda-card-icone"><svg class="ico-svg-lg"><use href="#ico-rima-indeterminada"></use></svg></span>
+              <div class="legenda-card-conteudo">
+                <strong>Rima Indeterminada (pelo motor automático)</strong>
+                <p>Ambiguidade morfológica nos termos finais que não pode ser resolvida com certeza pelo analisador estático.</p>
               </div>
             </div>
           </div>
@@ -410,7 +445,7 @@
 
         <!-- Bloco 3: Notação Fonética & Sinalefa -->
         <div class="legenda-secao">
-          <h3 class="legenda-secao-titulo">🔤 Notação Fonética de Escansão</h3>
+          <h3 class="legenda-secao-titulo">Notação Fonética de Escansão</h3>
           <div class="legenda-grid">
             <div class="legenda-card">
               <span class="legenda-card-icone">‿</span>
@@ -442,7 +477,7 @@
     <div class="modal-container modal-export-container">
       <div class="modal-header">
         <div class="modal-header-text">
-          <h2 id="modal-exportar-titulo" class="modal-title">🎨 Exportar Card Poético</h2>
+          <h2 id="modal-exportar-titulo" class="modal-title">Exportar Card Poético</h2>
           <p class="modal-subtitle">Gere um card elegante com tipografia clássica, notação métrica e diagnóstico para partilha:</p>
         </div>
         <button id="btn-fechar-modal-exportar" class="modal-close-btn" aria-label="Fechar janela de exportação">✕</button>
@@ -452,9 +487,9 @@
           <div class="export-control-item">
             <label for="select-card-tema"><strong>Tema Visual:</strong></label>
             <select id="select-card-tema" class="select-input">
-              <option value="manuscrito" selected>📜 Manuscrito (Pergaminho)</option>
-              <option value="noturno">🌙 Noturno (Lírica Dark)</option>
-              <option value="minimalista">✒️ Minimalista (P&B Editorial)</option>
+              <option value="manuscrito" selected>Manuscrito (Pergaminho)</option>
+              <option value="noturno">Noturno (Lírica Dark)</option>
+              <option value="minimalista">Minimalista (P&B Editorial)</option>
             </select>
           </div>
           <div class="export-control-item">
@@ -479,9 +514,9 @@
       </div>
       <div class="modal-footer modal-export-footer">
         <div class="export-actions-group">
-          <button id="btn-export-png" class="btn-primary-sm" title="Baixar imagem PNG em alta resolução (2x Retina)">📥 Baixar PNG</button>
+          <button id="btn-export-png" class="btn-primary-sm" title="Baixar imagem PNG em alta resolução (2x Retina)">Baixar PNG</button>
           <button id="btn-export-svg" class="btn-ghost" title="Baixar arquivo vetorial SVG escalável">Baixar SVG</button>
-          <button id="btn-copy-card" class="btn-ghost" title="Copiar imagem para a área de transferência">📋 Copiar Imagem</button>
+          <button id="btn-copy-card" class="btn-ghost" title="Copiar imagem para a área de transferência">Copiar Imagem</button>
           <button id="btn-export-typst" class="btn-ghost" title="Baixar documento Typst (.typ) formatado">Exportar Typst (.typ)</button>
         </div>
         <button id="btn-fechar-modal-exportar-bottom" class="btn-ghost">Fechar</button>
@@ -494,7 +529,7 @@
     <div class="modal-container modal-drafts-container">
       <div class="modal-header">
         <div class="modal-header-text">
-          <h2 id="modal-rascunhos-titulo" class="modal-title">📂 Meus Rascunhos Poéticos</h2>
+          <h2 id="modal-rascunhos-titulo" class="modal-title">Meus Rascunhos Poéticos</h2>
           <p class="modal-subtitle">Alterne entre suas obras em andamento, crie novos poemas e gerencie backups locais:</p>
         </div>
         <button id="btn-fechar-modal-rascunhos" class="modal-close-btn" aria-label="Fechar janela de rascunhos">✕</button>
@@ -502,14 +537,14 @@
       <div class="modal-body modal-drafts-body">
         <div class="drafts-toolbar">
           <button id="btn-novo-rascunho" class="btn-primary-sm" title="Criar um novo rascunho em branco">
-            <span aria-hidden="true">➕</span> Novo Rascunho
+            Novo Rascunho
           </button>
           <div class="drafts-backup-actions">
             <button id="btn-exportar-rascunhos-json" class="btn-ghost-sm" title="Baixar todos os rascunhos em formato JSON">
-              <span aria-hidden="true">💾</span> Exportar Backup JSON
+              Exportar Backup JSON
             </button>
             <label for="input-importar-rascunhos-json" id="btn-importar-rascunhos-json" class="btn-ghost-sm label-as-btn" title="Restaurar rascunhos a partir de arquivo JSON">
-              <span aria-hidden="true">📥</span> Importar Backup JSON
+              Importar Backup JSON
               <input type="file" id="input-importar-rascunhos-json" accept=".json,application/json" style="display: none;">
             </label>
           </div>
@@ -519,7 +554,7 @@
         </div>
       </div>
       <div class="modal-footer modal-drafts-footer">
-        <span class="modal-footer-hint">🔒 Armazenamento 100% privado no seu navegador via LocalStorage.</span>
+        <span class="modal-footer-hint">Armazenamento 100% privado no seu navegador via LocalStorage.</span>
         <button id="btn-fechar-modal-rascunhos-bottom" class="btn-ghost">Fechar</button>
       </div>
     </div>

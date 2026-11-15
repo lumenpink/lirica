@@ -485,7 +485,7 @@ function abrirModalLegenda() {
     body.innerHTML = templateGeralLegendaHTML;
     const modalTitulo = document.getElementById('modal-legenda-titulo');
     const modalSub = modalLegenda.querySelector('.modal-subtitle');
-    if (modalTitulo) modalTitulo.textContent = '📖 Guia Completo de Notação & Legenda Lírica';
+    if (modalTitulo) modalTitulo.textContent = 'Guia Completo de Notação & Legenda Lírica';
     if (modalSub) modalSub.textContent = 'Conceitos fundamentais de escansão clássica, metros lusófonos e auditoria de rimas:';
   } else if (body && templateGeralLegendaHTML === null) {
     templateGeralLegendaHTML = body.innerHTML;
@@ -736,7 +736,7 @@ function renderizarListaRascunhos() {
 
     if (draft.autor) {
       const authorSpan = document.createElement('span');
-      authorSpan.textContent = `✍️ ${draft.autor}`;
+      authorSpan.textContent = `Por: ${draft.autor}`;
       metaRow.appendChild(authorSpan);
     }
 
@@ -744,16 +744,16 @@ function renderizarListaRascunhos() {
       .split('\n')
       .filter((v) => v.trim() && !v.trim().startsWith('#') && !v.trim().startsWith('%%')).length;
     const versosSpan = document.createElement('span');
-    versosSpan.textContent = `📏 ${versosCount} verso(s)`;
+    versosSpan.textContent = `${versosCount} verso(s)`;
     metaRow.appendChild(versosSpan);
 
     if (draft.atualizadoEm) {
       const dateSpan = document.createElement('span');
       try {
         const d = new Date(draft.atualizadoEm);
-        dateSpan.textContent = `🕒 ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+        dateSpan.textContent = `${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
       } catch {
-        dateSpan.textContent = '🕒 data desconhecida';
+        dateSpan.textContent = 'data desconhecida';
       }
       metaRow.appendChild(dateSpan);
     }
@@ -942,6 +942,20 @@ function abrirModalMetroContextual(vData, verseIndex) {
   if (btnFecharModalLegenda) btnFecharModalLegenda.focus();
 }
 
+function obterIcoHrefRima(qualidade) {
+  switch (qualidade) {
+    case 'Rica': return '#ico-rima-rica';
+    case 'Pobre': return '#ico-rima-pobre';
+    case 'Toante': return '#ico-rima-toante';
+    case 'Preciosa': return '#ico-rima-preciosa';
+    case 'Rara': return '#ico-rima-rara';
+    case 'ProvavelPobre':
+    case 'ProvavelRica':
+    case 'Indeterminada': return '#ico-rima-indeterminada';
+    default: return '#ico-rima-pobre';
+  }
+}
+
 function abrirModalRimaContextual(par, qualLabel, verseIndex) {
   if (!modalLegenda) return;
   const body = modalLegenda.querySelector('.modal-legenda-body');
@@ -955,7 +969,8 @@ function abrirModalRimaContextual(par, qualLabel, verseIndex) {
   const modalSub = modalLegenda.querySelector('.modal-subtitle');
 
   if (modalTitulo) {
-    modalTitulo.innerHTML = `✦ Rima ${qualLabel || par.qualidade} • Verso ${verseIndex + 1}`;
+    const icoHref = obterIcoHrefRima(par.qualidade);
+    modalTitulo.innerHTML = `<svg class="ico-svg"><use href="${icoHref}"></use></svg> Rima ${qualLabel || par.qualidade} • Verso ${verseIndex + 1}`;
   }
   if (modalSub) {
     modalSub.textContent = `Avaliação morfológica e acústica do par rimante:`;
@@ -1424,24 +1439,10 @@ function updateStats(webData) {
     formStructureTag.textContent = `Estrutura: ${forma.estrutura_detectada}`;
     formPatternTag.textContent = `Padrão: ${forma.padrao_esperado}`;
 
-    if (forma.nome.includes('Soneto')) {
-      formIcon.textContent = '👑';
-    } else if (forma.nome.includes('Sonetilha')) {
-      formIcon.textContent = '✨';
-    } else if (forma.nome.includes('Espinela')) {
-      formIcon.textContent = '📜';
-    } else if (forma.nome.includes('Martelo')) {
-      formIcon.textContent = '🔨';
-    } else if (forma.nome.includes('Cordel') || forma.nome.includes('Sextilha') || forma.nome.includes('Septilha')) {
-      formIcon.textContent = '🌿';
-    } else if (forma.nome.includes('Haicai')) {
-      formIcon.textContent = '🌸';
-    } else {
-      formIcon.textContent = '🏆';
-    }
+    formIcon.textContent = '❦';
 
     if (forma.observacoes && forma.observacoes.length > 0) {
-      formAlerts.innerHTML = forma.observacoes.map(o => `<div>⚠️ ${o}</div>`).join('');
+      formAlerts.innerHTML = forma.observacoes.map(o => `<div>${o}</div>`).join('');
       formAlerts.style.display = 'flex';
     } else {
       formAlerts.style.display = 'none';
@@ -1552,32 +1553,26 @@ function createStanzaHeaderBlock(stanzaIdx, webData, canDelete, onDelete) {
       switch (par.qualidade) {
         case 'Rica':
           qualityClass = 'quality-rica';
-          icon = '✨ ';
+          icon = '<svg class="ico-svg"><use href="#ico-rima-rica"></use></svg> ';
           break;
         case 'Preciosa':
           qualityClass = 'quality-preciosa';
-          icon = '💎 ';
+          icon = '<svg class="ico-svg"><use href="#ico-rima-preciosa"></use></svg> ';
           break;
         case 'Rara':
           qualityClass = 'quality-rara';
-          icon = '✦ ';
+          icon = '<svg class="ico-svg"><use href="#ico-rima-rara"></use></svg> ';
           break;
         case 'ProvavelPobre':
-          qualityClass = 'quality-provavel-pobre';
-          icon = '⚡ ';
-          qualLabel = 'Provável';
-          break;
         case 'ProvavelRica':
-          qualityClass = 'quality-provavel-rica';
-          icon = '⚡ ';
-          qualLabel = 'Provável Rica';
-          break;
         case 'Indeterminada':
           qualityClass = 'quality-indeterminada';
-          icon = '? ';
+          icon = '<svg class="ico-svg"><use href="#ico-rima-indeterminada"></use></svg> ';
+          qualLabel = 'Indeterminada';
           break;
         default:
           qualityClass = 'quality-pobre';
+          icon = '<svg class="ico-svg"><use href="#ico-rima-pobre"></use></svg> ';
           break;
       }
 
@@ -1587,7 +1582,7 @@ function createStanzaHeaderBlock(stanzaIdx, webData, canDelete, onDelete) {
       if (par.eh_cliche) {
         const cTag = document.createElement('span');
         cTag.className = 'cliche-tag';
-        cTag.textContent = '🔥 Clichê';
+        cTag.innerHTML = '<svg class="ico-svg"><use href="#ico-cliche"></use></svg> Clichê';
         btn.appendChild(cTag);
       }
 
@@ -1650,10 +1645,11 @@ function gerarConteudoAuditoriaRima(par, qualLabel) {
     : 'vocábulo';
 
   const rotulo = qualLabel || par.qualidade || 'Rima';
+  const icoHref = obterIcoHrefRima(par.qualidade);
 
   return `
     <div class="audit-card-header">
-      <span class="audit-card-title">✦ Rima ${rotulo} • v${par.versos[0]} × v${par.versos[1]}</span>
+      <span class="audit-card-title"><svg class="ico-svg"><use href="${icoHref}"></use></svg> Rima ${rotulo} • v${par.versos[0]} × v${par.versos[1]}</span>
       <button type="button" class="btn-close-audit" aria-label="Fechar">&times;</button>
     </div>
     <div class="audit-card-body">
@@ -1665,7 +1661,7 @@ function gerarConteudoAuditoriaRima(par, qualLabel) {
       <p class="audit-prose-text">${par.explicacao_prosa || 'Rima avaliada pelo motor morfológico.'}</p>
       ${par.eh_cliche ? `
         <div class="audit-cliche-alert">
-          <strong>🔥 Clichê Lírico:</strong> ${par.motivo_cliche || 'Par desgastado pelo uso exaustivo na tradição lírica.'}
+          <strong><svg class="ico-svg"><use href="#ico-cliche"></use></svg> Clichê Lírico:</strong> ${par.motivo_cliche || 'Par desgastado pelo uso exaustivo na tradição lírica.'}
         </div>
       ` : ''}
     </div>
@@ -1842,7 +1838,7 @@ function renderAlignedRows(poemText, castilho, pontuacao, dierese, rima) {
 
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
-          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
+          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche"><svg class="ico-svg"><use href="#ico-cliche"></use></svg></span>`;
           rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver o diagnóstico`;
         } else {
           rhymeBadge.textContent = vData.rima;
@@ -1994,7 +1990,7 @@ function updateSingleRowLive() {
 
         if (verseIsCliche) {
           rhymeBadge.classList.add('is-cliche');
-          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche">🔥</span>`;
+          rhymeBadge.innerHTML = `${vData.rima} <span class="ico-cliche"><svg class="ico-svg"><use href="#ico-cliche"></use></svg></span>`;
           rhymeBadge.title = `Rima: ${vData.rima} (Clichê lírico: ${clicheMotivo}) • Clique/toque para ver o diagnóstico`;
         } else {
           rhymeBadge.textContent = vData.rima;

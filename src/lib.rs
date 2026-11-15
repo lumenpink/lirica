@@ -837,7 +837,29 @@ pub fn gerar_card_svg(
         .legend-txt {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {}; opacity: 0.85; }}\n\
         .criteria-txt {{ font-family: system-ui, sans-serif; font-size: 11px; fill: {}; opacity: 0.75; font-style: italic; }}\n\
         .footer-txt {{ font-family: system-ui, sans-serif; font-size: 12px; fill: {}; }}\n\
-        </style></defs>\n",
+        </style>\n\
+        <g id=\"ico-rima-rica\">\n\
+            <path d=\"M8,1.5 L10.1,5.8 L14.8,6.5 L11.4,9.8 L12.2,14.5 L8,12.3 L3.8,14.5 L4.6,9.8 L1.2,6.5 L5.9,5.8 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-rima-pobre\">\n\
+            <path d=\"M8,1.5 C8,5.2 10.8,8 14.5,8 C10.8,8 8,10.8 8,14.5 C8,10.8 5.2,8 1.5,8 C5.2,8 8,5.2 8,1.5 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-rima-toante\">\n\
+            <path d=\"M9.5,1.5 L3.5,8.5 L8,8.5 L6.5,14.5 L12.5,7.5 L8.5,7.5 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-rima-preciosa\">\n\
+            <path d=\"M4.5,2 L11.5,2 L15,6 L8,14.5 L1,6 Z M3.5,5.5 L5.8,5.5 L7.2,3 L4.8,3 Z M7.2,5.5 L8.8,5.5 L8,3 Z M10.2,5.5 L12.5,5.5 L11.2,3 L8.8,3 Z M3.2,6.8 L7.2,6.8 L8,12.2 Z M8.8,6.8 L12.8,6.8 L8,12.2 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-rima-rara\">\n\
+            <path fill-rule=\"evenodd\" d=\"M8,2 C4.69,2 2,4.69 2,8 C2,11.31 4.69,14 8,14 C11.31,14 14,11.31 14,8 C14,4.69 11.31,2 8,2 Z M8,4.5 C6.07,4.5 4.5,6.07 4.5,8 C4.5,9.93 6.07,11.5 8,11.5 C9.93,11.5 11.5,9.93 11.5,8 C11.5,6.07 9.93,4.5 8,4.5 Z M8,6 C6.9,6 6,6.9 6,8 C6,9.1 6.9,10 8,10 C9.1,10 10,9.1 10,8 C10,6.9 9.1,6 8,6 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-rima-indeterminada\">\n\
+            <path fill-rule=\"evenodd\" d=\"M8,1.5 L14.5,8 L8,14.5 L1.5,8 Z M8,4.5 L11.5,8 L8,11.5 L4.5,8 Z M8,6.5 C7.17,6.5 6.5,7.17 6.5,8 C6.5,8.83 7.17,9.5 8,9.5 C8.83,9.5 9.5,8.83 9.5,8 C9.5,7.17 8.83,6.5 8,6.5 Z\" />\n\
+        </g>\n\
+        <g id=\"ico-cliche\">\n\
+            <path d=\"M8,1.5 C7.2,4.2 4.5,6 4.5,9.5 C4.5,12.2 6.2,14.5 8.5,14.5 C10.8,14.5 12.5,12.2 12.5,9.5 C12.5,7.2 10.8,5.2 10,3.8 C10,5.8 8.6,6.6 8,7.2 C7.5,5.8 8,3.5 8,1.5 Z\" />\n\
+        </g>\n\
+        </defs>\n",
         theme.title_color, theme.author_color, theme.footer_color, theme.text_color,
         theme.tonic_color, theme.text_color, theme.caesura_color, theme.footer_color,
         theme.footer_color, theme.footer_color
@@ -893,15 +915,16 @@ pub fn gerar_card_svg(
                 for par in &est.pares {
                     if par.versos.0 == verso_num || par.versos.1 == verso_num {
                         if eh_toante_geral {
-                            return Some(("⚡", "Toante", par.eh_cliche));
+                            return Some(("#ico-rima-toante", "Toante", par.eh_cliche));
                         }
                         let (ico, tag) = match par.qualidade.as_str() {
-                            "Rica" => ("✨", "Rica"),
-                            "Pobre" => ("✦", "Pobre"),
-                            "Preciosa" => ("💎", "Preciosa"),
-                            "Rara" => ("💠", "Rara"),
-                            "ProvavelRica" | "ProvavelPobre" => ("❓", "Provável"),
-                            "Indeterminada" => ("❓", "Indeterminada"),
+                            "Rica" => ("#ico-rima-rica", "Rica"),
+                            "Pobre" => ("#ico-rima-pobre", "Pobre"),
+                            "Preciosa" => ("#ico-rima-preciosa", "Preciosa"),
+                            "Rara" => ("#ico-rima-rara", "Rara"),
+                            "ProvavelRica" | "ProvavelPobre" | "Indeterminada" => {
+                                ("#ico-rima-indeterminada", "Indeterminada")
+                            }
                             _ => ("", ""),
                         };
                         return Some((ico, tag, par.eh_cliche));
@@ -972,21 +995,15 @@ pub fn gerar_card_svg(
         let mut badge_right_x = card_width - 50;
 
         if let Some(rima_val) = &v.rima {
-            let badge_txt = if let Some((ico, _tag, eh_cliche)) = obter_info_rima_verso(*v_num) {
-                let mut s = if !ico.is_empty() {
-                    format!("{} {}", rima_val, ico)
-                } else {
-                    rima_val.clone()
-                };
-                if eh_cliche {
-                    s.push_str(" 🔥");
-                }
-                s
-            } else {
-                rima_val.clone()
-            };
+            let rima_info = obter_info_rima_verso(*v_num);
+            let tem_ico = rima_info
+                .as_ref()
+                .map(|(ico, _, _)| !ico.is_empty())
+                .unwrap_or(false);
+            let eh_cliche = rima_info.as_ref().map(|(_, _, cl)| *cl).unwrap_or(false);
+            let num_icones = (if tem_ico { 1 } else { 0 }) + (if eh_cliche { 1 } else { 0 });
 
-            let rima_width = (badge_txt.chars().count() * 8 + 14).max(32);
+            let rima_width = 24 + (num_icones * 15);
             let rx = badge_right_x - rima_width;
             let ry = y_verse - 15;
             svg.push_str(&format!(
@@ -994,12 +1011,33 @@ pub fn gerar_card_svg(
                 rx, ry, rima_width, theme.rhyme_bg, theme.badge_border
             ));
             svg.push_str(&format!(
-                "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"bold\" fill=\"{}\">{}</text>\n",
-                rx + (rima_width / 2),
+                "<text x=\"{}\" y=\"{}\" class=\"badge-txt\" font-weight=\"bold\" fill=\"{}\" text-anchor=\"start\">{}</text>\n",
+                rx + 7,
                 y_verse,
                 theme.rhyme_text,
-                escape_xml(&badge_txt)
+                escape_xml(rima_val)
             ));
+
+            let mut icon_x = rx + 18;
+            if tem_ico {
+                let ico_id = rima_info.as_ref().unwrap().0;
+                svg.push_str(&format!(
+                    "<use href=\"{}\" x=\"{}\" y=\"{}\" width=\"13\" height=\"13\" fill=\"{}\" />\n",
+                    ico_id,
+                    icon_x,
+                    ry + 3,
+                    theme.rhyme_text
+                ));
+                icon_x += 15;
+            }
+            if eh_cliche {
+                svg.push_str(&format!(
+                    "<use href=\"#ico-cliche\" x=\"{}\" y=\"{}\" width=\"13\" height=\"13\" fill=\"{}\" />\n",
+                    icon_x,
+                    ry + 3,
+                    theme.rhyme_text
+                ));
+            }
             badge_right_x -= rima_width + 6;
         }
 
@@ -1046,37 +1084,88 @@ pub fn gerar_card_svg(
         }
     }
 
-    let mut legenda_itens: Vec<String> = icones_unicos
-        .iter()
-        .map(|(ico, nome)| format!("{} {}", ico, nome))
-        .collect();
-
+    let mut itens_legenda_rima: Vec<(&'static str, &'static str)> = Vec::new();
     for q in tipos_rima_unicos {
-        let label = match q {
-            "Rica" => "✨ Rima Rica",
-            "Pobre" => "✦ Rima Pobre",
-            "Toante" => "⚡ Rima Toante",
-            "Preciosa" => "💎 Rima Preciosa",
-            "Rara" => "💠 Rima Rara",
-            "Provável" => "❓ Rima Provável",
-            "Indeterminada" => "❓ Rima Indeterminada",
-            _ => q,
+        let item = match q {
+            "Rica" => ("#ico-rima-rica", "Rima Rica"),
+            "Pobre" => ("#ico-rima-pobre", "Rima Pobre"),
+            "Toante" => ("#ico-rima-toante", "Rima Toante"),
+            "Preciosa" => ("#ico-rima-preciosa", "Rima Preciosa"),
+            "Rara" => ("#ico-rima-rara", "Rima Rara"),
+            "Indeterminada" => (
+                "#ico-rima-indeterminada",
+                "Rima Indeterminada (pelo motor automático)",
+            ),
+            _ => ("", ""),
         };
-        legenda_itens.push(label.to_string());
+        if !item.0.is_empty() {
+            itens_legenda_rima.push(item);
+        }
     }
 
     if tem_cliche_no_card {
-        legenda_itens.push("🔥 Clichê Histórico".to_string());
+        itens_legenda_rima.push(("#ico-cliche", "Clichê Histórico"));
     }
 
-    if !legenda_itens.is_empty() {
+    let tem_itens = !icones_unicos.is_empty() || !itens_legenda_rima.is_empty();
+    if tem_itens {
         current_y += 16;
-        let legenda_txt = format!("Legenda: {}", legenda_itens.join("  •  "));
+        let mut cur_x: f32 = 54.0;
         svg.push_str(&format!(
-            "<text x=\"54\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
-            current_y,
-            escape_xml(&legenda_txt)
+            "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\" font-weight=\"600\">Legenda:</text>\n",
+            cur_x, current_y
         ));
+        cur_x += 54.0;
+
+        let mut primeiro_item = true;
+
+        for (ico, nome) in &icones_unicos {
+            if !primeiro_item {
+                svg.push_str(&format!(
+                    "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\" opacity=\"0.5\">  •  </text>\n",
+                    cur_x, current_y
+                ));
+                cur_x += 20.0;
+            }
+            primeiro_item = false;
+            let rotulo = format!("{} {}", ico, nome);
+            let w = (rotulo.chars().count() as f32) * 6.8;
+            svg.push_str(&format!(
+                "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
+                cur_x,
+                current_y,
+                escape_xml(&rotulo)
+            ));
+            cur_x += w;
+        }
+
+        for (ico_id, rotulo) in &itens_legenda_rima {
+            if !primeiro_item {
+                svg.push_str(&format!(
+                    "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\" opacity=\"0.5\">  •  </text>\n",
+                    cur_x, current_y
+                ));
+                cur_x += 20.0;
+            }
+            primeiro_item = false;
+            svg.push_str(&format!(
+                "<use href=\"{}\" x=\"{:.1}\" y=\"{}\" width=\"13\" height=\"13\" fill=\"{}\" />\n",
+                ico_id,
+                cur_x,
+                current_y - 11,
+                theme.footer_color
+            ));
+            cur_x += 16.0;
+            let w = (rotulo.chars().count() as f32) * 6.5;
+            svg.push_str(&format!(
+                "<text x=\"{:.1}\" y=\"{}\" class=\"legend-txt\">{}</text>\n",
+                cur_x,
+                current_y,
+                escape_xml(rotulo)
+            ));
+            cur_x += w;
+        }
+        svg.push('\n');
     }
 
     // Linha divisória antes do rodapé

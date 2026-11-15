@@ -912,15 +912,29 @@ fn test_modal_interativo_legenda_spec() {
     );
 
     // 2. Cobertura de todos os ícones fundamentais no conteúdo do modal
-    let icones_obrigatorios = [
+    let metros_obrigatorios = [
         "⚔️", "🏛️", "🔨", "📜", "🌿", "🍃", "👑", "⚜️", "🎵", "🌊", "🕊️", "🪶", // Metros
-        "🔥", "✨", "💎", "✦", "⚡", // Rimas
     ];
-    for icone in &icones_obrigatorios {
+    for icone in &metros_obrigatorios {
         assert!(
             html.contains(icone),
             "Modal de legenda em index.html deve conter o ícone '{}'",
             icone
+        );
+    }
+    let rimas_obrigatorias = [
+        "#ico-cliche",
+        "#ico-rima-rica",
+        "#ico-rima-preciosa",
+        "#ico-rima-pobre",
+        "#ico-rima-toante",
+        "#ico-rima-indeterminada",
+    ];
+    for ico_id in &rimas_obrigatorias {
+        assert!(
+            html.contains(ico_id),
+            "Modal de legenda em index.html deve conter o glifo SVG '{}'",
+            ico_id
         );
     }
 
@@ -980,18 +994,19 @@ fn test_legenda_estatica_rodape_spec() {
         );
     }
 
-    // 2. Linha de avaliação de rimas com todos os ícones
+    // 2. Linha de avaliação de rimas com todos os glifos vetoriais SVG
     let rimas_obrigatorias = [
-        ("🔥", "Clichê"),
-        ("✨", "Rica"),
-        ("💎", "Preciosa"),
-        ("✦", "Consoante"),
-        ("⚡", "Toante"),
+        ("#ico-cliche", "Clichê"),
+        ("#ico-rima-rica", "Rica"),
+        ("#ico-rima-preciosa", "Preciosa"),
+        ("#ico-rima-pobre", "Consoante"),
+        ("#ico-rima-toante", "Toante"),
+        ("#ico-rima-indeterminada", "Indeterminada"),
     ];
     for (ico, desc) in &rimas_obrigatorias {
         assert!(
             bloco_legenda.contains(ico),
-            "Legenda estática do rodapé deve conter o ícone de rima '{}' ({})",
+            "Legenda estática do rodapé deve conter o glifo SVG de rima '{}' ({})",
             ico,
             desc
         );
