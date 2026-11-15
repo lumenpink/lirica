@@ -2192,3 +2192,34 @@ Buscando a paz e a ternura.";
         );
     }
 }
+
+#[test]
+fn test_escansao_sinalefa_terciaria_com_clitico_ponte() {
+    let json_str = lirica::escandir(
+        "O horizonte da serra a alvorecer",
+        "visual",
+        false,
+        false,
+        false,
+        false,
+    );
+    let analise: AnaliseWeb = serde_json::from_str(&json_str).expect("JSON deve ser válido");
+    assert_eq!(analise.versos.len(), 1);
+    let v = &analise.versos[0];
+    assert_eq!(
+        v.total_metricas, 10,
+        "Verso 'O horizonte da serra a alvorecer' deve ter 10 sílabas, teve {}",
+        v.total_metricas
+    );
+    assert!(
+        v.classificacao.contains("Decassílabo"),
+        "Classificação deve ser Decassílabo, foi '{}'",
+        v.classificacao
+    );
+    assert_eq!(v.tonicas, vec![3, 6, 10]);
+    assert!(
+        v.silabas.iter().any(|s| s.texto == "ra_a_al"),
+        "Deve conter a sílaba fundida 'ra_a_al', sílabas foram: {:?}",
+        v.silabas.iter().map(|s| &s.texto).collect::<Vec<_>>()
+    );
+}
