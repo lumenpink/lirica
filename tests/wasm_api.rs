@@ -1,6 +1,6 @@
 use lirica::{
-    carregar_exemplos, escandir, exportar_documento_typst, gerar_card_svg, versao, AnaliseWeb,
-    ExemploPoema,
+    carregar_exemplos, escandir, exportar_documento_typst, gerar_card_svg, mapear_id_glifo_metro,
+    versao, AnaliseWeb, ExemploPoema,
 };
 
 #[test]
@@ -2164,6 +2164,31 @@ Buscando a paz e a ternura.";
             !svg_camoes.contains(emo),
             "Card poético não deve conter o emoji métrico '{}'",
             emo
+        );
+    }
+
+    // 11. Cobertura exaustiva do mapeador de glifos métricos
+    let classes_e_glifos = [
+        ("Alexandrino Clássico", "#ico-metro-alexandrino"),
+        ("Decassílabo Heroico", "#ico-metro-heroico"),
+        ("Decassílabo Sáfico", "#ico-metro-safico"),
+        ("Decassílabo Martelo", "#ico-metro-martelo"),
+        ("Decassílabo Geral", "#ico-metro-decassilabo"),
+        ("Redondilha Maior", "#ico-metro-redondilha-maior"),
+        ("Redondilha Menor", "#ico-metro-redondilha-menor"),
+        ("Dodecassílabo", "#ico-metro-dodecassilabo"),
+        ("Octossílabo", "#ico-metro-octossilabo"),
+        ("Eneassílabo", "#ico-metro-eneassilabo"),
+        ("Hendecassílabo", "#ico-metro-hendecassilabo"),
+        ("Forma Livre", "#ico-metro-livre"),
+    ];
+    for (class_nome, id_esperado) in &classes_e_glifos {
+        assert_eq!(
+            mapear_id_glifo_metro(class_nome),
+            *id_esperado,
+            "Classificação '{}' deve mapear para o glifo '{}'",
+            class_nome,
+            id_esperado
         );
     }
 }
