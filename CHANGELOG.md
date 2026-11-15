@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuração de `[profile.release]` com LTO fat e strip, e linking estático `+crt-static` para musl libc (closes #10).
 
 ### Added
+- Extirpação completa de emojis e padronização editorial com 12 glifos vetoriais SVG de metro de alto contraste no motor, card, interface web e documentação (closes #43).
 - Substituição de emojis por glifos vetoriais SVG embutidos no card poético e na interface web, unificação de rimas prováveis/indeterminadas sob a legenda 'Rima Indeterminada (pelo motor automático)' e purificação editorial dos elementos visuais (closes #42).
 - Simplificação do quadro de rimas do verso com ícones compactos (✨, ✦, ⚡, 💎, ❓, 🔥), descarte de laudos acústicos redundantes e legenda contextual unificada no rodapé (closes #41).
 - Tipagem individual de rimas no badge lateral de cada verso no card poético vetorial e eliminação de redundâncias no rodapé com legenda estritamente contextual (closes #40).
