@@ -7,7 +7,7 @@ use lirica::{
 fn test_versao() {
     let v = versao();
     assert!(!v.is_empty());
-    assert!(v.starts_with("0.1.0"));
+    assert!(v.starts_with("1.0.0"));
 }
 
 #[test]

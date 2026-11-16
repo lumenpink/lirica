@@ -63,8 +63,8 @@ fn test_site_gabarito_sync_count_and_pieces() {
 fn test_joaju_lirica_dependency_version() {
     let cargo_toml = fs::read_to_string("Cargo.toml").expect("Cargo.toml deve existir");
     assert!(
-        cargo_toml.contains("0.6.0-dev.74"),
-        "Cargo.toml deve requerer joaju-lirica 0.6.0-dev.74"
+        cargo_toml.contains("joaju-lirica = { version = \"1.0.0\""),
+        "Cargo.toml deve requerer joaju-lirica 1.0.0 estável"
     );
 }
 
