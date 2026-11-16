@@ -64,3 +64,43 @@ fn test_site_gabarito_html_documentation() {
         "site/docs/gabarito.html não deve conter resquícios de 51 poemas"
     );
 }
+
+#[test]
+fn test_mutacao_e_limites_novas_pecas_regionais_e_fonotaticas() {
+    use lirica::escandir;
+
+    let json_content = fs::read_to_string("site/gabarito.json")
+        .expect("site/gabarito.json deve existir");
+    let gabarito: Vec<serde_json::Value> = serde_json::from_str(&json_content)
+        .expect("site/gabarito.json deve ser um JSON válido");
+
+    let pavao = gabarito.iter().find(|p| p["id"] == "cordel_pavao_misterioso")
+        .expect("Pavão Misterioso deve estar no gabarito");
+    let pavao_texto = pavao["texto"].as_str().expect("texto do cordel");
+    let pavao_saida = escandir(pavao_texto, "visual", false, false, true, true);
+    let pavao_web: serde_json::Value = serde_json::from_str(&pavao_saida).unwrap();
+    let forma = &pavao_web["forma_poetica"];
+    assert_eq!(
+        forma["confianca_percentual"], 100,
+        "Pavão Misterioso puro deve atingir 100% de confiança"
+    );
+    assert_eq!(
+        forma["nome"], "Sextilha de Cordel",
+        "Forma reconhecida deve ser Sextilha de Cordel"
+    );
+
+    let pajada = gabarito.iter().find(|p| p["id"] == "pajada_gaucha_pampa")
+        .expect("Pajada Gaúcha deve estar no gabarito");
+    let pajada_texto = pajada["texto"].as_str().expect("texto da pajada");
+    let pajada_saida = escandir(pajada_texto, "visual", false, false, true, true);
+    let pajada_web: serde_json::Value = serde_json::from_str(&pajada_saida).unwrap();
+    let pajada_forma = &pajada_web["forma_poetica"];
+    assert!(
+        pajada_forma["confianca_percentual"].as_u64().unwrap() >= 95,
+        "Pajada Gaúcha pura deve atingir pelo menos 95% de confiança"
+    );
+    assert_eq!(
+        pajada_forma["nome"], "Pajada Gaúcha (Décima Campeira)",
+        "Forma reconhecida deve ser Pajada Gaúcha (Décima Campeira)"
+    );
+}
