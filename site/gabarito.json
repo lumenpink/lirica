@@ -3093,5 +3093,214 @@
         }
       }
     ]
+  },
+  {
+    "id": "cordel_pavao_misterioso",
+    "titulo": "O Romance do Pavão Misterioso",
+    "autor": "José Camelo de Melo Rezende",
+    "epoca": "Literatura de Cordel (Tradição Popular)",
+    "metro_esperado": 7,
+    "forma_esperada": "Sextilha de Cordel",
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "texto": "Eu vou contar uma história\nDum pavão misterioso,\nQue voou na antiga Grécia\nCom um moço corajoso,\nRaptando uma linda moça\nDum conde mui poderoso.",
+    "mutacoes": [
+      {
+        "id": "cordel_pavao_quebra_rima",
+        "tipo": "rima",
+        "descricao": "Quebra da rima par obrigatória (xAxAxA) no verso 6",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 6,
+            "texto": "Dum conde de rica nobreza."
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sextilha de Cordel",
+          "nota_min": 30,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "cordel_pavao_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 2 hipermetrico com 8 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 2,
+            "texto": "De um lindo pavão muito misterioso,"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Sextilha de Cordel",
+          "nota_min": 30,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "pajada_gaucha_pampa",
+    "titulo": "Pajada do Gaúcho Missioneiro",
+    "autor": "Jayme Caetano Braun (Tradição Pampeana)",
+    "epoca": "Poesia Gaúcha Regional",
+    "metro_esperado": 7,
+    "forma_esperada": null,
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      7
+    ],
+    "texto": "Eu trago na minha voz\nA voz de todo o passado,\nDo tempo velho, esquecido,\nQue trago ressuscitado;\nPelo verso compassado\nDesta guitarra campeira,\nQue vibra de tal maneira\nNum lamento tão profundo,\nQue parece vir do fundo\nDa minha terra missioneira!",
+    "mutacoes": []
+  },
+  {
+    "id": "galope_beira_mar_calunga",
+    "titulo": "Galope à Beira-Mar da Calunga",
+    "autor": "Tradição do Repente Nordestino",
+    "epoca": "Cantoria e Repente Popular",
+    "metro_esperado": 9,
+    "forma_esperada": null,
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      9,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9,
+      9
+    ],
+    "texto": "Canto as glórias do mar e da terra,\nCanto as forças do céu e do vento,\nNeste verso de puro talento\nQue a rudeza da serra desterra.\nMinha lira na praia se aferra\nAo clamor do bravio luar,\nFaço as pedras do abismo escutar\nO som da viola que chora,\nNa grandeza do mundo e da aurora,\nNos galopes da beira do mar.",
+    "mutacoes": []
+  },
+  {
+    "id": "augusto_anjos_vencido",
+    "titulo": "Versos Íntimos",
+    "autor": "Augusto dos Anjos",
+    "epoca": "Pré-Modernismo",
+    "metro_esperado": 10,
+    "forma_esperada": "Soneto Italiano (Petrarquiano)",
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10,
+      10
+    ],
+    "texto": "Vês! Ninguém assistiu ao formigueiro\nDas tuas mãos na extrema desventura!\nNem uma flor, sequer, da sepultura\nVem sobre o teu cadáver derradeiro!\n\nNão tenhas medo, pois, do desengano!\nA ingratidão é uma pantera mansa,\nQue acolhe a presa com feroz pujança\nE rasga o peito do infeliz humano!\n\nToma um fósforo. Acende teu cigarro!\nO beijo, amigo, é a véspera do escarro,\nA mão que afaga é a mesma que apedreja.\n\nSe a alguém causa inda pena a tua chaga,\nApedreja essa mão vil que te afaga,\nE escarra nessa boca que te beija!",
+    "mutacoes": [
+      {
+        "id": "augusto_anjos_quebra_rima",
+        "tipo": "rima",
+        "descricao": "Quebra de rima na linha 4 trocando paroxítona em -eiro por oxítona em -or",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 4,
+            "texto": "Vem sobre o teu corpo sem amor!"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 30,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "rima"
+          ]
+        }
+      },
+      {
+        "id": "augusto_anjos_verso_hipermetrico",
+        "tipo": "metrica",
+        "descricao": "Verso 1 com 12 sílabas métricas",
+        "operacoes": [
+          {
+            "op": "substituir",
+            "linha": 1,
+            "texto": "Vês bem que ninguém assistiu nunca ao formigueiro"
+          }
+        ],
+        "expectativa": {
+          "forma_esperada": "Soneto Italiano (Petrarquiano)",
+          "nota_min": 30,
+          "nota_max": 98,
+          "observacoes_obrigatorias": [
+            "métrica"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "cruz_sousa_carceres",
+    "titulo": "Siderações",
+    "autor": "Cruz e Sousa",
+    "epoca": "Simbolismo",
+    "metro_esperado": 10,
+    "forma_esperada": null,
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      10,
+      10,
+      10,
+      10
+    ],
+    "texto": "Para as estrelas de cristal gelado\nAs ânsias e os desejos vão subindo,\nGalgando azuis e curvas de noivado,\nBuscando as amplidões de um céu infindo.",
+    "mutacoes": []
+  },
+  {
+    "id": "sentinelas_fonotaticos_fronteira",
+    "titulo": "Matriz de Sentinelas Fonotáticos de Fronteira",
+    "autor": "Lumen Pink (Oráculo Fonotático)",
+    "epoca": "Lírica Computacional",
+    "metro_esperado": null,
+    "forma_esperada": null,
+    "elidir_pontuacao": true,
+    "versos_esperados": [
+      10,
+      8,
+      10,
+      10,
+      10
+    ],
+    "texto": "O horizonte da serra a alvorecer\nA serra a águia viu passar\nDeixou a terra e a esperança ao longe\nQue como o acidente em seu sujeito\nPorém a onda logo o arrebatou",
+    "mutacoes": []
   }
 ]

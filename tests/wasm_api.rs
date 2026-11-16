@@ -527,14 +527,14 @@ fn test_site_gabarito_e_mutacoes_wasm() {
 
     assert_eq!(
         poemas.len(),
-        55,
-        "Gabarito canônico deve ter exatamente 55 poemas puros"
+        61,
+        "Gabarito canônico deve ter exatamente 61 poemas puros"
     );
 
     let total_mutacoes: usize = poemas.iter().map(|p| p.mutacoes.len()).sum();
     assert_eq!(
-        total_mutacoes, 102,
-        "Total de mutações declaradas deve ser 102"
+        total_mutacoes, 106,
+        "Total de mutações declaradas deve ser 106"
     );
 
     for poema in &poemas {
