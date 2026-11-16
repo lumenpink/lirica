@@ -3,7 +3,7 @@
 **Ticket:** #45  
 **Branch:** `feat/45-sincronizacao-do-gabarito-canonico-61-poemas-e-joaju-lirica-dev74`  
 **Escopo:** `lirica` (`Cargo.toml`, `site/gabarito.json`, `site/docs/gabarito.html`, `site/index.html`, `tests/`)  
-**Status:** Em Especificação (Fase 3: Spec)
+**Status:** Concluído e Validado (Fases 1 a 8 - Quality Gate Aprovado)
 
 ---
 

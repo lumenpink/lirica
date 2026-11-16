@@ -2,12 +2,14 @@ use std::fs;
 
 #[test]
 fn test_site_gabarito_sync_count_and_pieces() {
-    let json_content = fs::read_to_string("site/gabarito.json")
-        .expect("site/gabarito.json deve existir");
-    let gabarito: serde_json::Value = serde_json::from_str(&json_content)
-        .expect("site/gabarito.json deve ser um JSON válido");
+    let json_content =
+        fs::read_to_string("site/gabarito.json").expect("site/gabarito.json deve existir");
+    let gabarito: serde_json::Value =
+        serde_json::from_str(&json_content).expect("site/gabarito.json deve ser um JSON válido");
 
-    let array = gabarito.as_array().expect("gabarito deve ser um array JSON");
+    let array = gabarito
+        .as_array()
+        .expect("gabarito deve ser um array JSON");
     assert_eq!(
         array.len(),
         61,
@@ -19,12 +21,30 @@ fn test_site_gabarito_sync_count_and_pieces() {
         .filter_map(|p| p.get("id").and_then(|id| id.as_str()))
         .collect();
 
-    assert!(ids.contains(&"cordel_pavao_misterioso"), "Falta Romance do Pavão Misterioso no site/gabarito.json");
-    assert!(ids.contains(&"pajada_gaucha_pampa"), "Falta Pajada Gaúcha no site/gabarito.json");
-    assert!(ids.contains(&"galope_beira_mar_calunga"), "Falta Galope à Beira-Mar no site/gabarito.json");
-    assert!(ids.contains(&"augusto_anjos_vencido"), "Falta Augusto dos Anjos no site/gabarito.json");
-    assert!(ids.contains(&"cruz_sousa_carceres"), "Falta Cruz e Sousa no site/gabarito.json");
-    assert!(ids.contains(&"sentinelas_fonotaticos_fronteira"), "Falta matriz de sentinelas fonotáticos no site/gabarito.json");
+    assert!(
+        ids.contains(&"cordel_pavao_misterioso"),
+        "Falta Romance do Pavão Misterioso no site/gabarito.json"
+    );
+    assert!(
+        ids.contains(&"pajada_gaucha_pampa"),
+        "Falta Pajada Gaúcha no site/gabarito.json"
+    );
+    assert!(
+        ids.contains(&"galope_beira_mar_calunga"),
+        "Falta Galope à Beira-Mar no site/gabarito.json"
+    );
+    assert!(
+        ids.contains(&"augusto_anjos_vencido"),
+        "Falta Augusto dos Anjos no site/gabarito.json"
+    );
+    assert!(
+        ids.contains(&"cruz_sousa_carceres"),
+        "Falta Cruz e Sousa no site/gabarito.json"
+    );
+    assert!(
+        ids.contains(&"sentinelas_fonotaticos_fronteira"),
+        "Falta matriz de sentinelas fonotáticos no site/gabarito.json"
+    );
 
     let mut total_mutacoes = 0;
     for p in array {
@@ -50,7 +70,8 @@ fn test_joaju_lirica_dependency_version() {
 
 #[test]
 fn test_site_gabarito_html_documentation() {
-    let html = fs::read_to_string("site/docs/gabarito.html").expect("site/docs/gabarito.html deve existir");
+    let html = fs::read_to_string("site/docs/gabarito.html")
+        .expect("site/docs/gabarito.html deve existir");
     assert!(
         html.contains("61 obras-primas"),
         "site/docs/gabarito.html deve citar 61 obras-primas"
@@ -69,12 +90,14 @@ fn test_site_gabarito_html_documentation() {
 fn test_mutacao_e_limites_novas_pecas_regionais_e_fonotaticas() {
     use lirica::escandir;
 
-    let json_content = fs::read_to_string("site/gabarito.json")
-        .expect("site/gabarito.json deve existir");
-    let gabarito: Vec<serde_json::Value> = serde_json::from_str(&json_content)
-        .expect("site/gabarito.json deve ser um JSON válido");
+    let json_content =
+        fs::read_to_string("site/gabarito.json").expect("site/gabarito.json deve existir");
+    let gabarito: Vec<serde_json::Value> =
+        serde_json::from_str(&json_content).expect("site/gabarito.json deve ser um JSON válido");
 
-    let pavao = gabarito.iter().find(|p| p["id"] == "cordel_pavao_misterioso")
+    let pavao = gabarito
+        .iter()
+        .find(|p| p["id"] == "cordel_pavao_misterioso")
         .expect("Pavão Misterioso deve estar no gabarito");
     let pavao_texto = pavao["texto"].as_str().expect("texto do cordel");
     let pavao_saida = escandir(pavao_texto, "visual", false, false, true, true);
@@ -89,7 +112,9 @@ fn test_mutacao_e_limites_novas_pecas_regionais_e_fonotaticas() {
         "Forma reconhecida deve ser Sextilha de Cordel"
     );
 
-    let pajada = gabarito.iter().find(|p| p["id"] == "pajada_gaucha_pampa")
+    let pajada = gabarito
+        .iter()
+        .find(|p| p["id"] == "pajada_gaucha_pampa")
         .expect("Pajada Gaúcha deve estar no gabarito");
     let pajada_texto = pajada["texto"].as_str().expect("texto da pajada");
     let pajada_saida = escandir(pajada_texto, "visual", false, false, true, true);
