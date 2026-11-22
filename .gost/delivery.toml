@@ -1,0 +1,5 @@
+# Manifesto Declarativo de Continuous Deployment (CD) — Lírica
+[sites]
+target = "cloudflare-pages"
+domain = "lirica.2lp.in"
+dir = "site"

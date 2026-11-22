@@ -1,6 +1,14 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "lirica",
-  "pages_build_output_dir": "site",
-  "compatibility_date": "2026-10-20"
+  "compatibility_date": "2024-09-23",
+  "routes": [
+    {
+      "pattern": "lirica.2lp.in",
+      "custom_domain": true
+    }
+  ],
+  "assets": {
+    "directory": "./site"
+  }
 }
