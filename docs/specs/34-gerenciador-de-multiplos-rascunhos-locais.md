@@ -3,7 +3,7 @@
 ## 1. Contexto e Motivação
 O laboratório Lírica possuía até então persistência automática de um único rascunho poético no `localStorage` sob a chave `lirica_draft_poem` (Ticket #20 e #23). Qualquer criação de novo poema ou teste de múltiplos temas exigia sobrescrever o texto anterior ou copiá-lo externamente.
 
-O objetivo do Ticket #34 é viabilizar o gerenciamento local completo de múltiplos rascunhos poéticos (criar, salvar, alternar, duplicar, renomear, excluir, exportar e importar backups JSON), preservando a soberania da usuária sobre seus dados e mantendo execução 100% client-side sem servidores externos.
+O objetivo do Ticket #34 é viabilizar o gerenciamento local completo de múltiplos rascunhos poéticos (criar, salvar, alternar, duplicar, renomear, excluir, exportar e importar backups JSON), preservando a autonomia da usuária sobre seus dados e mantendo execução 100% client-side sem servidores externos.
 
 ---
 

@@ -1,0 +1,13 @@
+{
+  "abstract": "Projeto lirica governado conforme a norma técnica GOST v3.0.",
+  "schema_version": 1,
+  "site_type": "binary",
+  "slug": "lirica",
+  "summary": "Módulo lirica do ecossistema Gosplan",
+  "tagline": "Repositório lirica",
+  "tags": [
+    "gost",
+    "tulipa"
+  ],
+  "title": "lirica"
+}

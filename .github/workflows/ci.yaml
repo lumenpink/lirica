@@ -48,10 +48,8 @@ jobs:
           wasm-pack build --target web --out-dir site/pkg --release
           rm -f site/pkg/.gitignore
 
-      - name: Deploy to Cloudflare Pages
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy site --project-name=lirica --branch=main --commit-dirty=true
+      - name: Verify WebAssembly Artifacts
+        run: |
+          test -f site/pkg/lirica.js || exit 1
+          test -f site/pkg/lirica_bg.wasm || exit 1
+          echo "WASM artifacts verified successfully."

@@ -35,14 +35,9 @@ jobs:
           wasm-pack build --target web --out-dir site/pkg --release
           rm -f site/pkg/.gitignore
 
-      - name: Deploy to Cloudflare Pages
+      - name: Upload Site Bundle for Kombinat
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GAMBI_2LP_IN_TOKEN: ${{ secrets.REGISTRY_TOKEN || secrets.GAMBI_2LP_IN_TOKEN || secrets.FORGEJO_TOKEN || secrets.GIT_2LP_TOKEN }}
         run: |
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
-            npx wrangler pages deploy site --project-name=lirica --branch=main --commit-dirty=true
-          else
-            echo "Aviso: CLOUDFLARE_API_TOKEN ausente. Pulando deploy."
-          fi
+          cccp package upload site

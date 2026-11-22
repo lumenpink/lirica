@@ -1062,8 +1062,12 @@ fn test_ci_workflow_spec() {
         "Workflow de CI deve gerar o bundle de release WebAssembly"
     );
     assert!(
-        ci_yaml.contains("npx wrangler pages deploy site"),
-        "Workflow de CI deve publicar o site no Cloudflare Pages"
+        ci_yaml.contains("cccp package upload site"),
+        "Workflow de CI deve empacotar e publicar o site via cccp para entrega contínua pelo Kombinat"
+    );
+    assert!(
+        !ci_yaml.contains("wrangler pages deploy"),
+        "Workflow de CI não deve conter deploy legado via wrangler pages"
     );
 }
 

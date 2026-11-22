@@ -2,12 +2,13 @@
 
 > Laboratório métrico e escansão poética determinística em WebAssembly para versos em língua portuguesa.
 
-[![GOST Compliance](https://img.shields.io/badge/GOST-1.5.0-blue)](https://gostlumen.2lp.in/profile.md)
+[![GOST: v3.0.0](https://img.shields.io/badge/GOST-v3.0.0-blue)](.gost/GOST.md)
+[![Profile: Lilya 2.1](https://img.shields.io/badge/Profile-Lilya--2.1-purple.svg)](.gost/GOST.md)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 
 ## Sobre
 
-O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://git.2lp.in/lumen/joaju-lirica) através do registro soberano `lumen` e compila para WebAssembly de alto desempenho. Espelhos públicos sincronizados no [Codeberg](https://codeberg.org/lumenpink/lirica) e no [GitHub](https://github.com/lumenpink/lirica).
+O **Lírica** é um playground interativo client-side para análise rítmica, divisão silábica poética e classificação métrica de versos em português. Ele consome o motor [joaju-lirica](https://gambi.2lp.in/lumen/joaju-lirica) através do registro autônomo `lumen` e compila para WebAssembly de alto desempenho. Espelhos públicos sincronizados no [Codeberg](https://codeberg.org/lumenpink/lirica) e no [GitHub](https://github.com/lumenpink/lirica).
 
 ## Funcionalidades
 
@@ -31,3 +32,7 @@ cargo build --release --target x86_64-unknown-linux-musl
 # Servir localmente
 cd site && python3 -m http.server 8080
 ```
+
+---
+
+Feito com amor travesti por [Lumen Pink](https://lumen.pink).
