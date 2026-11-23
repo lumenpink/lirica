@@ -22,5 +22,5 @@ Com o lançamento do GOST Lilya 2.2.0 e Kollontai 2.2.0, o compilador Rust de re
 - **Alternativa descartada:** Manter 2.1.0 geraria alertas em pipelines automatizadas e descontinuidade com os artefatos gerados pelo ecossistema.
 
 ## 5. Resultados e Validação
-- cccp check: Pendente execução do Quality Gate.
-- cargo test: Pendente execução do Quality Gate.
+- cccp check: 24/24 PASS (100% de conformidade com Lilya 2.2.0).
+- cargo test: 42 testes (unittests, wasm_api e testes de sincronização de gabarito) passaram com 100% de sucesso.
